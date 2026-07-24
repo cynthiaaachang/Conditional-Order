@@ -1197,6 +1197,8 @@
       display: flex;
       align-items: center;
       gap: var(--sp-2);
+      flex-shrink: 0;
+      white-space: nowrap;
     }
 
     .sb-hdr-xq {
@@ -2386,14 +2388,18 @@
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
-      min-width: 60px
+      min-width: 60px;
+      overflow: hidden
     }
 
     .xsel-trigger:hover {
       background: var(--comp-seg-hover-bg);
       border-color: var(--comp-seg-active-border);
     }
-    .xsel-val { color: var(--text); }
+    /* trigger 寬度被外層 flex:1 欄位壓縮到比選項文字窄時（例如帳戶下拉顯示「母帳號 / 子帳號名稱」），
+       讓文字用 ellipsis 截斷、箭頭永遠不被擠掉，取代原本文字直接溢出格子外的行為 */
+    .xsel-val { color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis }
+    .xsel-arrow { flex-shrink: 0 }
 
     .xsel-trigger.sm {
       padding: var(--sp-1) var(--sp-3);
@@ -6206,6 +6212,7 @@
             <span class="sb-hdr-xq">XQ</span>
             <span class="sb-hdr-name">自動下單機器人</span>
           </div>
+          <button type="button" onclick="confirmCloseXQ()" title="demo專用：模擬使用者關閉XQ主程式，示範智慧單雲端運算的關閉提醒" style="margin-left:auto;flex-shrink:0;width:22px;height:22px;padding:0;font-size:11px;color:var(--text3);background:none;border:1px dashed var(--border2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-power-off"></i></button>
         </div>
 
         <!-- 搜尋 + 排序 列 -->
@@ -6327,23 +6334,23 @@
                 <span class="arrow">▾</span>智慧單<span class="sb-group-cnt"></span>
               </div>
               <div class="sb-group-body">
-                <div class="sb-item" onclick="selRobot(this,'停損單','証-模擬交易(內建)-01')" title="停損單" data-sort-name="AA停損單" data-dir="long" data-created="2025/02/14 15:40:27" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="90000" data-strategy="停損單" data-smart="1" data-place="市價" data-sym="監控清單（4 檔）">
-                  <span class="sb-dot green"></span><span class="sb-item-name">停損單</span><span class="sb-item-val"></span>
+                <div class="sb-item" onclick="selRobot(this,'停損單-作多-期-模擬交易-01','期-模擬交易-01')" title="停損單-作多-期-模擬交易-01" data-sort-name="AA停損單" data-dir="long" data-created="2025/02/14 15:40:27" data-started="—" data-latest-order="—" data-account="期-模擬交易-01" data-risk="90000" data-strategy="停損單-作多-期-模擬交易-01" data-smart="1" data-place="市價" data-sym="監控清單（4 檔）">
+                  <span class="sb-dot green"></span><span class="sb-item-name">停損單-作多-期-模擬交易-01</span><span class="sb-item-val"></span>
                 </div>
-                <div class="sb-item" onclick="selRobot(this,'觸價單','証-模擬交易(內建)-01')" title="觸價單" data-dir="long" data-created="2025/04/05 09:12:33" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="100000" data-strategy="觸價單" data-smart="1" data-place="mit" data-sym="監控清單（2 檔）">
-                  <span class="sb-dot green"></span><span class="sb-item-name">觸價單</span><span class="sb-item-val"></span>
+                <div class="sb-item" onclick="selRobot(this,'觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="觸價單-作多-証-模擬交易(內建)-01" data-dir="long" data-created="2025/04/05 09:12:33" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="100000" data-strategy="觸價單-作多-証-模擬交易(內建)-01" data-smart="1" data-place="mit" data-sym="監控清單（2 檔）">
+                  <span class="sb-dot green"></span><span class="sb-item-name">觸價單-作多-証-模擬交易(內建)-01</span><span class="sb-item-val"></span>
                 </div>
-                <div class="sb-item" onclick="selRobot(this,'移動停損單','証-模擬交易(內建)-01')" title="移動停損單" data-sort-name="AB移動停損單" data-dir="short" data-created="2025/04/12 11:20:08" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="60000" data-strategy="移動停損單" data-smart="1" data-place="trail" data-sym="監控清單（2 檔）">
-                  <span class="sb-dot green"></span><span class="sb-item-name">移動停損單</span><span class="sb-item-val"></span>
+                <div class="sb-item" onclick="selRobot(this,'移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="移動停損單-作空-証-模擬交易(內建)-01" data-sort-name="AB移動停損單" data-dir="short" data-created="2025/04/12 11:20:08" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="60000" data-strategy="移動停損單-作空-証-模擬交易(內建)-01" data-smart="1" data-place="trail" data-sym="監控清單（2 檔）">
+                  <span class="sb-dot green"></span><span class="sb-item-name">移動停損單-作空-証-模擬交易(內建)-01</span><span class="sb-item-val"></span>
                 </div>
-                <div class="sb-item" onclick="selRobot(this,'定時委託單','証-模擬交易(內建)-01')" title="定時委託單" data-dir="long" data-created="2025/04/20 08:45:12" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="70000" data-strategy="定時委託單" data-smart="1" data-place="gat" data-sym="監控清單（2 檔）">
-                  <span class="sb-dot green"></span><span class="sb-item-name">定時委託單</span><span class="sb-item-val"></span>
+                <div class="sb-item" onclick="selRobot(this,'定時委託單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="定時委託單-作多-証-模擬交易(內建)-01" data-dir="long" data-created="2025/04/20 08:45:12" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="70000" data-strategy="定時委託單-作多-証-模擬交易(內建)-01" data-smart="1" data-place="gat" data-sym="監控清單（2 檔）">
+                  <span class="sb-dot green"></span><span class="sb-item-name">定時委託單-作多-証-模擬交易(內建)-01</span><span class="sb-item-val"></span>
                 </div>
-                <div class="sb-item" onclick="selRobot(this,'分段委託單','証-模擬交易(內建)-01')" title="分段委託單" data-dir="short" data-created="2025/05/02 10:05:47" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="150000" data-strategy="分段委託單" data-smart="1" data-place="batch" data-sym="監控清單（2 檔）">
-                  <span class="sb-dot green"></span><span class="sb-item-name">分段委託單</span><span class="sb-item-val"></span>
+                <div class="sb-item" onclick="selRobot(this,'分段委託單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="分段委託單-作空-証-模擬交易(內建)-01" data-dir="short" data-created="2025/05/02 10:05:47" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="150000" data-strategy="分段委託單-作空-証-模擬交易(內建)-01" data-smart="1" data-place="batch" data-sym="監控清單（2 檔）">
+                  <span class="sb-dot green"></span><span class="sb-item-name">分段委託單-作空-証-模擬交易(內建)-01</span><span class="sb-item-val"></span>
                 </div>
-                <div class="sb-item" onclick="selRobot(this,'定時定額單','証-模擬交易(內建)-01')" title="定時定額單" data-dir="long" data-created="2025/05/25 14:12:39" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="250000" data-strategy="定時定額單" data-smart="1" data-place="twap" data-sym="監控清單（2 檔）">
-                  <span class="sb-dot green"></span><span class="sb-item-name">定時定額單</span><span class="sb-item-val"></span>
+                <div class="sb-item" onclick="selRobot(this,'定時定額單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="定時定額單-作多-証-模擬交易(內建)-01" data-dir="long" data-created="2025/05/25 14:12:39" data-started="—" data-latest-order="—" data-account="証-模擬交易(內建)-01" data-risk="250000" data-strategy="定時定額單-作多-証-模擬交易(內建)-01" data-smart="1" data-place="twap" data-sym="監控清單（2 檔）">
+                  <span class="sb-dot green"></span><span class="sb-item-name">定時定額單-作多-証-模擬交易(內建)-01</span><span class="sb-item-val"></span>
                 </div>
               </div>
             </div>
@@ -6477,11 +6484,11 @@
           <div class="data-view" style="display:contents">
 
             <!-- 智慧單 Card：停損單（STP/STP LMT 同屬「停損」大類，已合併） -->
-            <div class="r-card sm-card" data-account="証-模擬交易(內建)-01" data-dir="long">
+            <div class="r-card sm-card" data-account="期-模擬交易-01" data-dir="long">
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
-                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('停損單','証-模擬交易(內建)-01')" title="停損單">停損單</span></div>
-                  <div class="rh-sub">証-模擬交易(內建)-01｜<span class="dir-tag long">作多</span>智慧單 · 停損單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 4檔</span></div>
+                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</span></div>
+                  <div class="rh-sub">智慧單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 4檔</span></div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 13:05:30</span>
@@ -6499,7 +6506,7 @@
                 <div class="rh-actions" onclick="event.stopPropagation()">
                   <button class="ico-btn edit" title="編輯"><i class="fas fa-pen"></i></button>
                   <button class="ico-btn" title="複製"><i class="fas fa-copy"></i></button>
-                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('停損單')"><i class="fas fa-trash"></i></button>
+                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('停損單-作多-期-模擬交易-01')"><i class="fas fa-trash"></i></button>
                   <button class="rh-status-btn running" data-tip="停止執行" onclick="event.stopPropagation();toggleRobotStatus(this)"><span class="rh-dot"></span>執行中</button>
                 </div>
               </div>
@@ -6510,9 +6517,9 @@
                     <thead><tr><th>商品</th><th>委託商品</th><th>買賣</th><th>佈單方式</th><th class="col-right">觸發價</th><th class="col-right">委託價</th><th class="col-right">委託量</th><th>盤別</th><th>委託別</th><th>狀態</th></tr></thead>
                     <tbody>
                       <tr><td>台積電(2330)</td><td title="看A下B：監控台積電現股，觸發後改送台積電期委託">台積電期(TXF)</td><td class="side-buy">買進</td><td>停損市價（STP）</td><td class="col-right">960</td><td class="col-right">市價</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
-                      <tr><td>聯發科(2454)</td><td style="color:var(--text3)">—</td><td class="side-buy">買進</td><td>停損市價（STP）</td><td class="col-right">1,080</td><td class="col-right">市價</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
-                      <tr><td>元大台灣50(0050)</td><td style="color:var(--text3)">—</td><td class="side-buy">買進</td><td>停損限價（STP LMT）</td><td class="col-right">183.0</td><td class="col-right">185.0</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
-                      <tr><td>廣達(2382)</td><td style="color:var(--text3)">—</td><td class="side-buy">買進</td><td>停損限價（STP LMT）</td><td class="col-right">273.0</td><td class="col-right">275.0</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
+                      <tr><td>聯發科期(DV)</td><td style="color:var(--text3)">—</td><td class="side-buy">買進</td><td>停損市價（STP）</td><td class="col-right">1,080</td><td class="col-right">市價</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
+                      <tr><td>台指期近月(FITXN*1)</td><td style="color:var(--text3)">—</td><td class="side-buy">買進</td><td>停損限價（STP LMT）</td><td class="col-right">23100</td><td class="col-right">23150</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
+                      <tr><td>廣達期(DK)</td><td style="color:var(--text3)">—</td><td class="side-buy">買進</td><td>停損限價（STP LMT）</td><td class="col-right">273.0</td><td class="col-right">275.0</td><td class="col-right">1 張</td><td><span class="type-tag t-stock">整股</span></td><td>ROD</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>
                     </tbody>
                   </table>
                   <div style="font-size:var(--f-sm);font-weight:600;margin:14px 0 6px">已送出委託（揭示觸發價）</div>
@@ -6536,9 +6543,9 @@
                       <tr><td class="col-chk"></td><td class="col-act"></td><td>09:45:10</td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td class="col-right">960</td><td><span class="edit-val">1/1張</span></td><td><span class="edit-val">市價</span></td><td class="col-right">960</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">A23061001</td></tr>
                       <tr><td class="col-chk"><input type="checkbox" class="row-cb"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:32:18</td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td class="col-right">960</td><td><span class="edit-val">2/1張</span></td><td><span class="edit-val">市價</span></td><td class="col-right">960</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">A23061002</td></tr>
                       <tr><td class="col-chk"></td><td class="col-act"></td><td>11:20:45</td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td class="col-right">960</td><td><span class="edit-val">1/0張</span></td><td><span class="edit-val">市價</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">A23061003</td></tr>
-                      <tr><td class="col-chk"><input type="checkbox" class="row-cb"></td><td class="col-act"><button class="ico-btn del" onclick="delMainOrderCascade(this)" title="刪單（將一併刪除停利／停損子單）"><i class="fas fa-trash"></i></button></td><td>11:30:45</td><td><div class="line-clamp-2" title="國泰金 2882">國泰金 <span class="prod-code">2882</span></div></td><td class="side-buy">買進</td><td class="col-right">61.5</td><td><span class="edit-val">3/0張</span></td><td><span class="edit-val">62.0</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">B23061001</td></tr>
-                      <tr><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--success)">停利</span> 國泰金 <span class="prod-code">2882</span></div></td><td class="side-sell">賣出</td><td class="col-right">65.1</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val">市價</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061002</td></tr>
-                      <tr><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 國泰金 <span class="prod-code">2882</span></div></td><td class="side-sell">賣出</td><td class="col-right">60.1</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val">市價</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061003</td></tr>
+                      <tr><td class="col-chk"><input type="checkbox" class="row-cb"></td><td class="col-act"><button class="ico-btn del" onclick="delMainOrderCascade(this)" title="刪單（將一併刪除停利／停損子單）"><i class="fas fa-trash"></i></button></td><td>11:30:45</td><td><div class="line-clamp-2" title="國泰金期 CK">國泰金期 <span class="prod-code">CK</span></div></td><td class="side-buy">買進</td><td class="col-right">61.5</td><td><span class="edit-val">3/0張</span></td><td><span class="edit-val">62.0</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">B23061001</td></tr>
+                      <tr><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--success)">停利</span> 國泰金期 <span class="prod-code">CK</span></div></td><td class="side-sell">賣出</td><td class="col-right">65.1</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val">市價</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061002</td></tr>
+                      <tr><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 國泰金期 <span class="prod-code">CK</span></div></td><td class="side-sell">賣出</td><td class="col-right">60.1</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val">市價</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061003</td></tr>
                       <tr><td class="col-chk"><input type="checkbox" class="row-cb"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:05:30</td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td class="col-right">960</td><td><span class="edit-val">1/0張</span></td><td><span class="edit-val">市價</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">A23061004</td></tr>
                     </tbody>
                   </table>
@@ -6551,8 +6558,8 @@
             <div class="r-card sm-card" data-account="証-模擬交易(內建)-01" data-dir="short">
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
-                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('移動停損單','証-模擬交易(內建)-01')" title="移動停損單">移動停損單</span></div>
-                  <div class="rh-sub">証-模擬交易(內建)-01｜<span class="dir-tag short">作空</span>智慧單 · 移動停損單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
+                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</span></div>
+                  <div class="rh-sub">智慧單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 13:30:22</span>
@@ -6570,7 +6577,7 @@
                 <div class="rh-actions" onclick="event.stopPropagation()">
                   <button class="ico-btn edit" title="編輯"><i class="fas fa-pen"></i></button>
                   <button class="ico-btn" title="複製"><i class="fas fa-copy"></i></button>
-                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('移動停損單')"><i class="fas fa-trash"></i></button>
+                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('移動停損單-作空-証-模擬交易(內建)-01')"><i class="fas fa-trash"></i></button>
                   <button class="rh-status-btn running" data-tip="停止執行" onclick="event.stopPropagation();toggleRobotStatus(this)"><span class="rh-dot"></span>執行中</button>
                 </div>
               </div>
@@ -6619,8 +6626,8 @@
             <div class="r-card sm-card" data-account="証-模擬交易(內建)-01" data-dir="long">
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
-                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('觸價單','証-模擬交易(內建)-01')" title="觸價單">觸價單</span></div>
-                  <div class="rh-sub">証-模擬交易(內建)-01｜<span class="dir-tag long">作多</span>智慧單 · 觸價單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
+                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</span></div>
+                  <div class="rh-sub">智慧單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 13:15:08</span>
@@ -6638,7 +6645,7 @@
                 <div class="rh-actions" onclick="event.stopPropagation()">
                   <button class="ico-btn edit" title="編輯"><i class="fas fa-pen"></i></button>
                   <button class="ico-btn" title="複製"><i class="fas fa-copy"></i></button>
-                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('觸價單')"><i class="fas fa-trash"></i></button>
+                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('觸價單-作多-証-模擬交易(內建)-01')"><i class="fas fa-trash"></i></button>
                   <button class="rh-status-btn running" data-tip="停止執行" onclick="event.stopPropagation();toggleRobotStatus(this)"><span class="rh-dot"></span>執行中</button>
                 </div>
               </div>
@@ -6688,8 +6695,8 @@
             <div class="r-card sm-card" data-account="証-模擬交易(內建)-01" data-dir="long">
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
-                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('定時委託單','証-模擬交易(內建)-01')" title="定時委託單">定時委託單</span></div>
-                  <div class="rh-sub">証-模擬交易(內建)-01｜<span class="dir-tag long">作多</span>智慧單 · 定時委託單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
+                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('定時委託單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="定時委託單-作多-証-模擬交易(內建)-01">定時委託單-作多-証-模擬交易(內建)-01</span></div>
+                  <div class="rh-sub">智慧單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 14:05:00</span>
@@ -6707,7 +6714,7 @@
                 <div class="rh-actions" onclick="event.stopPropagation()">
                   <button class="ico-btn edit" title="編輯"><i class="fas fa-pen"></i></button>
                   <button class="ico-btn" title="複製"><i class="fas fa-copy"></i></button>
-                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('定時委託單')"><i class="fas fa-trash"></i></button>
+                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('定時委託單-作多-証-模擬交易(內建)-01')"><i class="fas fa-trash"></i></button>
                   <button class="rh-status-btn running" data-tip="停止執行" onclick="event.stopPropagation();toggleRobotStatus(this)"><span class="rh-dot"></span>執行中</button>
                 </div>
               </div>
@@ -6754,8 +6761,8 @@
             <div class="r-card sm-card" data-account="証-模擬交易(內建)-01" data-dir="short">
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
-                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('分段委託單','証-模擬交易(內建)-01')" title="分段委託單">分段委託單</span></div>
-                  <div class="rh-sub">証-模擬交易(內建)-01｜<span class="dir-tag short">作空</span>智慧單 · 分段委託單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
+                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('分段委託單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="分段委託單-作空-証-模擬交易(內建)-01">分段委託單-作空-証-模擬交易(內建)-01</span></div>
+                  <div class="rh-sub">智慧單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 13:48:30</span>
@@ -6773,7 +6780,7 @@
                 <div class="rh-actions" onclick="event.stopPropagation()">
                   <button class="ico-btn edit" title="編輯"><i class="fas fa-pen"></i></button>
                   <button class="ico-btn" title="複製"><i class="fas fa-copy"></i></button>
-                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('分段委託單')"><i class="fas fa-trash"></i></button>
+                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('分段委託單-作空-証-模擬交易(內建)-01')"><i class="fas fa-trash"></i></button>
                   <button class="rh-status-btn running" data-tip="停止執行" onclick="event.stopPropagation();toggleRobotStatus(this)"><span class="rh-dot"></span>執行中</button>
                 </div>
               </div>
@@ -6820,8 +6827,8 @@
             <div class="r-card sm-card" data-account="証-模擬交易(內建)-01" data-dir="long">
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
-                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('定時定額單','証-模擬交易(內建)-01')" title="定時定額單">定時定額單</span></div>
-                  <div class="rh-sub">証-模擬交易(內建)-01｜<span class="dir-tag long">作多</span>智慧單 · 定時定額單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
+                  <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('定時定額單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')" title="定時定額單-作多-証-模擬交易(內建)-01">定時定額單-作多-証-模擬交易(內建)-01</span></div>
+                  <div class="rh-sub">智慧單 · <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 2檔</span></div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 13:05:50</span>
@@ -6839,7 +6846,7 @@
                 <div class="rh-actions" onclick="event.stopPropagation()">
                   <button class="ico-btn edit" title="編輯"><i class="fas fa-pen"></i></button>
                   <button class="ico-btn" title="複製"><i class="fas fa-copy"></i></button>
-                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('定時定額單')"><i class="fas fa-trash"></i></button>
+                  <button class="ico-btn del" title="刪除" onclick="showDelSingle('定時定額單-作多-証-模擬交易(內建)-01')"><i class="fas fa-trash"></i></button>
                   <button class="rh-status-btn running" data-tip="停止執行" onclick="event.stopPropagation();toggleRobotStatus(this)"><span class="rh-dot"></span>執行中</button>
                 </div>
               </div>
@@ -7467,43 +7474,43 @@
               </thead>
               <tbody>
                 <!-- 停損單（STP/STP LMT，已合併）併入當日委託 -->
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:45:10</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>960</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">A23061001</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:32:18</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>960</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">A23061002</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>11:20:45</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">A23061003</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delMainOrderCascade(this)" title="刪單（將一併刪除停利／停損子單）"><i class="fas fa-trash"></i></button></td><td>11:30:45</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="國泰金 2882">國泰金 <span class="prod-code">2882</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>0</span>張</td><td><span class="edit-val" data-price="62.0">62.0</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">B23061001</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--success)">停利</span> 國泰金 <span class="prod-code">2882</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="65.1">65.1</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061002</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 國泰金 <span class="prod-code">2882</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="60.1">60.1</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061003</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:05:30</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">A23061004</td><td><button class="o-robot-link" title="停損單" onclick="goToRobot('停損單','証-模擬交易(內建)-01')">停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單">停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"></td><td class="col-act"></td><td>09:45:10</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>960</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">A23061001</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:32:18</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>960</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">A23061002</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"></td><td class="col-act"></td><td>11:20:45</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">A23061003</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delMainOrderCascade(this)" title="刪單（將一併刪除停利／停損子單）"><i class="fas fa-trash"></i></button></td><td>11:30:45</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="國泰金期 CK">國泰金期 <span class="prod-code">CK</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>0</span>張</td><td><span class="edit-val" data-price="62.0">62.0</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">B23061001</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--success)">停利</span> 國泰金期 <span class="prod-code">CK</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="65.1">65.1</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061002</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 國泰金期 <span class="prod-code">CK</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="60.1">60.1</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">B23061003</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
+                <tr data-account="期-模擬交易-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:05:30</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台積電期 TXF">台積電期 <span class="prod-code">TXF</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">A23061004</td><td><button class="o-robot-link" title="停損單-作多-期-模擬交易-01" onclick="goToRobot('停損單-作多-期-模擬交易-01','期-模擬交易-01')">停損單-作多-期-模擬交易-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="停損單-作多-期-模擬交易-01">停損單-作多-期-模擬交易-01</div></div></td><td title="期-模擬交易-01">期-模擬-01</td></tr>
                 <!-- 觸價單（作多 / 市價）併入當日委託 -->
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:10:05</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中華電 2412">中華電 <span class="prod-code">2412</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">市價</span></td><td>118.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">M23060001</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:25:05</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台達電 2308">台達電 <span class="prod-code">2308</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">市價</span></td><td>320.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">M23060005</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--success)">停利</span> 台達電 <span class="prod-code">2308</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="336.0">336.0</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">M23060006</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 台達電 <span class="prod-code">2308</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="310.4">310.4</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">M23060007</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:05:40</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中華電 2412">中華電 <span class="prod-code">2412</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>118.0</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">M23060002</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>10:40:12</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="日月光投控 3711">日月光投控 <span class="prod-code">3711</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">M23060003</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:15:08</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="日月光投控 3711">日月光投控 <span class="prod-code">3711</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">M23060004</td><td><button class="o-robot-link" title="觸價單" onclick="goToRobot('觸價單','証-模擬交易(內建)-01')">觸價單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單">觸價單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:10:05</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中華電 2412">中華電 <span class="prod-code">2412</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">市價</span></td><td>118.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">M23060001</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:25:05</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台達電 2308">台達電 <span class="prod-code">2308</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">市價</span></td><td>320.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">M23060005</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--success)">停利</span> 台達電 <span class="prod-code">2308</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="336.0">336.0</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">M23060006</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 台達電 <span class="prod-code">2308</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="310.4">310.4</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">M23060007</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:05:40</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中華電 2412">中華電 <span class="prod-code">2412</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>118.0</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">M23060002</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>10:40:12</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="日月光投控 3711">日月光投控 <span class="prod-code">3711</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">M23060003</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:15:08</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="日月光投控 3711">日月光投控 <span class="prod-code">3711</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">M23060004</td><td><button class="o-robot-link" title="觸價單-作多-証-模擬交易(內建)-01" onclick="goToRobot('觸價單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">觸價單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="觸價單-作多-証-模擬交易(內建)-01">觸價單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
                 <!-- 移動停損單（作空 / 市價）併入當日委託 -->
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:20:00</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="統一 1216">統一 <span class="prod-code">1216</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">市價</span></td><td>68.5</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">T23060001</td><td><button class="o-robot-link" title="移動停損單" onclick="goToRobot('移動停損單','証-模擬交易(內建)-01')">移動停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單">移動停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:35:03</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台塑 1301">台塑 <span class="prod-code">1301</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="3">3</span>/<span>3</span>張</td><td><span class="edit-val">市價</span></td><td>92.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">T23060005</td><td><button class="o-robot-link" title="移動停損單" onclick="goToRobot('移動停損單','証-模擬交易(內建)-01')">移動停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單">移動停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 台塑 <span class="prod-code">1301</span></div></td><td class="side-buy">買進</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="94.8">94.8</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">T23060006</td><td><button class="o-robot-link" title="移動停損單" onclick="goToRobot('移動停損單','証-模擬交易(內建)-01')">移動停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單">移動停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:15:30</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="統一 1216">統一 <span class="prod-code">1216</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>68.5</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">T23060002</td><td><button class="o-robot-link" title="移動停損單" onclick="goToRobot('移動停損單','証-模擬交易(內建)-01')">移動停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單">移動停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>10:55:18</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中鋼 2002">中鋼 <span class="prod-code">2002</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">T23060003</td><td><button class="o-robot-link" title="移動停損單" onclick="goToRobot('移動停損單','証-模擬交易(內建)-01')">移動停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單">移動停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:30:22</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中鋼 2002">中鋼 <span class="prod-code">2002</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">T23060004</td><td><button class="o-robot-link" title="移動停損單" onclick="goToRobot('移動停損單','証-模擬交易(內建)-01')">移動停損單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單">移動停損單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:20:00</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="統一 1216">統一 <span class="prod-code">1216</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">市價</span></td><td>68.5</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">T23060001</td><td><button class="o-robot-link" title="移動停損單-作空-証-模擬交易(內建)-01" onclick="goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">移動停損單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:35:03</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台塑 1301">台塑 <span class="prod-code">1301</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="3">3</span>/<span>3</span>張</td><td><span class="edit-val">市價</span></td><td>92.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">T23060005</td><td><button class="o-robot-link" title="移動停損單-作空-証-模擬交易(內建)-01" onclick="goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">移動停損單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn del" disabled title="子單請從主單刪除" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button></td><td>—</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" style="padding-left:12px;color:var(--text2)">└ <span style="color:var(--danger)">停損</span> 台塑 <span class="prod-code">1301</span></div></td><td class="side-buy">買進</td><td><span class="edit-val">—/—</span></td><td><span class="edit-val" data-price="94.8">94.8</span></td><td style="color:var(--text3)">—</td><td><span class="s-tag s-wait">監控中</span></td><td title="委託書號">T23060006</td><td><button class="o-robot-link" title="移動停損單-作空-証-模擬交易(內建)-01" onclick="goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">移動停損單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:15:30</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="統一 1216">統一 <span class="prod-code">1216</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">市價</span></td><td>68.5</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">T23060002</td><td><button class="o-robot-link" title="移動停損單-作空-証-模擬交易(內建)-01" onclick="goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">移動停損單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>10:55:18</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中鋼 2002">中鋼 <span class="prod-code">2002</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">T23060003</td><td><button class="o-robot-link" title="移動停損單-作空-証-模擬交易(內建)-01" onclick="goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">移動停損單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:30:22</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="中鋼 2002">中鋼 <span class="prod-code">2002</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">市價</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">T23060004</td><td><button class="o-robot-link" title="移動停損單-作空-証-模擬交易(內建)-01" onclick="goToRobot('移動停損單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">移動停損單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="移動停損單-作空-証-模擬交易(內建)-01">移動停損單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
                 <!-- 定時委託單（作多 / 38.3）併入當日委託 -->
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:05:12</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="兆豐金 2886">兆豐金 <span class="prod-code">2886</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">38.3</span></td><td>38.3</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">G23060001</td><td><button class="o-robot-link" title="定時委託單" onclick="goToRobot('定時委託單','証-模擬交易(內建)-01')">定時委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單">定時委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>09:50:03</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="兆豐金 2886">兆豐金 <span class="prod-code">2886</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">38.3</span></td><td>38.3</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">G23060002</td><td><button class="o-robot-link" title="定時委託單" onclick="goToRobot('定時委託單','証-模擬交易(內建)-01')">定時委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單">定時委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>11:10:45</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="玉山金 2884">玉山金 <span class="prod-code">2884</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">28.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">G23060003</td><td><button class="o-robot-link" title="定時委託單" onclick="goToRobot('定時委託單','証-模擬交易(內建)-01')">定時委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單">定時委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>14:05:00</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="玉山金 2884">玉山金 <span class="prod-code">2884</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">28.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">G23060004</td><td><button class="o-robot-link" title="定時委託單" onclick="goToRobot('定時委託單','証-模擬交易(內建)-01')">定時委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單">定時委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:05:12</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="兆豐金 2886">兆豐金 <span class="prod-code">2886</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">38.3</span></td><td>38.3</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">G23060001</td><td><button class="o-robot-link" title="定時委託單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時委託單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時委託單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單-作多-証-模擬交易(內建)-01">定時委託單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>09:50:03</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="兆豐金 2886">兆豐金 <span class="prod-code">2886</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">38.3</span></td><td>38.3</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">G23060002</td><td><button class="o-robot-link" title="定時委託單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時委託單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時委託單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單-作多-証-模擬交易(內建)-01">定時委託單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>11:10:45</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="玉山金 2884">玉山金 <span class="prod-code">2884</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">28.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">G23060003</td><td><button class="o-robot-link" title="定時委託單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時委託單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時委託單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單-作多-証-模擬交易(內建)-01">定時委託單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>14:05:00</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="玉山金 2884">玉山金 <span class="prod-code">2884</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">28.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">G23060004</td><td><button class="o-robot-link" title="定時委託單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時委託單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時委託單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時委託單-作多-証-模擬交易(內建)-01">定時委託單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
                 <!-- 分段委託單（作空 / 276.0）併入當日委託 -->
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:12:40</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="華碩 2357">華碩 <span class="prod-code">2357</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">276.0</span></td><td>276.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">S23060001</td><td><button class="o-robot-link" title="分段委託單" onclick="goToRobot('分段委託單','証-模擬交易(內建)-01')">分段委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單">分段委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:22:10</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="華碩 2357">華碩 <span class="prod-code">2357</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">276.0</span></td><td>276.0</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">S23060002</td><td><button class="o-robot-link" title="分段委託單" onclick="goToRobot('分段委託單','証-模擬交易(內建)-01')">分段委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單">分段委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>11:35:55</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="技嘉 2376">技嘉 <span class="prod-code">2376</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">296.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">S23060003</td><td><button class="o-robot-link" title="分段委託單" onclick="goToRobot('分段委託單','証-模擬交易(內建)-01')">分段委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單">分段委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:48:30</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="技嘉 2376">技嘉 <span class="prod-code">2376</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">296.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">S23060004</td><td><button class="o-robot-link" title="分段委託單" onclick="goToRobot('分段委託單','証-模擬交易(內建)-01')">分段委託單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單">分段委託單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:12:40</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="華碩 2357">華碩 <span class="prod-code">2357</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">276.0</span></td><td>276.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">S23060001</td><td><button class="o-robot-link" title="分段委託單-作空-証-模擬交易(內建)-01" onclick="goToRobot('分段委託單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">分段委託單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單-作空-証-模擬交易(內建)-01">分段委託單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>10:22:10</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="華碩 2357">華碩 <span class="prod-code">2357</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">276.0</span></td><td>276.0</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">S23060002</td><td><button class="o-robot-link" title="分段委託單-作空-証-模擬交易(內建)-01" onclick="goToRobot('分段委託單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">分段委託單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單-作空-証-模擬交易(內建)-01">分段委託單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>11:35:55</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="技嘉 2376">技嘉 <span class="prod-code">2376</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">296.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">S23060003</td><td><button class="o-robot-link" title="分段委託單-作空-証-模擬交易(內建)-01" onclick="goToRobot('分段委託單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">分段委託單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單-作空-証-模擬交易(內建)-01">分段委託單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:48:30</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="技嘉 2376">技嘉 <span class="prod-code">2376</span></div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">296.0</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">S23060004</td><td><button class="o-robot-link" title="分段委託單-作空-証-模擬交易(內建)-01" onclick="goToRobot('分段委託單-作空-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">分段委託單-作空-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag short">作空</span><div class="line-clamp-2" title="分段委託單-作空-証-模擬交易(內建)-01">分段委託單-作空-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
                 <!-- 定時定額單（作多 / 35.3）併入當日委託 -->
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:02:00</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台泥 1101">台泥 <span class="prod-code">1101</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">35.3</span></td><td>35.3</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">W23060001</td><td><button class="o-robot-link" title="定時定額單" onclick="goToRobot('定時定額單','証-模擬交易(內建)-01')">定時定額單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單">定時定額單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>09:40:15</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台泥 1101">台泥 <span class="prod-code">1101</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">35.3</span></td><td>35.3</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">W23060002</td><td><button class="o-robot-link" title="定時定額單" onclick="goToRobot('定時定額單','証-模擬交易(內建)-01')">定時定額單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單">定時定額單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>10:20:33</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="亞泥 1102">亞泥 <span class="prod-code">1102</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">51.8</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">W23060003</td><td><button class="o-robot-link" title="定時定額單" onclick="goToRobot('定時定額單','証-模擬交易(內建)-01')">定時定額單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單">定時定額單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:05:50</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="亞泥 1102">亞泥 <span class="prod-code">1102</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">51.8</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">W23060004</td><td><button class="o-robot-link" title="定時定額單" onclick="goToRobot('定時定額單','証-模擬交易(內建)-01')">定時定額單</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單">定時定額單</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>09:02:00</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台泥 1101">台泥 <span class="prod-code">1101</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="2">2</span>/<span>2</span>張</td><td><span class="edit-val">35.3</span></td><td>35.3</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">W23060001</td><td><button class="o-robot-link" title="定時定額單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時定額單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時定額單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單-作多-証-模擬交易(內建)-01">定時定額單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>09:40:15</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="台泥 1101">台泥 <span class="prod-code">1101</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="3">3</span>/<span>1</span>張</td><td><span class="edit-val">35.3</span></td><td>35.3</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">W23060002</td><td><button class="o-robot-link" title="定時定額單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時定額單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時定額單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單-作多-証-模擬交易(內建)-01">定時定額單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"></td><td>10:20:33</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="亞泥 1102">亞泥 <span class="prod-code">1102</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">51.8</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-fail">委託失敗</span></td><td title="委託書號">W23060003</td><td><button class="o-robot-link" title="定時定額單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時定額單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時定額單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單-作多-証-模擬交易(內建)-01">定時定額單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+                <tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td>13:05:50</td><td><span class="type-tag t-stock">整股</span></td><td><div class="line-clamp-2" title="亞泥 1102">亞泥 <span class="prod-code">1102</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="1">1</span>/<span>0</span>張</td><td><span class="edit-val">51.8</span></td><td><span style="color:var(--text3)">—</span></td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">W23060004</td><td><button class="o-robot-link" title="定時定額單-作多-証-模擬交易(內建)-01" onclick="goToRobot('定時定額單-作多-証-模擬交易(內建)-01','証-模擬交易(內建)-01')">定時定額單-作多-証-模擬交易(內建)-01</button></td><td><div style="display:flex;align-items:center;gap:4px"><span class="dir-tag long">作多</span><div class="line-clamp-2" title="定時定額單-作多-証-模擬交易(內建)-01">定時定額單-作多-証-模擬交易(內建)-01</div></div></td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
                 <tr data-account="証-模擬交易(內建)-01">
                   <td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td>
                   <td class="col-act"><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td>
@@ -7774,7 +7781,7 @@
               <!-- 智慧單版唯讀摘要（_applyRobot 依機器人切換顯示；量化積木維持原 sv-content） -->
               <div class="set-content" id="sv-content-smart" style="display:none">
                 <div class="s-section">
-                  <div class="arm-section-title" onclick="openSmartEditModal(0)" data-tip="編輯設定"><i class="fas fa-gear orig-icon"></i><i class="fas fa-pen hover-icon"></i>基本設定</div>
+                  <div class="arm-section-title" onclick="openSmartEditModal()" data-tip="編輯設定"><i class="fas fa-gear orig-icon"></i><i class="fas fa-pen hover-icon"></i>基本設定</div>
                   <div class="sv-row"><span class="sv-label">交易帳號</span><span class="sv-val">証-模擬交易(內建)-01</span></div>
                   <div class="sv-row"><span class="sv-label">訊號來源</span><span class="sv-val">智慧單（手動）</span></div>
                   <div class="sv-row"><span class="sv-label">監控商品</span><span class="sv-val" id="sv-sm-sym">—</span></div>
@@ -7782,7 +7789,7 @@
                   <div class="sv-row"><span class="sv-label">交易方向</span><span class="sv-tag" id="sv-sm-dir" style="color:var(--danger)">作多</span></div>
                 </div>
                 <div class="s-section">
-                  <div class="arm-section-title" onclick="openSmartEditModal(1)" data-tip="編輯設定"><i class="fas fa-gear orig-icon"></i><i class="fas fa-pen hover-icon"></i>觸發與委託</div>
+                  <div class="arm-section-title"><i class="fas fa-gear"></i>觸發與委託</div>
                   <div class="sv-row"><span class="sv-label">佈單方式</span><span class="sv-val" id="sv-sm-place">停損市價（STP）</span></div>
                   <div class="sv-row"><span class="sv-label">觸發條件</span><span class="sv-val" id="sv-sm-trigcond">成交價漲破觸發價（≥）</span></div>
                   <div class="sv-row"><span class="sv-label">觸發價</span><span class="sv-val" id="sv-sm-trigprice">依商品個別設定（見委託明細）</span></div>
@@ -7794,8 +7801,8 @@
                   <div class="sv-row" id="sv-sm-sl-row" style="display:none"><span class="sv-label">停損</span><span class="sv-val" id="sv-sm-sl" style="color:var(--danger);font-weight:600"></span></div>
                 </div>
                 <div class="s-section">
-                  <div class="arm-section-title" onclick="showSubAcctMgmt()" data-tip="前往子帳號管理"><i class="fas fa-gear orig-icon"></i><i class="fas fa-pen hover-icon"></i>安控資訊</div>
-                  <div class="sv-row"><span class="sv-label">安控來源</span><span class="sv-val" id="sv-sm-risk">未設定安控（建議於「子帳號管理」建立子帳號）</span></div>
+                  <div class="arm-section-title"><i class="fas fa-gear"></i>安控資訊</div>
+                  <div class="sv-row"><span class="sv-label">安控來源</span><span class="sv-val" id="sv-sm-risk">未設定安控</span></div>
                 </div>
               </div>
             </div><!-- /.set-wrap -->
@@ -9096,33 +9103,35 @@
                 <span class="sm-inline-label">商品</span>
                 <div class="sm-inline-field">
                   <select class="s-input" style="width:84px;flex:0 0 auto"><option>商品</option></select>
-                  <input class="s-input" id="arm-smart-sym-disp" readonly value="台積電(2330)" style="flex:1;min-width:150px;cursor:pointer" onclick="openSymPop()" title="點擊選擇監控商品">
+                  <input class="s-input" id="arm-smart-sym-disp" readonly value="台積電(2330)" style="flex:1;min-width:0;cursor:pointer" onclick="openSymPop()" title="點擊選擇監控商品">
                   <button type="button" class="arm-cancel" style="flex-shrink:0;white-space:nowrap" onclick="openSymPop()">選擇…</button>
                 </div>
               </div>
-              <label style="display:flex;align-items:center;gap:6px;margin:-4px 0 10px 78px;cursor:pointer;font-size:var(--f-sm);color:var(--text3)"><input type="checkbox" id="arm-same-sym" checked onchange="armSameSym(this)"> 觸發後同商品下單（取消可看A下B指定其他執行商品）</label>
+              <label style="display:flex;align-items:center;gap:6px;margin:-4px 0 10px 88px;cursor:pointer;font-size:var(--f-sm);color:var(--text3)"><input type="checkbox" id="arm-same-sym" checked onchange="armSameSym(this)"> 觸發後同商品下單（取消可看A下B指定其他執行商品）</label>
               <div class="sm-inline-row" id="arm-exec-row" style="display:none">
                 <span class="sm-inline-label">執行商品</span>
                 <div class="sm-inline-field">
                   <select class="s-input" id="arm-exec-sym-type" style="width:84px;flex:0 0 auto"><option>商品</option></select>
-                  <input class="s-input" id="arm-exec-sym-disp" readonly value="台積電(2330)" style="flex:1;min-width:150px;cursor:pointer" title="點擊選擇執行商品">
+                  <input class="s-input" id="arm-exec-sym-disp" readonly value="台積電(2330)" style="flex:1;min-width:0;cursor:pointer" title="點擊選擇執行商品">
                   <button type="button" class="arm-cancel" id="arm-exec-sym-btn" style="flex-shrink:0;white-space:nowrap">選擇…</button>
                 </div>
               </div>
+              <div class="hint" id="arm-sym-type-hint" style="display:none;margin-left:88px;color:var(--danger)"></div>
             </div>
             <!-- 智慧單：佈單設定 -->
             <div class="s-section" id="arm-smart-sec" style="display:none">
               <div class="sm-inline-row">
-                <span class="sm-inline-label">方向</span>
-                <div class="sm-inline-field" style="flex:0 0 auto">
+                <span class="sm-inline-label" id="arm-smart-dir-label">方向</span>
+                <div class="sm-inline-field" id="arm-smart-dir-field" style="flex:0 0 auto">
                   <div class="seg-nav" id="arm-smart-dir">
                     <button type="button" class="seg-btn dir-long active" onclick="armSmartDir(this,'buy')">作多</button>
                     <button type="button" class="seg-btn dir-short" onclick="armSmartDir(this,'sell')">作空</button>
                   </div>
                 </div>
-                <span class="sm-inline-label" style="width:auto;margin-left:8px">佈單</span>
-                <div class="sm-inline-field">
-                  <select class="s-input" id="sm-place-cat" onchange="armPlaceCatSelectChange()" style="flex:1;min-width:220px">
+                <span class="sm-inline-label" id="sm-place-cat-label" style="width:auto;margin-left:8px">佈單</span>
+                <div class="sm-inline-field" id="sm-place-cat-field">
+                  <select class="s-input" id="sm-place-cat" onchange="armPlaceCatSelectChange()" style="flex:1;min-width:0">
+                    <option value="">請選擇佈單方式</option>
                     <option value="stp">停損（STP/STP LMT）</option>
                     <option value="mit">觸價（MIT/LIT）</option>
                     <option value="trail">移動停損（TRAIL/TRAIL LMT）</option>
@@ -9151,7 +9160,7 @@
                 <option value="twap">定時定額（TWAP）</option>
               </select>
               <!-- 開盤／收盤大類的子選擇：時機(開盤/收盤) × 委託方式(市價/限價) -->
-              <div class="sm-inline-row" id="arm-moocat-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-moocat-row" style="display:none">
                 <span class="sm-inline-label">時機</span>
                 <div class="sm-inline-field" style="flex:0 0 auto">
                   <div class="seg-nav" id="arm-moocat-when-seg">
@@ -9185,10 +9194,10 @@
                   </div>
                 </div>
               </div>
-              <div class="hint" id="arm-trig-hint" style="margin:-6px 0 10px 78px">作多：價格<b>漲破</b>觸發價（≥）時，依委託價設定送出買進委託</div>
-              <div class="hint" id="arm-limit-hint" style="display:none;margin:-6px 0 10px 78px">漲跌停 ±N 檔：觸發後以觸價當日的漲停／跌停價 ± 設定檔數作為限價委託送出</div>
+              <div class="hint" id="arm-trig-hint" style="margin:-6px 0 10px 88px">作多：價格<b>漲破</b>觸發價（≥）時，依委託價設定送出買進委託</div>
+              <div class="hint" id="arm-limit-hint" style="display:none;margin:-6px 0 10px 88px">漲跌停 ±N 檔：觸發後以觸價當日的漲停／跌停價 ± 設定檔數作為限價委託送出</div>
               <!-- 移動停損大類的委託方式子選擇：市價(TRAIL)／限價偏移(TRAIL LMT) -->
-              <div class="sm-inline-row" id="arm-trail-mode-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-trail-mode-row" style="display:none">
                 <span class="sm-inline-label">委託方式</span>
                 <div class="sm-inline-field" style="flex:0 0 auto">
                   <select class="s-input" id="arm-trail-mode-sel" style="width:140px" onchange="armTrailModeSelectChange()">
@@ -9198,12 +9207,12 @@
                 </div>
               </div>
               <!-- 移動停損市價／限價（TRAIL／TRAIL LMT）共用欄位 -->
-              <div class="s-row" id="arm-trail-row" style="display:none">
+              <div class="s-row sm-adv-box" id="arm-trail-row" style="display:none">
                 <div class="s-label">啟動價（選填）</div>
                 <div class="num-wrap" style="width:120px"><input type="text" inputmode="decimal" id="arm-trail-arm" placeholder="留空＝立即啟動"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
                 <div class="hint">留空＝機器人啟動後立即開始追蹤最高（最低）價；設定則等價格先觸及此價位才開始追蹤</div>
               </div>
-              <div class="s-row" id="arm-trail-amt-row" style="display:none">
+              <div class="s-row sm-adv-box" id="arm-trail-amt-row" style="display:none">
                 <div class="s-label">移動幅度</div>
                 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                   <div class="num-wrap" style="width:100px"><input type="text" inputmode="decimal" id="arm-trail-pts" value="5"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
@@ -9212,13 +9221,13 @@
                 <div class="hint">作多：價格由高點回落達此幅度時觸發賣出（追蹤停損）；作空則追蹤低點反彈</div>
               </div>
               <!-- 移動停損限價（TRAIL LMT）專屬：觸發後以指定偏移檔數送出限價委託 -->
-              <div class="s-row" id="arm-traillmt-row" style="display:none">
+              <div class="s-row sm-adv-box" id="arm-traillmt-row" style="display:none">
                 <div class="s-label">限價偏移</div>
                 <div style="display:flex;align-items:center;gap:8px"><span style="font-size:var(--f-base);color:var(--text2)">±</span><div class="num-wrap" style="width:70px"><input type="text" inputmode="numeric" id="arm-traillmt-offset" value="1" min="0"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div><span style="font-size:var(--f-base);color:var(--text2)">檔</span></div>
                 <div class="hint">觸發後以觸價 ± 設定檔數作為限價委託送出，不使用市價</div>
               </div>
               <!-- 定時委託（GAT）專屬欄位：需自行指定時間＋委託方式 -->
-              <div class="sm-inline-row" id="arm-gat-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-gat-row" style="display:none">
                 <span class="sm-inline-label">時間</span>
                 <div class="sm-inline-field">
                   <input type="time" class="s-input" id="arm-gat-time" value="09:05" style="width:120px">
@@ -9229,7 +9238,7 @@
                 </div>
               </div>
               <!-- 開盤市價（MOO）：固定開盤時以市價送出 -->
-              <div class="sm-inline-row" id="arm-moo-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-moo-row" style="display:none">
                 <span class="sm-inline-label">開盤時間</span>
                 <div class="sm-inline-field">
                   <input type="text" class="s-input" id="arm-moo-time" value="09:00" style="width:110px" disabled>
@@ -9237,7 +9246,7 @@
                 </div>
               </div>
               <!-- 開盤限價（LOO） -->
-              <div class="sm-inline-row" id="arm-loo-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-loo-row" style="display:none">
                 <span class="sm-inline-label">開盤時間</span>
                 <div class="sm-inline-field">
                   <input type="text" class="s-input" id="arm-loo-time" value="09:00" style="width:110px" disabled>
@@ -9247,7 +9256,7 @@
                 </div>
               </div>
               <!-- 收盤市價（MOC）：固定收盤前以市價送出 -->
-              <div class="sm-inline-row" id="arm-moc-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-moc-row" style="display:none">
                 <span class="sm-inline-label">收盤前時間</span>
                 <div class="sm-inline-field">
                   <input type="text" class="s-input" id="arm-moc-time" value="13:25" style="width:110px" disabled>
@@ -9255,7 +9264,7 @@
                 </div>
               </div>
               <!-- 收盤限價（LOC） -->
-              <div class="sm-inline-row" id="arm-loc-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-loc-row" style="display:none">
                 <span class="sm-inline-label">收盤前時間</span>
                 <div class="sm-inline-field">
                   <input type="text" class="s-input" id="arm-loc-time" value="13:25" style="width:110px" disabled>
@@ -9265,7 +9274,7 @@
                 </div>
               </div>
               <!-- 分段委託專屬欄位：同一委託依跳動檔數複製成多筆不同價位，一次送出（不使用市價） -->
-              <div class="sm-inline-row" id="arm-batch-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-batch-row" style="display:none">
                 <span class="sm-inline-label">分段設定</span>
                 <div class="sm-inline-field">
                   <span style="font-size:var(--f-base);color:var(--text2)">單筆</span>
@@ -9283,7 +9292,7 @@
                 </div>
               </div>
               <!-- 拆單專屬欄位：依單筆委託量拆分總量後送出，價格不變，餘數為最後一筆 -->
-              <div class="sm-inline-row" id="arm-splitqty-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-splitqty-row" style="display:none">
                 <span class="sm-inline-label">拆單設定</span>
                 <div class="sm-inline-field">
                   <span style="font-size:var(--f-base);color:var(--text2)">總量</span>
@@ -9300,7 +9309,7 @@
                 </div>
               </div>
               <!-- 定時定額（TWAP）專屬欄位 -->
-              <div class="sm-inline-row" id="arm-twap-row" style="display:none">
+              <div class="sm-inline-row sm-adv-box" id="arm-twap-row" style="display:none">
                 <span class="sm-inline-label">執行區間</span>
                 <div class="sm-inline-field">
                   <input type="time" class="s-input" id="arm-twap-start" value="09:00" style="width:120px">
@@ -9547,10 +9556,43 @@
     /* 智慧單建立表單：密集網格排版(標籤在旁邊)，只用在 #smart-modal 與其借用的
        #arm-smart-sym-sec/#arm-smart-sec 這兩塊(智慧單建立專屬，編輯模式不會顯示)，
        沿用既有 .s-input/.seg-nav 等元件樣式，不改動全域 .s-row/.s-label，避免影響其他畫面 */
-    .sm-inline-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap }
-    .sm-inline-label { width: 92px; flex: 0 0 auto; font-size: var(--f-base); color: var(--text2); white-space: nowrap }
+    .sm-inline-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap }
+    .sm-inline-label { width: 80px; flex: 0 0 auto; font-size: var(--f-sm); color: var(--text2); white-space: nowrap }
     .seg-nav[data-locked="1"] { opacity: .55; pointer-events: none }
-    .sm-inline-field { flex: 1; min-width: 160px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+    .sm-inline-field { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap }
+    /* modal 從960px縮到640px後，帳戶/名稱等長文字欄位若沒有 min-width:0，flex子項目會被内容原生寬度撐開、
+       超出 modal 邊界溢出畫面外（帳戶下拉選單顯示「母帳號 / 子帳號名稱」這種較長字串時最明顯）；
+       這裡統一讓 .sm-inline-field 內的 select/input 都能真正縮小、超出部分用 ellipsis 截斷，不再溢出 */
+    .sm-inline-field select.s-input, .sm-inline-field input.s-input { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+    /* 下單盒風格：基礎欄位維持密集排列，佈單類型專屬(進階)欄位用淡底色區塊視覺區隔，跟迷你下單「基礎盒+按需展開」的概念一致 */
+    .sm-adv-box { background: var(--bg2); border-radius: 8px; padding: 8px 10px 2px; margin: 2px 0 8px }
+    .sm-adv-box .sm-inline-row, .sm-adv-box.s-row { margin-bottom: 6px }
+    /* 只縮小智慧單這個 modal 本身的寬度，不影響 #arm-modal(量化積木精靈)共用的 .arm-panel */
+    #smart-modal .arm-panel { width: min(640px, 94vw); }
+    /* 「+新增監控商品」情境：帳戶/方向/佈单方式已是目標機器人固定不變的屬性，連同「建立智慧單」小標題／
+       併單提示／安控預覽這些「使用者還在自己選帳戶/佈单方式」情境的說明文字都不需要——用單一 class 集中控管，
+       跟一般「新增智慧單」流程用同一個 #smart-modal 但徹底區隔開，不需要在多個函式裡個別手動 set/reset
+       每個元素的 style.display（那種寫法容易漏補其中一邊、造成殘留狀態，第22輪已踩過兩次同類的坑） */
+    #smart-modal.sm-add-product #sm-acct-row,
+    #smart-modal.sm-add-product #arm-smart-dir-label,
+    #smart-modal.sm-add-product #arm-smart-dir-field,
+    #smart-modal.sm-add-product #sm-place-cat-label,
+    #smart-modal.sm-add-product #sm-place-cat-field,
+    #smart-modal.sm-add-product #sm-section-title,
+    #smart-modal.sm-add-product #sm-merge-hint,
+    #smart-modal.sm-add-product #sm-risk-preview { display: none; }
+    /* 「+新增監控商品」／「編輯監控商品」共用：帳戶/方向/佈单方式雖然整段隱藏，但沿用舊版「編輯監控商品」
+       表單原本就有的藍底資訊列，簡要標出這支機器人固定的帳號/佈单方式/有效期/目前監控額度，
+       維持一般「新增智慧單」/「編輯機器人設定」流程不顯示這個提示列（那兩種情境本來就能直接看到完整欄位） */
+    #sm-context-banner { display: none; }
+    #smart-modal.sm-add-product #sm-context-banner { display: flex; }
+    /* 下單盒風格：真正的「切換型」按鈕(方向、開盤/收盤子選擇)加強視覺份量，比照下單盒買賣/現漲跌市那種明顯的選中色塊；
+       純下拉選單(佈單大類、委託價方式等)維持原樣不轉成按鈕——第五輪已經跟使用者確認過這條界線，按鈕只用在開盤/收盤子選擇 */
+    #smart-modal #arm-smart-dir .seg-btn { height: 34px; font-size: 15px; font-weight: 700; }
+    #smart-modal #arm-smart-dir .seg-btn.dir-long.active { background: var(--danger); border-color: var(--danger); color: #fff; }
+    #smart-modal #arm-smart-dir .seg-btn.dir-short.active { background: var(--success); border-color: var(--success); color: #fff; }
+    #smart-modal #arm-moocat-when-seg .seg-btn.active,
+    #smart-modal #arm-moocat-mode-seg .seg-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
   </style>
   <div class="arm-overlay" id="smart-modal">
     <div class="arm-panel">
@@ -9563,21 +9605,27 @@
       <div class="arm-body">
         <div class="arm-content">
           <div class="arm-pane active">
-            <div class="arm-section-title"><i class="far fa-lightbulb"></i>建立智慧單</div>
+            <!-- 沿用舊版「編輯監控商品」(#add-prod-modal) 原本就有的藍底資訊列，帳戶/方向/佈单方式整段隱藏時
+                 用這裡簡要標出這支機器人固定的帳號/佈单方式/有效期/目前監控額度，見 _smartFillContextBanner() -->
+            <div id="sm-context-banner" style="flex-wrap:wrap;gap:6px 20px;background:var(--bg2);border-radius:var(--r-md);padding:10px 14px;margin-bottom:12px;font-size:var(--f-sm);color:var(--text3)">
+              <span>帳號：<strong id="sm-ctx-acct" style="color:var(--text)"></strong></span>
+              <span>佈單方式：<strong id="sm-ctx-place" style="color:var(--text)"></strong></span>
+              <span>有效期：<strong id="sm-ctx-validity" style="color:var(--text)"></strong></span>
+              <span>目前監控：<strong id="sm-ctx-count" style="color:var(--text)"></strong></span>
+            </div>
+            <div class="arm-section-title" id="sm-section-title"><i class="far fa-lightbulb"></i>建立智慧單</div>
             <div class="s-section">
-              <div class="sm-inline-row">
-                <span class="sm-inline-label">名稱</span>
-                <div class="sm-inline-field">
-                  <input class="s-input" id="sm-name" list="sm-name-list" placeholder="輸入既有名稱即併單" style="flex:1;min-width:140px" oninput="smartNameCheck()" onblur="smartNameCheck()">
-                  <datalist id="sm-name-list"></datalist>
-                </div>
+              <div class="sm-inline-row" id="sm-acct-row">
+                <!-- 名稱不再由使用者輸入：併單改用「帳戶＋佈單方式」判斷，名稱由系統自動產生（見 smartMergeCheck()/confirmSmartCreate()），
+                     這個 input 保留在 DOM 裡純粹當內部值的暫存欄位，不顯示給使用者看，避免動到既有讀寫 sm-name 的程式碼 -->
+                <input id="sm-name" style="display:none">
                 <span class="sm-inline-label">帳戶</span>
                 <div class="sm-inline-field">
-                  <select class="s-input" id="sm-acct" style="flex:1;min-width:160px" onchange="smartNameCheck()"></select>
+                  <select class="s-input" id="sm-acct" style="flex:1;min-width:0" onchange="smartMergeCheck()"></select>
                 </div>
               </div>
-              <div class="hint" id="sm-merge-hint" style="display:none;color:var(--accent)"><i class="fas fa-circle-info"></i> 已偵測到同帳戶的既有機器人「<span id="sm-merge-name"></span>」，送出將併入其監控清單，佈單方式沿用該機器人設定</div>
-              <div class="hint" id="sm-risk-preview"></div>
+              <div class="hint" id="sm-merge-hint" style="display:none;margin-left:88px;color:var(--accent)"><i class="fas fa-circle-info"></i> 此帳戶已有相同佈單方式的機器人「<span id="sm-merge-name"></span>」，送出將併入其監控清單</div>
+              <div class="hint" id="sm-risk-preview" style="margin-left:88px"></div>
             </div>
             <div id="sm-fields-slot"></div>
             <div id="sm-oco-slot"></div>
@@ -9609,59 +9657,6 @@
     </div>
   </div>
 
-  <!-- 智慧單：既有機器人加入監控商品（不走新增機器人精靈，帳號／佈單方式／有效期沿用該機器人既有設定） -->
-  <div class="modal" id="add-prod-modal">
-    <div class="modal-box">
-      <div class="modal-hdr">
-        <div class="modal-title" id="ap-modal-title">新增監控商品</div><button class="modal-close" onclick="closeModal('add-prod-modal')"><i class="fas fa-xmark"></i></button>
-      </div>
-      <div class="modal-body">
-        <div style="font-size:var(--f-sm);color:var(--text3);margin-bottom:16px;display:flex;flex-wrap:wrap;gap:6px 20px;background:var(--bg2);border-radius:var(--r-md);padding:10px 14px">
-          <span>帳號：<strong id="ap-acct" style="color:var(--text)"></strong></span>
-          <span>佈單方式：<strong id="ap-place" style="color:var(--text)"></strong></span>
-          <span>有效期：<strong id="ap-validity" style="color:var(--text)"></strong></span>
-          <span>目前監控：<strong id="ap-count" style="color:var(--text)"></strong></span>
-        </div>
-        <div class="s-row">
-          <div class="s-label">監控商品</div>
-          <input class="s-input" id="ap-sym" placeholder="輸入股票代號或股名" style="width:100%">
-        </div>
-        <div class="s-row">
-          <div class="s-label">交易方向</div>
-          <div class="seg-nav" id="ap-dir">
-            <button type="button" class="seg-btn dir-long active" onclick="apSetDir(this,'buy')">作多（買進）</button>
-            <button type="button" class="seg-btn dir-short" onclick="apSetDir(this,'sell')">作空（賣出）</button>
-          </div>
-        </div>
-        <div class="s-row">
-          <div class="s-label">觸發價</div>
-          <div class="num-wrap" style="width:120px"><input type="text" inputmode="decimal" id="ap-trig" value="0"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
-        </div>
-        <div class="s-row">
-          <div class="s-label">委託價</div>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <select class="s-input" id="ap-ord-mode" style="width:170px" onchange="apOrdModeChange()"><option value="market">市價</option><option value="fixed">限價（指定價）</option></select>
-            <div class="num-wrap" id="ap-ord-fixed-wrap" style="width:110px;display:none"><input type="text" inputmode="decimal" id="ap-ord-fixed" value="0"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
-          </div>
-        </div>
-        <div class="s-row">
-          <div class="s-label">委託量</div>
-          <div style="display:flex;align-items:center;gap:8px"><div class="num-wrap" style="width:90px"><input type="text" inputmode="numeric" id="ap-qty" value="1" min="1"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div><span style="font-size:var(--f-base)">張</span></div>
-        </div>
-        <div class="s-row">
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:var(--f-base)"><input type="checkbox" id="ap-ab-toggle" onchange="apAbToggle(this)"> 看A下B（執行商品不同於監控商品）</label>
-          <div id="ap-ab-wrap" style="display:none;margin-top:8px">
-            <input class="s-input" id="ap-exec-sym" placeholder="輸入執行商品" style="width:100%">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="m-cancel" onclick="closeModal('add-prod-modal')">取消</button>
-        <button class="m-confirm" id="ap-modal-submit" onclick="confirmAddProd()">加入監控</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ===== 子帳號建立/編輯 Modal ===== -->
   <div class="modal" id="subacct-modal">
     <div class="modal-box">
@@ -9672,6 +9667,7 @@
         <div class="s-row">
           <div class="s-label">子帳號名稱</div>
           <input class="s-input" id="sa-name" placeholder="例如：動能策略" style="width:100%">
+          <div class="hint" id="sa-name-dup-hint" style="display:none;color:var(--danger)">此子帳號名稱已存在，請改用其他名稱</div>
         </div>
         <div class="s-row">
           <div class="s-label">隸屬母帳號</div>
@@ -10280,7 +10276,7 @@
       if (body) body.style.display = hdr.classList.contains('collapsed') ? 'none' : 'block';
     }
     /* ── Sidebar filter state ── */
-    let _sbFavs = new Set(['KD高檔死亡交叉', '法人累計買超超過1,000張', '停損單']);
+    let _sbFavs = new Set(['KD高檔死亡交叉', '法人累計買超超過1,000張', '停損單-作多-期-模擬交易-01']);
     let _sbRecent = [
       'BBand翻多極度無敵超長策略文字滿版顯示測試狀態（字數測試極限）',
       'KD高檔死亡交叉',
@@ -11040,7 +11036,7 @@
       market: {
         m: { cap:'$324,300', capBar:'安控 $90萬(36%)', pct:36, f:'2筆', fAmt:'($225,300)', fSub:'共2檔商品', b:'3筆', bAmt:'($377,600)', bSub:'共2檔商品', x:'1筆', xSub:'共1檔商品' },
         /* watch 欄位: [商品, 買賣, 佈單方式, 觸發價, 委託價, 委託商品(看A下B時才填，同商品留空)] */
-        watch: [['台積電(2330)','作多','停損市價（STP）','960','市價','台積電期(TXF)'],['聯發科(2454)','作多','停損市價（STP）','1,080','市價',''],['元大台灣50(0050)','作多','停損限價（STP LMT）','183.0','185.0',''],['廣達(2382)','作多','停損限價（STP LMT）','273.0','275.0','']],
+        watch: [['台積電(2330)','作多','停損市價（STP）','960','市價','台積電期(TXF)'],['聯發科期(DV)','作多','停損市價（STP）','1,080','市價',''],['台指期近月(FITXN*1)','作多','停損限價（STP LMT）','23100','23150',''],['廣達期(DK)','作多','停損限價（STP LMT）','273.0','275.0','']],
         sent: [
           ['09:45:10','台積電期(TXF)','作多','停損（市價）','960','市價','1 / 1','A23061001','filled','main','',''],
           ['10:32:18','台積電期(TXF)','作多','停損（市價）','960','市價','2 / 1','A23061002','partial','main','',''],
@@ -11048,9 +11044,9 @@
           ['13:05:30','台積電期(TXF)','作多','停損（市價）','960','市價','1 / 0','A23061004','pend','main','',''],
           // 停利/停損以委託價62.0為基準計算(尚未成交，先用委託價估算，成交後理論上應改用成交均價)：停利=62.0×105%=65.1，停損=62.0×97%=60.1
           // OCO子單是「觸發價到了就出場」，不是限價單：委託價統一市價，計算出來的數字放在觸發價欄位
-          ['11:30:45','國泰金(2882)','作多','停損（限價）','61.5','62.0','3 / 0','B23061001','pend','main','65.1','60.1'],
-          ['—','國泰金(2882)','作空','停利（市價）','65.1','市價','— / —','B23061002','wait','tp','',''],
-          ['—','國泰金(2882)','作空','停損（市價）','60.1','市價','— / —','B23061003','wait','sl','','']
+          ['11:30:45','國泰金期(CK)','作多','停損（限價）','61.5','62.0','3 / 0','B23061001','pend','main','65.1','60.1'],
+          ['—','國泰金期(CK)','作空','停利（市價）','65.1','市價','— / —','B23061002','wait','tp','',''],
+          ['—','國泰金期(CK)','作空','停損（市價）','60.1','市價','— / —','B23061003','wait','sl','','']
         ]
       },
       mit: {
@@ -11251,118 +11247,122 @@
         +'<div class="metric long"><div class="m-label">失敗</div><div class="m-value">'+m.x+'</div><div class="m-sub">'+m.xSub+'</div></div>'
         +'<div class="metric warn"><div class="m-label">監控中</div><div class="m-value">'+_activeWatchLen+'筆</div><div class="m-sub">共'+_activeWatchLen+'檔商品</div></div>'
         +'</div>'
-        +'<div class="sm-filter-bar"><div class="f-search-wrap"><i class="fas fa-magnifying-glass f-search-ico"></i><input class="f-input" placeholder="輸入股票代號或股名" oninput="smartCommSearch(this.value)"><button class="inp-clear" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))" title="清除"><i class="fas fa-xmark" style="font-size:14px;line-height:1"></i></button></div><select class="s-input" style="width:auto;height:var(--comp-ctrl-h)" onchange="smartCommStatus(this.value)"><option value="">全部委託</option><option value="pend">委託成功</option><option value="filled">完全成交</option><option value="partial">部分成交</option><option value="fail">委託失敗</option><option value="cancel">已刪單</option></select><div style="margin-left:auto;display:flex;gap:8px"><button class="add-prod-btn" onclick="openSmartCreateModal({name:(ROBOTS[_curRobotIdx]||{}).name,account:(ROBOTS[_curRobotIdx]||{}).el&&ROBOTS[_curRobotIdx].el.dataset.account})" style="display:inline-flex;align-items:center;gap:6px"><i class="fas fa-plus" style="font-size:14px;line-height:1"></i><span>新增監控商品</span></button><button class="del-all-btn" onclick="delAllComm(this)" style="margin-left:0;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-trash" style="font-size:16px;line-height:1"></i><span>全部刪單</span></button></div></div>'
+        +'<div class="sm-filter-bar"><div class="f-search-wrap"><i class="fas fa-magnifying-glass f-search-ico"></i><input class="f-input" placeholder="輸入股票代號或股名" oninput="smartCommSearch(this.value)"><button class="inp-clear" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))" title="清除"><i class="fas fa-xmark" style="font-size:14px;line-height:1"></i></button></div><select class="s-input" style="width:auto;height:var(--comp-ctrl-h)" onchange="smartCommStatus(this.value)"><option value="">全部委託</option><option value="pend">委託成功</option><option value="filled">完全成交</option><option value="partial">部分成交</option><option value="fail">委託失敗</option><option value="cancel">已刪單</option></select><div style="margin-left:auto;display:flex;gap:8px"><button class="add-prod-btn" onclick="_openAddCurrentRobotProd()" style="display:inline-flex;align-items:center;gap:6px"><i class="fas fa-plus" style="font-size:14px;line-height:1"></i><span>新增監控商品</span></button><button class="del-all-btn" onclick="delAllComm(this)" style="margin-left:0;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-trash" style="font-size:16px;line-height:1"></i><span>全部刪單</span></button></div></div>'
         +(d.watch.length?('<div class="s-section" style="padding:0;margin:16px 0"><div class="s-title" style="display:flex;align-items:center;gap:8px"><i class="far fa-lightbulb" style="color:var(--warning)"></i> 監控中（尚未送出委託）</div><table class="o-table" style="width:100%"><thead><tr><th>商品</th><th>委託商品</th><th>買賣</th><th>佈單方式</th>'+(showTime?'<th class="col-right">時間</th>':'')+'<th class="col-right">觸發價</th><th class="col-right">委託價</th><th class="col-right">委託量</th><th>盤別</th><th>委託別</th><th>狀態</th><th class="col-act" style="width:112px">操作</th></tr></thead><tbody>'+wr+'</tbody></table></div>'):'')
         +'<div class="s-section" style="padding:0;margin-bottom:16px"><div class="s-title">已送出委託（主單 + 停利／停損子單，揭示觸發價）</div><table class="o-table" style="width:100%"><thead><tr><th class="col-chk"><input type="checkbox" class="row-cb" onclick="toggleAllRows(this)"></th><th class="col-act"></th><th>停利停損</th><th>委託時間</th><th>商品</th><th>買賣</th><th class="col-right">觸發價</th><th class="col-right">委託/成交</th><th class="col-right">委託價</th><th class="col-right">成交均價</th><th class="col-right">停利</th><th class="col-right">停損</th><th>委託狀態</th><th>委託書號</th></tr></thead><tbody>'+sr+'</tbody></table></div>';
     }
+    // 「+新增監控商品」／「編輯監控商品」共用的藍底資訊列：帳戶/方向/佈单方式整段隱藏後，
+    // 用這裡簡要標出這支機器人固定不變的帳號/佈单方式/有效期/目前監控額度，沿用舊版
+    // 「編輯監控商品」(#add-prod-modal) 原本就有的同一份資訊，只是改填進 #smart-modal 共用的欄位
+    function _smartFillContextBanner(reg) {
+      if (!reg) return;
+      const acctEl = document.getElementById('sm-ctx-acct'); if (acctEl) acctEl.textContent = reg.account || '—';
+      const placeEl = document.getElementById('sm-ctx-place'); if (placeEl) placeEl.textContent = ARM_PLACE_LABEL[reg.place] || reg.place || '—';
+      const validEl = document.getElementById('sm-ctx-validity'); if (validEl) validEl.textContent = reg.validity === 'multi' ? '多日有效' : '當日有效';
+      const countEl = document.getElementById('sm-ctx-count'); if (countEl) countEl.textContent = reg.count + ' / ' + (reg.cap || SMART_WATCH_CAP) + ' 檔';
+    }
     // 智慧單：既有機器人加入監控商品（依你的決定，不再走「新增機器人」精靈的自動併單偵測，
     // 改成使用者主動站在既有機器人頁面裡加，帳號／佈單方式／有效期直接沿用該機器人設定，不用重填）
-    const SMART_KEY_LABEL = {
-      market: '停損市價（STP）', limit: '停損限價（STP LMT）', mit: '觸價（MIT）', trail: '移動停損（TRAIL）',
-      gat: '定時（GAT）', batch: '分段委託', twap: '定時定額（TWAP）'
-    };
-    let _apKey = null, _apDir = 'buy', _apEditIdx = null;
-    function _apFillContext(key) {
+    // 「+新增監控商品」按鈕統一走 openSmartCreateModal（跟側邊欄新建同一個表單），傳帳號＋實際佈單類型(14值)，
+    // 讓表單一開就用「帳戶＋佈單方式」命中併單，不需要使用者自己重選——注意 curRobot.el.dataset.place 對動態建立的
+    // 機器人來說是合成 key(例如'nr1')，不是真正的佈單類型，所以要從 SMART_ROBOT_REGISTRY 用名稱查回真正的 place 值
+    function _openAddCurrentRobotProd() {
       const curRobot = ROBOTS[_curRobotIdx];
-      const ds = curRobot?.el?.dataset || {};
       const reg = SMART_ROBOT_REGISTRY.find(function (r) { return r.name === curRobot?.name; });
-      document.getElementById('ap-acct').textContent = ds.account || reg?.account || '—';
-      document.getElementById('ap-place').textContent = SMART_KEY_LABEL[key] || key;
-      document.getElementById('ap-validity').textContent = reg && reg.validity === 'multi' ? '多日有效' : '當日有效';
-      document.getElementById('ap-count').textContent = (reg ? reg.count : (SMART_COMM[key]?.watch.length || 0)) + ' / ' + (reg?.cap || SMART_WATCH_CAP) + ' 檔';
+      openSmartCreateModal({ account: curRobot?.el?.dataset?.account || reg?.account, place: reg?.place, dir: curRobot?.el?.dataset?.dir || reg?.dir });
     }
-    function openAddProdModal(key) {
-      _apKey = key;
-      _apEditIdx = null;
-      _apDir = 'buy';
-      document.getElementById('ap-modal-title').textContent = '新增監控商品';
-      document.getElementById('ap-modal-submit').textContent = '加入監控';
-      document.getElementById('ap-sym').disabled = false;
-      document.querySelectorAll('#ap-dir .seg-btn').forEach(function (b, i) { b.classList.toggle('active', i === 0); });
-      document.getElementById('ap-sym').value = '';
-      document.getElementById('ap-trig').value = '0';
-      document.getElementById('ap-ord-mode').value = 'market';
-      document.getElementById('ap-ord-fixed').value = '0';
-      document.getElementById('ap-ord-fixed-wrap').style.display = 'none';
-      document.getElementById('ap-qty').value = '1';
-      document.getElementById('ap-ab-toggle').checked = false;
-      document.getElementById('ap-ab-wrap').style.display = 'none';
-      document.getElementById('ap-exec-sym').value = '';
-
-      _apFillContext(key);
-      document.getElementById('add-prod-modal').classList.add('show');
-    }
-    // 單一商品編輯：跟「新增監控商品」共用同一個表單，差別只在於送出時是覆蓋既有列（保留 paused 狀態），
-    // 而不是新增一列、也不會佔用新的監控額度
+    // 編輯監控商品：跟「+新增監控商品」共用同一個 #smart-modal（同一套 UI／同一批可填欄位），
+    // 差別只在於：帳戶/方向/佈单方式一樣是這支機器人固定不變的屬性(整段隱藏)，但商品/觸發價/委託價/委託量/
+    // 看A下B這些欄位改成預設帶入這一列既有的資料，送出時是覆蓋既有列（保留 paused 狀態），不是新增一列、
+    // 也不會佔用新的監控額度。舊版走獨立的 #add-prod-modal(簡化表單、沒有OCO/型別專屬欄位)已完全淘汰。
     function openEditProdModal(key, idx) {
       const row = SMART_COMM[key]?.watch[idx];
       if (!row) return;
-      _apKey = key;
-      _apEditIdx = idx;
-      _apDir = row[1] === '作多' ? 'buy' : 'sell';
-      document.getElementById('ap-modal-title').textContent = '編輯監控商品';
-      document.getElementById('ap-modal-submit').textContent = '儲存修改';
-      document.getElementById('ap-sym').disabled = false;
-      document.querySelectorAll('#ap-dir .seg-btn').forEach(function (b) { b.classList.toggle('active', (_apDir === 'buy') === b.classList.contains('dir-long')); });
-      document.getElementById('ap-sym').value = row[0];
-      document.getElementById('ap-trig').value = row[3];
-      const isMarket = row[4] === '市價';
-      document.getElementById('ap-ord-mode').value = isMarket ? 'market' : 'fixed';
-      document.getElementById('ap-ord-fixed').value = isMarket ? '0' : row[4];
-      document.getElementById('ap-ord-fixed-wrap').style.display = isMarket ? 'none' : '';
-      document.getElementById('ap-qty').value = row[6] || '1';
-      const hasExec = !!row[5];
-      document.getElementById('ap-ab-toggle').checked = hasExec;
-      document.getElementById('ap-ab-wrap').style.display = hasExec ? '' : 'none';
-      document.getElementById('ap-exec-sym').value = row[5] || '';
-
-      _apFillContext(key);
-      document.getElementById('add-prod-modal').classList.add('show');
-    }
-    function apSetDir(btn, dir) {
-      _apDir = dir;
-      btn.parentElement.querySelectorAll('.seg-btn').forEach(function (b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-    }
-    function apOrdModeChange() {
-      const mode = document.getElementById('ap-ord-mode').value;
-      document.getElementById('ap-ord-fixed-wrap').style.display = mode === 'fixed' ? '' : 'none';
-    }
-    function apAbToggle(cb) {
-      document.getElementById('ap-ab-wrap').style.display = cb.checked ? '' : 'none';
-    }
-    function confirmAddProd() {
-      const sym = document.getElementById('ap-sym').value.trim();
-      if (!sym) { _armFlash(document.getElementById('ap-sym')); return; }
-      const d = SMART_COMM[_apKey];
-      if (!d) { closeModal('add-prod-modal'); return; }
-
-      const dirText = _apDir === 'buy' ? '作多' : '作空';
-      const placeLabel = SMART_KEY_LABEL[_apKey] || _apKey;
-      const trig = document.getElementById('ap-trig').value.trim() || '0';
-      const ordMode = document.getElementById('ap-ord-mode').value;
-      const ordPrice = ordMode === 'market' ? '市價' : (document.getElementById('ap-ord-fixed').value.trim() || '0');
-      const qty = document.getElementById('ap-qty').value.trim() || '1';
-      const execSym = document.getElementById('ap-ab-toggle').checked ? (document.getElementById('ap-exec-sym').value.trim() || '') : '';
-
       const curRobot = ROBOTS[_curRobotIdx];
-      const isEdit = _apEditIdx !== null;
-      if (isEdit) {
-        // 編輯既有列：覆蓋原本的商品/方向/觸發價/委託價/委託量/執行商品，保留第 8 欄的 paused 狀態不受影響
-        const old = d.watch[_apEditIdx];
-        const paused = old ? old[7] : undefined;
-        d.watch[_apEditIdx] = [sym, dirText, placeLabel, trig, ordPrice, execSym, qty, paused];
-      } else {
-        // watch 欄位: [商品, 買賣, 佈單方式, 觸發價, 委託價, 執行商品(''=同監控商品), 委託量]
-        d.watch.push([sym, dirText, placeLabel, trig, ordPrice, execSym, qty]);
-        const reg = SMART_ROBOT_REGISTRY.find(function (r) { return r.name === curRobot?.name; });
-        if (reg) reg.count++;
+      const reg = SMART_ROBOT_REGISTRY.find(function (r) { return r.name === curRobot?.name; });
+      // openSmartCreateModal() 開頭會把 _smartEditWatchKey/_smartEditWatchIdx 重置成 null(跟其他模式旗標同一套防呆)，
+      // 所以要等它呼叫完、回到這裡之後才能設定，順序不能反過來
+      openSmartCreateModal({ account: curRobot?.el?.dataset?.account || reg?.account, place: reg?.place, dir: curRobot?.el?.dataset?.dir || reg?.dir });
+      _smartEditWatchKey = key;
+      _smartEditWatchIdx = idx;
+      const titleEl = document.querySelector('#smart-modal .arm-header-title'); if (titleEl) titleEl.textContent = '編輯監控商品';
+      const submitBtn = document.getElementById('sm-submit-btn');
+      if (submitBtn) { submitBtn.innerHTML = '儲存修改<i class="fas fa-chevron-right"></i>'; submitBtn.onclick = confirmSmartEditWatch; }
+      // 覆蓋掉 openSmartCreateModal() 剛剛帶的預設值，改帶這一列既有資料——
+      // 觸發價/委託價只存了「顯示字串」不是原始各欄位值，型別專屬細節(GAT時間之外的次要欄位、TRAIL移動幅度、
+      // 批次委託的每筆量/筆數等)本來就沒有分開存過，只能靠 _smartFillTrigFromDisplay/_smartFillOrdFromDisplay
+      // 盡量還原可還原的部分，其餘沿用建立流程原本的預設值
+      const symEl = document.getElementById('arm-smart-sym-disp'); if (symEl) symEl.value = row[0];
+      const place = reg?.place || '';
+      _smartFillTrigFromDisplay(place, row[3]);
+      _smartFillOrdFromDisplay(place, row[4]);
+      const qtyEl = document.getElementById('arm-smart-qty'); if (qtyEl) qtyEl.value = row[6] || '1';
+      const hasExec = !!row[5];
+      const sameChk = document.getElementById('arm-same-sym');
+      if (sameChk) { sameChk.checked = !hasExec; armSameSym(sameChk); }
+      if (hasExec) { const execEl = document.getElementById('arm-exec-sym-disp'); if (execEl) execEl.value = row[5]; }
+      armTrigCheck();
+    }
+    // 反向對照 _smartTrigDisplay()：把監控列存的觸發價顯示字串填回對應型別的觸發欄位——
+    // 大多數型別的顯示字串本來就直接是該欄位的原始值(時間類、trail啟動價)，可以無損還原；
+    // batch/splitqty 沒有對應的單一觸發欄位，維持建立流程的預設值不處理
+    function _smartFillTrigFromDisplay(place, v) {
+      const set = function (id, val) { const el = document.getElementById(id); if (el) el.value = val; };
+      if (place === 'stp' || place === 'stplmt' || place === 'mit' || place === 'lit') set('arm-smart-trig', v);
+      else if (place === 'gat') set('arm-gat-time', v);
+      else if (place === 'moo') set('arm-moo-time', v);
+      else if (place === 'loo') set('arm-loo-time', v);
+      else if (place === 'moc') set('arm-moc-time', v);
+      else if (place === 'loc') set('arm-loc-time', v);
+      else if (place === 'trail' || place === 'traillmt') set('arm-trail-arm', v === '—' ? '' : v);
+      else if (place === 'twap') set('arm-twap-start', v);
+    }
+    // 反向對照 _smartOrdDisplay()：只有 stp/stplmt/mit/lit(市價/漲跌停/限價N可以逐字解析回去)跟
+    // traillmt(限價偏移±N檔可解析)兩組能可靠還原；其餘型別(gat/loo/loc/batch/splitqty/twap)的委託價是
+    // 多欄位組成的摘要句子，無法無損反解，維持建立流程的預設值
+    function _smartFillOrdFromDisplay(place, v) {
+      if (place === 'stp' || place === 'stplmt' || place === 'mit' || place === 'lit') {
+        const lim = document.getElementById('arm-limit-mode');
+        if (!lim) return;
+        if (v === '市價') lim.value = 'market';
+        else if (v === '漲跌停') lim.value = 'chase';
+        else if (typeof v === 'string' && v.indexOf('限價 ') === 0) {
+          lim.value = 'fixed';
+          const fixed = document.getElementById('arm-limit-fixed'); if (fixed) fixed.value = v.slice(3);
+        } else if (typeof v === 'string' && v.trim() !== '') {
+          // 少數手寫demo資料的委託價直接存數字、沒有「限價 」前綴(建立流程本身送出的資料格式固定會有前綴)，
+          // 一併視為限價值處理，不然這幾筆舊資料進來會被誤判成沒有可解析的內容而掉回預設市價
+          lim.value = 'fixed';
+          const fixed = document.getElementById('arm-limit-fixed'); if (fixed) fixed.value = v.trim();
+        }
+        _xselSync(lim);
+        // 用跟使用者手動切換委託方式同一個 onchange 函式，不能只呼叫 armLimitMode()(只管視覺顯示)——
+        // 這裡還要讓底層 14 值 arm-smart-place 從'stp'/'mit'正確同步成'stplmt'/'lit'(fixed/chase都算限價家族)，
+        // 不然送出時 _snapshotSmartArm() 讀到的 place 會停在鎖定分支帶入的generic值，佈单方式標籤顯示錯誤
+        armLimitModeSmartExt();
+      } else if (place === 'traillmt') {
+        const m = /±([\d.]+)檔/.exec(v || '');
+        if (m) { const el = document.getElementById('arm-traillmt-offset'); if (el) el.value = m[1]; }
       }
-
-      closeModal('add-prod-modal');
-      if (curRobot) _applyRobot(curRobot.name); else renderSmartComm(_apKey);
-      if (isEdit) xAlert('已更新', '「' + sym + '」的監控設定已更新', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
-      else xAlert('已加入監控', '「' + sym + '」已加入本機器人的監控清單', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
+    }
+    function confirmSmartEditWatch() {
+      if (!armSmartFieldsValid()) return;
+      const key = _smartEditWatchKey, idx = _smartEditWatchIdx;
+      const d = SMART_COMM[key];
+      if (!d || !d.watch[idx]) { closeSmartModal(); return; }
+      const snap = _snapshotSmartArm();
+      const dirText = snap.dir === 'sell' ? '作空' : '作多';
+      const sameSymOn = document.getElementById('arm-same-sym')?.checked !== false;
+      const execSym = sameSymOn ? '' : (document.getElementById('arm-exec-sym-disp')?.value || '');
+      const old = d.watch[idx];
+      const paused = old ? old[7] : undefined;
+      // 覆蓋既有列：商品/方向/觸發價/委託價/委託量/執行商品全部改成表單目前的值，保留第 8 欄的 paused 狀態不受影響
+      d.watch[idx] = [snap.sym, dirText, ARM_PLACE_LABEL[snap.place] || snap.place, _smartTrigDisplay(snap.place), _smartOrdDisplay(snap.place), execSym, snap.qty, paused];
+      const curRobot = ROBOTS[_curRobotIdx];
+      closeSmartModal();
+      if (curRobot) _applyRobot(curRobot.name); else renderSmartComm(key);
+      xAlert('已更新', '「' + snap.sym + '」的監控設定已更新', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
+      _smartEditWatchKey = null; _smartEditWatchIdx = null;
     }
     // 監控中表格單一商品的刪除／暫停：跟「新增監控商品」同一個層級，直接操作 SMART_COMM[key].watch，
     // 不透過「編輯機器人設定」（那邊已改為只管機器人層級欄位，避免互相覆蓋）
@@ -11403,29 +11403,29 @@
       // 停損市價單／停損限價單合併成「停損單」後，兩邊的紀錄依時間交錯合併成一份
       market: [
         ['13:05:30','台積電期 TXF','trade','委託送出','看A下B 觸發後送出 台積電期(TXF) 買進 1 口 市價｜委託書號 A23061004'],
-        ['11:30:45','國泰金(2882)','trade','OCO 子單建立','建立 停利 65.1 / 停損 60.1 子單（以委託價62.0計算，待主單完全成交後啟用）'],
-        ['11:30:45','國泰金(2882)','trade','委託送出','國泰金(2882) 買進 3 張 限價 62.0｜委託書號 B23061001'],
-        ['11:30:44','國泰金(2882)','warn','委託失敗','國泰金(2882) 買進 3 張：委託失敗 · 系統忙碌，自動重新送出｜書號 B23060999'],
-        ['11:30:40','國泰金(2882)','trade','洗價觸發','監控 國泰金(2882) 成交價漲破觸發價 61.5，觸發送單'],
+        ['11:30:45','國泰金期(CK)','trade','OCO 子單建立','建立 停利 65.1 / 停損 60.1 子單（以委託價62.0計算，待主單完全成交後啟用）'],
+        ['11:30:45','國泰金期(CK)','trade','委託送出','國泰金期(CK) 買進 3 張 限價 62.0｜委託書號 B23061001'],
+        ['11:30:44','國泰金期(CK)','warn','委託失敗','國泰金期(CK) 買進 3 張：委託失敗 · 系統忙碌，自動重新送出｜書號 B23060999'],
+        ['11:30:40','國泰金期(CK)','trade','洗價觸發','監控 國泰金期(CK) 成交價漲破觸發價 61.5，觸發送單'],
         ['11:20:45','台積電期 TXF','warn','委託失敗','台積電期(TXF) 買進 1 口：委託失敗 · 瞬間漲跌停暫緩｜書號 A23061003'],
-        ['11:18:00','停損單','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：台積電期 TXF）'],
-        ['10:35:00','停損單','err','安控阻擋（每日金額上限）','超過每日金額上限 • 已用 105 萬 / 上限 100 萬（觸發商品：廣達 2382）'],
+        ['11:18:00','停損單-作多-期-模擬交易-01','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：台積電期 TXF）'],
+        ['10:35:00','停損單-作多-期-模擬交易-01','err','安控阻擋（每日金額上限）','超過每日金額上限 • 已用 105 萬 / 上限 100 萬（觸發商品：廣達期 DK）'],
         ['10:32:18','台積電期 TXF','trade','部分成交','台積電期(TXF) 成交 1 / 2 口 @ 960｜委託書號 A23061002'],
-        ['10:20:16','廣達(2382)','trade','開始監控','觸發價 273.0，作多｜限價 275.0 委託，加入監控中'],
-        ['10:20:15','停損單','warn','商品併入','廣達(2382) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 5/5 檔商品，不佔用新的機器人額度'],
-        ['10:05:01','元大台灣50(0050)','trade','開始監控','觸發價 183.0，作多｜限價 185.0 委託，加入監控中'],
-        ['10:05:00','停損單','warn','商品併入','元大台灣50(0050) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 4/5 檔商品，不佔用新的機器人額度'],
+        ['10:20:16','廣達期(DK)','trade','開始監控','觸發價 273.0，作多｜限價 275.0 委託，加入監控中'],
+        ['10:20:15','停損單-作多-期-模擬交易-01','warn','商品併入','廣達期(DK) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 5/5 檔商品，不佔用新的機器人額度'],
+        ['10:05:01','台指期近月(FITXN*1)','trade','開始監控','觸發價 23100，作多｜限價 23150 委託，加入監控中'],
+        ['10:05:00','停損單-作多-期-模擬交易-01','warn','商品併入','台指期近月(FITXN*1) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 4/5 檔商品，不佔用新的機器人額度'],
         ['09:45:10','台積電期 TXF','trade','委託成交','台積電期(TXF) 完全成交 1 口 @ 960｜委託書號 A23061001'],
         ['09:44:30','台積電(2330)','trade','洗價觸發','監控 台積電(2330) 成交價漲破觸發價 960，觸發送單（看A下B → 台積電期）'],
-        ['09:15:20','聯發科(2454)','trade','開始監控','觸發價 1,080，作多｜市價委託，加入監控中'],
-        ['09:15:19','停損單','warn','商品併入','聯發科(2454) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 3/5 檔商品，不佔用新的機器人額度'],
-        ['09:00:06','停損單','warn','商品併入','國泰金(2882) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/5 檔商品，不佔用新的機器人額度'],
-        ['09:00:05','停損單','trade','機器人啟動','開始監控 台積電(2330)，觸發後執行 台積電期(TXF)']
+        ['09:15:20','聯發科期(DV)','trade','開始監控','觸發價 1,080，作多｜市價委託，加入監控中'],
+        ['09:15:19','停損單-作多-期-模擬交易-01','warn','商品併入','聯發科期(DV) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 3/5 檔商品，不佔用新的機器人額度'],
+        ['09:00:06','停損單-作多-期-模擬交易-01','warn','商品併入','國泰金期(CK) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/5 檔商品，不佔用新的機器人額度'],
+        ['09:00:05','停損單-作多-期-模擬交易-01','trade','機器人啟動','開始監控 台積電(2330)，觸發後執行 台積電期(TXF)']
       ],
       mit: [
         ['13:15:08','日月光投控(3711)','trade','委託送出','日月光投控(3711) 買進 1 張 市價｜委託書號 M23060004'],
         ['10:40:12','日月光投控(3711)','warn','委託失敗','日月光投控(3711) 買進 1 張：委託失敗 · 系統忙碌，自動重新送出｜書號 M23060003'],
-        ['10:40:12','觸價單','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：日月光投控(3711)）'],
+        ['10:40:12','觸價單-作多-証-模擬交易(內建)-01','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：日月光投控(3711)）'],
         ['10:05:40','中華電(2412)','trade','部分成交','中華電(2412) 成交 1 / 3 張 @ 118.0｜委託書號 M23060002'],
         ['09:25:06','台達電(2308)','trade','OCO 子單建立','建立 停利 336.0 / 停損 310.4 子單（以成交均價320.0計算，OCO 監控啟動）'],
         ['09:25:06','台達電(2308)','trade','委託成交','台達電(2308) 完全成交 2 張 @ 320.0｜委託書號 M23060005'],
@@ -11434,13 +11434,13 @@
         ['09:10:05','中華電(2412)','trade','委託成交','中華電(2412) 完全成交 2 張 @ 118.0｜委託書號 M23060001'],
         ['09:10:05','中華電(2412)','trade','洗價觸發','監控 中華電(2412) 成交價漲破觸發價 118.0，觸發送單'],
         ['09:15:20','日月光投控(3711)','trade','開始監控','觸發價 155.0，作多｜市價委託，加入監控中'],
-        ['09:15:19','觸價單','warn','商品併入','日月光投控(3711) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
-        ['09:00:05','觸價單','trade','機器人啟動','開始監控 中華電(2412)，佈單方式 觸價（MIT）']
+        ['09:15:19','觸價單-作多-証-模擬交易(內建)-01','warn','商品併入','日月光投控(3711) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
+        ['09:00:05','觸價單-作多-証-模擬交易(內建)-01','trade','機器人啟動','開始監控 中華電(2412)，佈單方式 觸價（MIT）']
       ],
       trail: [
         ['13:30:22','中鋼(2002)','trade','委託送出','中鋼(2002) 賣出 1 張 市價｜委託書號 T23060004'],
         ['10:55:18','中鋼(2002)','warn','委託失敗','中鋼(2002) 賣出 1 張：委託失敗 · 系統忙碌，自動重新送出｜書號 T23060003'],
-        ['10:55:18','移動停損單','err','安控阻擋（每日金額上限）','超過每日金額上限 • 已用 105 萬 / 上限 100 萬（觸發商品：中鋼(2002)）'],
+        ['10:55:18','移動停損單-作空-証-模擬交易(內建)-01','err','安控阻擋（每日金額上限）','超過每日金額上限 • 已用 105 萬 / 上限 100 萬（觸發商品：中鋼(2002)）'],
         ['10:15:30','統一(1216)','trade','部分成交','統一(1216) 成交 1 / 3 張 @ 68.5｜委託書號 T23060002'],
         ['09:35:04','台塑(1301)','trade','單一觸發子單建立','建立 停損 94.8 子單（以成交均價92.0計算，僅此一腿，非 OCO；主單已完全成交後開始監控）'],
         ['09:35:04','台塑(1301)','trade','委託成交','台塑(1301) 完全成交 3 張 @ 92.0｜委託書號 T23060005'],
@@ -11449,41 +11449,41 @@
         ['09:20:00','統一(1216)','trade','委託成交','統一(1216) 完全成交 2 張 @ 68.5｜委託書號 T23060001'],
         ['09:20:00','統一(1216)','trade','洗價觸發','監控 統一(1216) 成交價跌破觸發價 68.5，觸發送單'],
         ['09:15:20','中鋼(2002)','trade','開始監控','觸發價 28.4，作空｜市價委託，加入監控中'],
-        ['09:15:19','移動停損單','warn','商品併入','中鋼(2002) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
-        ['09:00:05','移動停損單','trade','機器人啟動','開始監控 統一(1216)，佈單方式 移動停損（TRAIL）']
+        ['09:15:19','移動停損單-作空-証-模擬交易(內建)-01','warn','商品併入','中鋼(2002) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
+        ['09:00:05','移動停損單-作空-証-模擬交易(內建)-01','trade','機器人啟動','開始監控 統一(1216)，佈單方式 移動停損（TRAIL）']
       ],
       gat: [
         ['14:05:00','玉山金(2884)','trade','委託送出','玉山金(2884) 買進 1 張 28.0｜委託書號 G23060004'],
         ['11:10:45','玉山金(2884)','warn','委託失敗','玉山金(2884) 買進 1 張：委託失敗 · 系統忙碌，自動重新送出｜書號 G23060003'],
-        ['11:10:45','定時委託單','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：玉山金(2884)）'],
+        ['11:10:45','定時委託單-作多-証-模擬交易(內建)-01','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：玉山金(2884)）'],
         ['09:50:03','兆豐金(2886)','trade','部分成交','兆豐金(2886) 成交 1 / 3 張 @ 38.3｜委託書號 G23060002'],
         ['09:05:12','兆豐金(2886)','trade','委託成交','兆豐金(2886) 完全成交 2 張 @ 38.3｜委託書號 G23060001'],
         ['09:05:12','兆豐金(2886)','trade','洗價觸發','監控 兆豐金(2886) 成交價漲破觸發價 38.5，觸發送單'],
         ['09:15:20','玉山金(2884)','trade','開始監控','觸發價 28.2，作多｜28.0委託，加入監控中'],
-        ['09:15:19','定時委託單','warn','商品併入','玉山金(2884) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
-        ['09:00:05','定時委託單','trade','機器人啟動','開始監控 兆豐金(2886)，佈單方式 定時（GAT）']
+        ['09:15:19','定時委託單-作多-証-模擬交易(內建)-01','warn','商品併入','玉山金(2884) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
+        ['09:00:05','定時委託單-作多-証-模擬交易(內建)-01','trade','機器人啟動','開始監控 兆豐金(2886)，佈單方式 定時（GAT）']
       ],
       batch: [
         ['13:48:30','技嘉(2376)','trade','委託送出','技嘉(2376) 賣出 1 張 296.0｜委託書號 S23060004'],
         ['11:35:55','技嘉(2376)','warn','委託失敗','技嘉(2376) 賣出 1 張：委託失敗 · 系統忙碌，自動重新送出｜書號 S23060003'],
-        ['11:35:55','分段委託單','err','安控阻擋（每日金額上限）','超過每日金額上限 • 已用 105 萬 / 上限 100 萬（觸發商品：技嘉(2376)）'],
+        ['11:35:55','分段委託單-作空-証-模擬交易(內建)-01','err','安控阻擋（每日金額上限）','超過每日金額上限 • 已用 105 萬 / 上限 100 萬（觸發商品：技嘉(2376)）'],
         ['10:22:10','華碩(2357)','trade','部分成交','華碩(2357) 成交 1 / 3 張 @ 276.0｜委託書號 S23060002'],
         ['09:12:40','華碩(2357)','trade','委託成交','華碩(2357) 完全成交 2 張 @ 276.0｜委託書號 S23060001'],
         ['09:12:40','華碩(2357)','trade','洗價觸發','監控 華碩(2357) 成交價跌破觸發價 278.0，觸發送單'],
         ['09:15:20','技嘉(2376)','trade','開始監控','觸發價 298.0，作空｜296.0委託，加入監控中'],
-        ['09:15:19','分段委託單','warn','商品併入','技嘉(2376) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
-        ['09:00:05','分段委託單','trade','機器人啟動','開始監控 華碩(2357)，佈單方式 分段委託']
+        ['09:15:19','分段委託單-作空-証-模擬交易(內建)-01','warn','商品併入','技嘉(2376) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
+        ['09:00:05','分段委託單-作空-証-模擬交易(內建)-01','trade','機器人啟動','開始監控 華碩(2357)，佈單方式 分段委託']
       ],
       twap: [
         ['13:05:50','亞泥(1102)','trade','委託送出','亞泥(1102) 買進 1 張 51.8｜委託書號 W23060004'],
         ['10:20:33','亞泥(1102)','warn','委託失敗','亞泥(1102) 買進 1 張：委託失敗 · 系統忙碌，自動重新送出｜書號 W23060003'],
-        ['10:20:33','定時定額單','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：亞泥(1102)）'],
+        ['10:20:33','定時定額單-作多-証-模擬交易(內建)-01','err','安控阻擋（最大部位限制）','超過最大部位限制 • 持倉 51 / 上限 50 張（觸發商品：亞泥(1102)）'],
         ['09:40:15','台泥(1101)','trade','部分成交','台泥(1101) 成交 1 / 3 張 @ 35.3｜委託書號 W23060002'],
         ['09:02:00','台泥(1101)','trade','委託成交','台泥(1101) 完全成交 2 張 @ 35.3｜委託書號 W23060001'],
         ['09:02:00','台泥(1101)','trade','洗價觸發','監控 台泥(1101) 成交價漲破觸發價 35.5，觸發送單'],
         ['09:15:20','亞泥(1102)','trade','開始監控','觸發價 52.0，作多｜51.8委託，加入監控中'],
-        ['09:15:19','定時定額單','warn','商品併入','亞泥(1102) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
-        ['09:00:05','定時定額單','trade','機器人啟動','開始監控 台泥(1101)，佈單方式 定時定額（TWAP）']
+        ['09:15:19','定時定額單-作多-証-模擬交易(內建)-01','warn','商品併入','亞泥(1102) 已併入本機器人（同帳號、同佈單方式、同有效期），目前持有 2/20 檔商品，不佔用新的機器人額度'],
+        ['09:00:05','定時定額單-作多-証-模擬交易(內建)-01','trade','機器人啟動','開始監控 台泥(1101)，佈單方式 定時定額（TWAP）']
       ]
     };
     let _logOrigHTML;
@@ -11532,12 +11532,12 @@
     /* 智慧單佈單方式查表：data-place → SMART_COMM/POS/LOG 用的 key + 各處顯示文字，
        新增佈單方式時只需在此表加一筆，不用再動 _applyRobot 內的判斷邏輯 */
     const SMART_PLACE_META = {
-      '市價':   { key: 'market',  placeName: '停損單',   placeLabel: '停損（STP/STP LMT）',      ordLabel: '依商品個別設定' },
-      'mit':     { key: 'mit',     placeName: '觸價單',       placeLabel: '觸價（MIT）',          ordLabel: '市價' },
-      'trail':   { key: 'trail',   placeName: '移動停損單',   placeLabel: '移動停損（TRAIL）',    ordLabel: '市價' },
-      'gat':     { key: 'gat',     placeName: '定時委託單',   placeLabel: '定時（GAT）',          ordLabel: '限價（指定價）' },
-      'batch':   { key: 'batch',   placeName: '分段委託單',   placeLabel: '分段委託',      ordLabel: '指定價格' },
-      'twap':    { key: 'twap',    placeName: '定時定額單',   placeLabel: '定時定額（TWAP）',      ordLabel: '限價（指定價）' }
+      '市價':   { key: 'market',  placeLabel: '停損（STP/STP LMT）',      ordLabel: '依商品個別設定' },
+      'mit':     { key: 'mit',     placeLabel: '觸價（MIT）',          ordLabel: '市價' },
+      'trail':   { key: 'trail',   placeLabel: '移動停損（TRAIL）',    ordLabel: '市價' },
+      'gat':     { key: 'gat',     placeLabel: '定時（GAT）',          ordLabel: '限價（指定價）' },
+      'batch':   { key: 'batch',   placeLabel: '分段委託',      ordLabel: '指定價格' },
+      'twap':    { key: 'twap',    placeLabel: '定時定額（TWAP）',      ordLabel: '限價（指定價）' }
     };
     function _applyRobot(name) {
       if (ROBOTS.length === 0) _updateRobotList();
@@ -11579,7 +11579,6 @@
         renderSmartPos(key);
         renderSmartLog(key);
         const isLong = ds.dir !== 'short';
-        const placeName = _placeMeta.placeName;
         const _w = (SMART_COMM[key] && SMART_COMM[key].watch) || [];
         const _st = (SMART_COMM[key] && SMART_COMM[key].sent) || [];
         const _symList = _w.map(function (x) { return x[0]; });
@@ -11596,8 +11595,10 @@
         const holdBadge = '<span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;background:var(--tint2);color:var(--accent);font-size:var(--f-xs);font-weight:600" title="此機器人已併單監控的商品檔數">商品 ' + _holdCount + '檔</span>';
         if (_rsub) {
           const _subProd = _symList.length > 1 ? ('監控 ' + prodDisplay) : (_anyAB ? ('監控 ' + prod + ' → 執行 ' + execProd) : prod);
-          _rsub.innerHTML = (ds.account || '証-模擬交易(內建)-01') + '｜<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span>智慧單 · ' + placeName + ' · ' + holdBadge;
-          _rsub.title = '智慧單 · ' + placeName + ' · ' + _subProd;
+          // 帳戶／方向／佈單方式現在都已經固定編碼在機器人名稱裡（見 confirmSmartCreate() 的命名公式「佈單方式-方向-帳戶」），
+          // 標題列(r-title)已經顯示完整名稱，這裡不用再重複說明一次，只留「智慧單」類別標籤＋商品檔數
+          _rsub.innerHTML = '智慧單 · ' + holdBadge;
+          _rsub.title = '智慧單 · ' + _subProd;
         }
         const setT = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
         setT('sv-sm-sym', prodDisplay);
@@ -11618,7 +11619,7 @@
         const _sub = SUB_ACCOUNTS.find(function (s) { return s.name === ds.account; });
         setT('sv-sm-risk', _sub
           ? ('沿用子帳號「' + _sub.name + '」：淨買超上限 ' + _sub.netBuyCap + '萬／淨賣超上限 ' + _sub.netSellCap + '萬／當沖上限 ' + _sub.dayTradeCap + '萬')
-          : '未設定安控（建議於「子帳號管理」建立子帳號）');
+          : '未設定安控');
         /* 停利/停損是逐筆委託各自的 OCO 設定，併單後每檔商品可能不同，機器人摘要不列單一價格，一律指向委託明細 */
         const _mainRows = _st.filter(function (r) { return (r[9] || 'main') === 'main'; });
         const _hasTp = _mainRows.some(function (r) { return !!r[10]; });
@@ -12958,34 +12959,67 @@
     // 監控商品、觸發價、委託量等「商品層級」欄位一律不在這裡顯示或帶入——
     // 那些現在可能有多筆（透過「新增監控商品」累積），編輯機器人設定不該覆蓋或以偏概全，
     // 商品層級的刪除／暫停改由監控中表格每一列自己的動作處理（見 delWatchRow/toggleWatchRow）
-    function openSmartEditModal(step) {
-      _armEditMode = true;
-      armCurrentStep = (typeof step === 'number') ? step : 0;
-      _armApplyMode();
-      const r = document.querySelector('input[name="arm-src"][value="smart"]');
-      if (r) { r.checked = true; armSrcSwitch('smart'); }
+    // 編輯機器人設定改用 #smart-modal（跟建立流程共用同一份表單），不再沿用舊精靈 #arm-modal——
+    // 名稱不開放編輯（固定由系統產生，見 confirmSmartCreate()）；帳戶永遠可調整；
+    // 多空方向／佈单方式只有這支機器人還只有一項商品（registry.count===1）時才能改，
+    // 超過一項就鎖定（改了會讓既有商品的方向/型別假設不一致）
+    function openSmartEditModal() {
       const cur = (typeof ROBOTS !== 'undefined' && ROBOTS[_curRobotIdx]) ? ROBOTS[_curRobotIdx] : null;
-      const el = cur && cur.el ? cur.el : document.querySelector('.sb-item.active');
-      const ds = el ? el.dataset : {};
-      const isLong = ds.dir !== 'short';
+      if (!cur || !cur.el) return;
+      const reg = SMART_ROBOT_REGISTRY.find(function (r) { return r.name === cur.name; });
+      if (!reg) return;
+      _smartEditMode = true;
+      _smartEditReg = reg;
+      _smartEditEl = cur.el;
+      _smartEditPlaceChanged = false;
+      _smartMergeTarget = null;
+      _smartAddProductMode = false;
+      _smartEditWatchKey = null;
+      _smartEditWatchIdx = null;
+      // 帳戶／方向／佈单方式這三塊＋「建立智慧單」小標題／併單提示／安控預覽，若殘留上一次「+新增監控商品」
+      // session隱藏過的狀態，這裡要強制復原成顯示——編輯機器人設定一律需要看到這幾項
+      // (帳戶可調整，方向/佈单方式視count鎖定但仍要看得到)。可見性統一交給 #smart-modal.sm-add-product 這個
+      // class 決定，這裡只需要把 class 拿掉，不用像過去那樣逐一手動 set 每個元素的 style.display。
+      document.getElementById('smart-modal').classList.remove('sm-add-product');
+
+      document.getElementById('sm-acct').innerHTML = _buildAcctOptionsHtml();
+      document.getElementById('sm-acct').value = reg.account;
+      _xselSync(document.getElementById('sm-acct'));
+      document.getElementById('sm-name').value = cur.name;
+      // 帳戶編輯模式永遠可調整——若使用者剛從建立表單的併單畫面（帳戶被 disabled）直接切來編輯，
+      // 要先復原成可編輯，不能沿用殘留狀態（方向依count鎖定的狀態在下面會另外正確設定，這裡不用管）
+      document.getElementById('sm-acct').disabled = false;
+      const symTypeHint0 = document.getElementById('arm-sym-type-hint'); if (symTypeHint0) symTypeHint0.style.display = 'none';
+
+      // 商品層級欄位（監控/執行商品、佈单方式專屬欄位、OCO）編輯模式預設不顯示，
+      // 只有 count===1 且使用者主動改佈单方式時才會借出來（見 _armEditPlaceCatChange()）
+      const slot = document.getElementById('sm-fields-slot'); if (slot) slot.innerHTML = '';
+      const ocoSlot = document.getElementById('sm-oco-slot'); if (ocoSlot) ocoSlot.innerHTML = '';
+
+      const locked = reg.count > 1;
+      const isLong = cur.el.dataset.dir !== 'short';
       _smartDir = isLong ? 'buy' : 'sell';
       const dirSeg = document.getElementById('arm-smart-dir');
-      if (dirSeg) dirSeg.querySelectorAll('.seg-btn').forEach(function (b) { b.classList.toggle('active', isLong ? b.classList.contains('dir-long') : b.classList.contains('dir-short')); });
-      const placeVal = ds.place === '市價' ? 'stp' : (ds.place === '限價' ? 'stplmt' : (ds.place || 'stp'));
-      const placeSel = document.getElementById('arm-smart-place'); if (placeSel) { placeSel.value = placeVal; armPlaceMode(); }
-      const acctSel = document.getElementById('arm-acct-select'); if (acctSel && ds.account) acctSel.value = ds.account;
-      const reg = SMART_ROBOT_REGISTRY.find(function (r2) { return r2.name === (cur && cur.name); });
-      const tibRadios = document.querySelectorAll('input[name="arm-smart-tib"]');
-      if (tibRadios.length === 2) {
-        const isMulti = reg && reg.validity === 'multi';
-        tibRadios[isMulti ? 1 : 0].checked = true;
-        armValiditySmartExt(isMulti ? 'multi' : 'day');
+      if (dirSeg) {
+        dirSeg.querySelectorAll('.seg-btn').forEach(function (b) { b.classList.toggle('active', isLong === b.classList.contains('dir-long')); });
+        dirSeg.dataset.locked = locked ? '1' : '0';
       }
-      // 標題（機器人名稱）
-      const nameInput = document.getElementById('arm-robot-name');
-      if (nameInput) { const rt = document.getElementById('r-title'); nameInput.value = (cur && cur.name) ? cur.name : (rt ? rt.textContent.trim() : ''); }
-      armRender();
-      document.getElementById('arm-modal').classList.add('show');
+      _syncCatUIFromPlace(reg.place, locked);
+
+      const hint = document.getElementById('sm-merge-hint'); if (hint) hint.style.display = 'none';
+      const riskPreview = document.getElementById('sm-risk-preview');
+      if (riskPreview) {
+        const sub = SUB_ACCOUNTS.find(function (s) { return s.name === reg.account; });
+        riskPreview.textContent = sub
+          ? ('安控沿用子帳號「' + sub.name + '」：淨買超上限 ' + sub.netBuyCap + '萬／淨賣超上限 ' + sub.netSellCap + '萬／當沖上限 ' + sub.dayTradeCap + '萬')
+          : '未設定安控';
+      }
+
+      const titleEl = document.querySelector('#smart-modal .arm-header-title'); if (titleEl) titleEl.textContent = '編輯機器人設定';
+      const submitBtn = document.getElementById('sm-submit-btn');
+      if (submitBtn) { submitBtn.innerHTML = '儲存<i class="fas fa-chevron-right"></i>'; submitBtn.onclick = confirmSmartEdit; }
+
+      document.getElementById('smart-modal').classList.add('show');
     }
     function _armApplyMode() {
       const modal = document.getElementById('arm-modal');
@@ -13016,6 +13050,36 @@
     /* ── 機器人設定與狀態切換邏輯 ── */
     let isSettingsEditing = false;
     let _robotStateIndex = 0; // 0=執行中, 1=啟動(Idle), 2=等待中
+
+    // demo專用：模擬「關閉XQ主程式」情境——智慧單機器人的運算在雲端執行，關閉XQ不會自動停止(跟量化積木隨主程式關閉自動停止不同)，
+    // 讓使用者可以選擇要不要一併停止；沿用既有 rh-status-btn 的 running/idle 樣式，不呼叫 showStopSingle()內的
+    // _syncCommIdleState()等函式(那些是給「目前開著的單一機器人詳情頁」同步用的，一次要處理多支機器人不適合共用)
+    function confirmCloseXQ() {
+      const idleIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5C7 3.1 8.6 2.3 9.7 3.1L20.3 10.6C21.3 11.3 21.3 12.7 20.3 13.4L9.7 20.9C8.6 21.7 7 20.9 7 19.5V4.5Z"/></svg>啟動';
+      xConfirm(
+        '關閉 XQ',
+        '智慧單機器人的運算在雲端執行，關閉 XQ 主程式後仍會持續監控與下單，不會自動停止。'
+        + '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:var(--f-base);margin-top:10px">'
+        + '<input type="checkbox" id="closexq-stop-smart" style="margin:0;flex-shrink:0">'
+        + '<span>同時停止所有執行中的智慧單機器人</span></label>',
+        function () {
+          if (!document.getElementById('closexq-stop-smart').checked) return;
+          document.querySelectorAll('.sm-card .rh-status-btn.running').forEach(function (btn) {
+            btn.classList.remove('running'); btn.classList.add('idle');
+            btn.innerHTML = idleIcon; btn.setAttribute('data-tip', '執行機器人');
+          });
+          const curRobot = ROBOTS[_curRobotIdx];
+          if (document.getElementById('robot-view').style.display !== 'none' && curRobot && curRobot.el && curRobot.el.dataset.smart === '1') {
+            const detailBtn = document.querySelector('#robot-view .rh-status-btn.running');
+            if (detailBtn) {
+              detailBtn.classList.remove('running'); detailBtn.classList.add('idle');
+              detailBtn.innerHTML = idleIcon; detailBtn.setAttribute('data-tip', '執行機器人');
+            }
+          }
+        },
+        { icon: '<i class="fas fa-triangle-exclamation" style="color:var(--warning)"></i>', confirmText: '確認關閉', cancelText: '取消', confirmCls: 'danger' }
+      );
+    }
 
     function showStopSingle(btn, pendCount) {
       pendCount = pendCount != null ? pendCount : 17;
@@ -13132,6 +13196,26 @@
       const v = place ? place.value : 'stp';
       const fail = (id) => { const el = document.getElementById(id); _armFlash(el ? (el.closest('.s-row') || el) : null); return false; };
       const numOk = (id) => { const el = document.getElementById(id); return !!el && el.value.trim() !== '' && !isNaN(parseFloat(el.value)); };
+      // 佈单方式預設留空，使用者一定要自己選一個大類才能送出——沒選就擋下，不能用任何預設值悄悄通過驗證。
+      // sm-place-cat 會被 xsel 包裝成 .xsel-wrap，原生 select 本身不可見，要閃爍 wrapper 使用者才看得到
+      if (!v) {
+        const catSel = document.getElementById('sm-place-cat');
+        _armFlash(catSel ? (catSel.closest('.xsel-wrap') || catSel) : null);
+        return false;
+      }
+      // 商品類型要跟帳戶類型一致（期貨帳戶只能交易期貨商品，股票帳戶只能交易股票商品）——
+      // 實際送出委託的是「看A下B」開啟時的執行商品(B)，關閉時等同監控商品本身，檢查對象要看這個開關狀態
+      const typeHint = document.getElementById('arm-sym-type-hint');
+      const sameSymOn = document.getElementById('arm-same-sym')?.checked !== false;
+      const commitSymEl = document.getElementById(sameSymOn ? 'arm-smart-sym-disp' : 'arm-exec-sym-disp');
+      const commitSym = commitSymEl?.value || '';
+      const acctIsFut = _acctIsFutures(document.getElementById('sm-acct')?.value);
+      if (commitSym && _symIsFutures(commitSym) !== acctIsFut) {
+        if (typeHint) { typeHint.textContent = acctIsFut ? '此帳戶為期貨帳戶，僅能選擇期貨商品' : '此帳戶為股票帳戶，僅能選擇股票商品'; typeHint.style.display = ''; }
+        _armFlash(commitSymEl.closest('.sm-inline-field') || commitSymEl);
+        return false;
+      }
+      if (typeHint) typeHint.style.display = 'none';
       if (v === 'trail' || v === 'traillmt') {
         if (!numOk('arm-trail-pts') || parseFloat(document.getElementById('arm-trail-pts').value) <= 0) return fail('arm-trail-pts');
         if (v === 'traillmt' && !numOk('arm-traillmt-offset')) return fail('arm-traillmt-offset');
@@ -13230,13 +13314,27 @@
     // 這裡的 cap 是「一個機器人最多能併單監控幾檔商品」，文件沒有明確定義，暫定 20 檔
     const SMART_WATCH_CAP = 20;
     const SMART_ROBOT_REGISTRY = [
-      { name: '停損單', account: '証-模擬交易(內建)-01', place: 'stp', validity: 'day', count: 4, cap: SMART_WATCH_CAP },
-      { name: '觸價單', account: '証-模擬交易(內建)-01', place: 'mit', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
-      { name: '移動停損單', account: '証-模擬交易(內建)-01', place: 'trail', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
-      { name: '定時委託單', account: '証-模擬交易(內建)-01', place: 'gat', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
-      { name: '分段委託單', account: '証-模擬交易(內建)-01', place: 'batch', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
-      { name: '定時定額單', account: '証-模擬交易(內建)-01', place: 'twap', validity: 'day', count: 2, cap: SMART_WATCH_CAP }
+      { name: '停損單-作多-期-模擬交易-01', account: '期-模擬交易-01', place: 'stp', dir: 'long', validity: 'day', count: 4, cap: SMART_WATCH_CAP },
+      { name: '觸價單-作多-証-模擬交易(內建)-01', account: '証-模擬交易(內建)-01', place: 'mit', dir: 'long', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
+      { name: '移動停損單-作空-証-模擬交易(內建)-01', account: '証-模擬交易(內建)-01', place: 'trail', dir: 'short', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
+      { name: '定時委託單-作多-証-模擬交易(內建)-01', account: '証-模擬交易(內建)-01', place: 'gat', dir: 'long', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
+      { name: '分段委託單-作空-証-模擬交易(內建)-01', account: '証-模擬交易(內建)-01', place: 'batch', dir: 'short', validity: 'day', count: 2, cap: SMART_WATCH_CAP },
+      { name: '定時定額單-作多-証-模擬交易(內建)-01', account: '証-模擬交易(內建)-01', place: 'twap', dir: 'long', validity: 'day', count: 2, cap: SMART_WATCH_CAP }
     ];
+    // 帳戶／商品類型判斷：期貨帳戶只能交易期貨商品，股票帳戶只能交易股票商品——
+    // 帳戶名稱用「期/証」前綴判斷(子帳號要反查 parent)，商品用代碼(括號內文字)是否含英文字母判斷
+    // (股票代碼皆為純數字如 2330/0050，期貨代碼含英文字母如 TXF/FITXN*1，沿用商品查詢popup既有的示範資料規律)
+    function _acctIsFutures(acctName) {
+      if (!acctName) return false;
+      if (acctName.indexOf('期') === 0) return true;
+      if (acctName.indexOf('証') === 0) return false;
+      const sub = SUB_ACCOUNTS.find(function (s) { return s.name === acctName; });
+      return !!(sub && sub.parent.indexOf('期') === 0);
+    }
+    function _symIsFutures(sym) {
+      const m = sym && sym.match(/\(([^)]+)\)/);
+      return !!(m && /[A-Za-z]/.test(m[1]));
+    }
     // 子帳號：可設定安控值(交割金額安控/當沖金額安控)，智慧單建立時選用子帳號即沿用安控設定，不用每次重填
     const SUB_ACCOUNTS = [
       { name: '動能策略', parent: '証-模擬交易(內建)-01', netBuyCap: 100, netSellCap: 100, dayTradeCap: 150 },
@@ -13274,11 +13372,22 @@
       document.getElementById('sa-netbuy').value = a.netBuyCap;
       document.getElementById('sa-netsell').value = a.netSellCap;
       document.getElementById('sa-daytrade').value = a.dayTradeCap;
+      const dupHint0 = document.getElementById('sa-name-dup-hint'); if (dupHint0) dupHint0.style.display = 'none';
       document.getElementById('subacct-modal').classList.add('show');
     }
     function confirmSubAcct() {
       const name = document.getElementById('sa-name').value.trim();
+      const dupHint = document.getElementById('sa-name-dup-hint');
       if (!name) { _armFlash(document.getElementById('sa-name')); return; }
+      // 子帳號名稱不能重複——這個名稱同時是帳戶下拉的選項值、也是 SUB_ACCOUNTS.find() 查安控設定用的比對鍵，
+      // 撞名會讓兩者都對不上正確的那一筆，編輯自己時要排除自己這一筆，不然改別的欄位存檔會被誤判成撞名
+      const dup = SUB_ACCOUNTS.some(function (a, i) { return a.name === name && i !== _subAcctEditIdx; });
+      if (dup) {
+        _armFlash(document.getElementById('sa-name'));
+        if (dupHint) dupHint.style.display = '';
+        return;
+      }
+      if (dupHint) dupHint.style.display = 'none';
       const entry = {
         name: name,
         parent: document.getElementById('sa-parent').value,
@@ -13318,6 +13427,21 @@
     // 避免重寫 armPlaceMode()/armSmartFieldsValid()/_snapshotSmartArm() 這些已經驗證過很多輪的邏輯
     let _smartFieldsHome = null;
     let _smartMergeTarget = null;
+    // 「+新增監控商品」這個入口（preset.account/preset.place 有給值）：使用者已經站在確定的機器人頁面上，
+    // 帳戶／方向／佈单方式都是這支機器人固定不變的屬性，只是單純加一項商品——這種情境要把這三個欄位整個隱藏，
+    // 不像一般「新增智慧單」流程需要讓使用者自己選帳戶/方向/佈单方式、並即時反應是否命中併單
+    let _smartAddProductMode = false;
+    // 「編輯監控商品」（openEditProdModal，取代舊版獨立的 #add-prod-modal 表單）：跟「+新增監控商品」
+    // 共用同一個 #smart-modal／同一套欄位，只差在送出時是覆蓋既有列而不是新增一列——見 confirmSmartEditWatch()
+    let _smartEditWatchKey = null;
+    let _smartEditWatchIdx = null;
+    // 「編輯機器人設定」改用 #smart-modal 承載，跟建立流程共用同一個表單/DOM，用這幾個旗標區分兩種情境——
+    // 不能借用量化積木精靈也在用的 _armEditMode（那是粗粒度「整個精靈都在編輯、商品層級欄位一律隱藏」的開關，
+    // 跟這裡「只有改佈单方式時才暫時顯示商品層級欄位」的細粒度需求衝突）
+    let _smartEditMode = false;
+    let _smartEditReg = null;      // 目前正在編輯的機器人在 SMART_ROBOT_REGISTRY 裡的 entry（同一個物件參照，直接改它的欄位）
+    let _smartEditEl = null;       // 目前正在編輯的機器人的側邊欄 .sb-item DOM 節點
+    let _smartEditPlaceChanged = false;  // 這次編輯過程中使用者是否改了佈单方式（count===1 才可能發生）
     // 停利/停損(OCO) 預設收合，先問要不要設定，勾了才展開詳細%/元輸入，維持表單簡潔
     // 展開時預設停損/停利兩組都勾選（預設就是完整OCO），使用者要單一觸發再自行取消其中一邊
     function armExitProtectToggle(chk) {
@@ -13329,10 +13453,25 @@
       preset = preset || {};
       _armEditMode = false;
       _smartMergeTarget = null;
+      _smartEditMode = false;
+      _smartEditReg = null;
+      _smartEditEl = null;
+      _smartEditPlaceChanged = false;
+      _smartEditWatchKey = null;
+      _smartEditWatchIdx = null;
+      // 「+新增監控商品」(preset.account/preset.place 有給值) 才是單純加商品的情境；一般「新增智慧單」沒有 preset。
+      // 帳戶/方向/佈单方式三個欄位＋「建立智慧單」小標題／併單提示／安控預覽是否顯示，統一交給 CSS
+      // (#smart-modal.sm-add-product 規則) 依這個 class 決定，這裡只管理單一 class 開關，不逐一手動 set/reset
+      // 每個元素的 style.display——避免像本輪稍早那樣，在多個函式裡各自補 hide/reset 卻漏掉其中一邊。
+      _smartAddProductMode = !!(preset.account || preset.place);
+      document.getElementById('smart-modal').classList.toggle('sm-add-product', _smartAddProductMode);
+      const titleEl0 = document.querySelector('#smart-modal .arm-header-title'); if (titleEl0) titleEl0.textContent = '新增智慧單';
+      const submitBtn0 = document.getElementById('sm-submit-btn');
+      if (submitBtn0) submitBtn0.onclick = confirmSmartCreate;
       document.getElementById('sm-acct').innerHTML = _buildAcctOptionsHtml();
-      document.getElementById('sm-name-list').innerHTML = SMART_ROBOT_REGISTRY.map(function (r) { return '<option value="' + r.name + '">'; }).join('');
-      document.getElementById('sm-name').value = preset.name || '';
+      document.getElementById('sm-name').value = '';
       if (preset.account) document.getElementById('sm-acct').value = preset.account;
+      _xselSync(document.getElementById('sm-acct'));
 
       const symSec = document.getElementById('arm-smart-sym-sec');
       const placeSec = document.getElementById('arm-smart-sec');
@@ -13357,16 +13496,25 @@
       const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '5';
       const _ocoMaster = document.getElementById('arm-exit-master-chk'); if (_ocoMaster) _ocoMaster.checked = false;
       const _ocoDetail = document.getElementById('arm-exit-detail'); if (_ocoDetail) _ocoDetail.style.display = 'none';
+      const _symTypeHint = document.getElementById('arm-sym-type-hint'); if (_symTypeHint) _symTypeHint.style.display = 'none';
+      // preset.dir：從「+新增監控商品」進來時帶入該機器人實際的方向，不能維持預設的作多——
+      // 方向現在也是併單比對鍵的一部分，方向對不上的話下面的 smartMergeCheck() 就不會命中
+      const _presetIsLong = preset.dir !== 'short';
       const _dirSeg = document.getElementById('arm-smart-dir');
-      if (_dirSeg) { _dirSeg.querySelectorAll('.seg-btn').forEach(function (b) { b.classList.toggle('active', b.classList.contains('dir-long')); }); _dirSeg.dataset.locked = '0'; }
-      _smartDir = 'buy';
-      // 每次重新開啟表單都收回成預設的「停損」大類，下拉解鎖
+      if (_dirSeg) { _dirSeg.querySelectorAll('.seg-btn').forEach(function (b) { b.classList.toggle('active', _presetIsLong === b.classList.contains('dir-long')); }); _dirSeg.dataset.locked = '0'; }
+      _smartDir = _presetIsLong ? 'buy' : 'sell';
+      // 每次重新開啟表單都收回成預設(或 preset 指定)的大類，下拉解鎖
       // arm-smart-place 是底層 14 值系統的持有者，畫面上永遠不出現，只讓使用者看 sm-place-cat 這個大類下拉；
       // 這裡要連 .xsel-wrap 一起強制隱藏(見 _setSelVisible 註解)，不然 xsel 包裝後的自訂下拉預設是顯示的
+      // preset.place：從既有機器人頁面點「+新增監控商品」進來時，直接指定該機器人的實際佈單類型，
+      // 讓表單一開就鎖定同一大類、不用使用者自己再選一次就能命中併單。
+      // 全新開表單（沒有 preset）預設留空，不能預先選定任何大類——併單判斷要等使用者自己實際選了佈單方式才確認，
+      // 不能用表單隨便挑一個預設值就先幫使用者決定
+      const _presetPlace = preset.place || '';
       const _ps = document.getElementById('arm-smart-place');
-      if (_ps) { _ps.disabled = false; _ps.value = 'stp'; _setSelVisible(_ps, false); }
+      if (_ps) { _ps.disabled = false; _ps.value = _presetPlace; _setSelVisible(_ps, false); }
       const _catSel = document.getElementById('sm-place-cat');
-      if (_catSel) { _catSel.disabled = false; _catSel.value = 'stp'; _xselSync(_catSel); }
+      if (_catSel) { _catSel.disabled = false; _catSel.value = PLACE_CAT_MAP[_presetPlace] || _presetPlace; _xselSync(_catSel); }
       const _lim0 = document.getElementById('arm-limit-mode');
       if (_lim0) { _lim0.value = 'market'; _xselSync(_lim0); }
       const _trailSel0 = document.getElementById('arm-trail-mode-sel');
@@ -13375,7 +13523,33 @@
       const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = '台積電(2330)';
       const _st = document.getElementById('arm-smart-trig'); if (_st) _st.value = '960';
       armTrigCheck();
-      smartNameCheck();
+      if (preset.account || preset.place) {
+        // 從既有機器人頁面「+新增監控商品」進來，帳戶／佈單方式是使用者已經確定的既有選擇（不是表單預設值），
+        // 這種情況才直接判斷併單；帳戶/方向/佈单方式三個欄位＋「建立智慧單」小標題／併單提示／安控預覽
+        // 是否顯示，已經在函式最上方交給 #smart-modal.sm-add-product 這個 class 統一處理，這裡不用再逐一隱藏
+        smartMergeCheck();
+        // smartMergeCheck() 命中的一定是這個 preset 對應的同一支機器人（帳戶+方向+佈单方式三者皆同）——
+        // 直接拿 _smartMergeTarget 這個 registry entry 填藍底資訊列，不用另外查一次
+        _smartFillContextBanner(_smartMergeTarget);
+        if (titleEl0) titleEl0.textContent = '新增監控商品';
+      } else {
+        // 全新開表單：不能因為預設帳戶/佈單方式剛好跟某支既有機器人相同就自動鎖定併單，
+        // 要讓使用者自己實際選擇（帳戶或佈單方式的 onchange 都會呼叫 smartMergeCheck()），
+        // 這裡只重置成「未鎖定」的畫面狀態，安控預覽仍照目前帳戶顯示（純資訊，不算併單判斷）
+        const hint = document.getElementById('sm-merge-hint');
+        if (hint) hint.style.display = 'none';
+        const submitBtn = document.getElementById('sm-submit-btn');
+        if (submitBtn) submitBtn.innerHTML = '建立<i class="fas fa-chevron-right"></i>';
+        const riskPreview = document.getElementById('sm-risk-preview');
+        if (riskPreview) {
+          const acct0 = document.getElementById('sm-acct').value;
+          const sub0 = SUB_ACCOUNTS.find(function (s) { return s.name === acct0; });
+          riskPreview.textContent = sub0
+            ? ('安控沿用子帳號「' + sub0.name + '」：淨買超上限 ' + sub0.netBuyCap + '萬／淨賣超上限 ' + sub0.netSellCap + '萬／當沖上限 ' + sub0.dayTradeCap + '萬')
+            : '未設定安控';
+        }
+        _smartSyncMergeUI(false);
+      }
       document.getElementById('smart-modal').classList.add('show');
     }
     function closeSmartModal() {
@@ -13393,39 +13567,60 @@
         _smartFieldsHome.ocoParent.insertBefore(ocoSec, _smartFieldsHome.ocoNext);
       }
       document.getElementById('smart-modal').classList.remove('show');
+      // 取消/送出都會走到這裡，重置編輯狀態，避免殘留影響下一次開表單（不管是再開編輯還是改開新增）
+      _smartEditMode = false;
+      _smartEditReg = null;
+      _smartEditEl = null;
+      _smartEditPlaceChanged = false;
     }
-    // 併單偵測：帳戶＋機器人名稱完全相符才算命中；命中則鎖定佈單方式(沿用既有機器人設定)
-    function smartNameCheck() {
-      const name = document.getElementById('sm-name').value.trim();
+    // 併單命中時，帳戶／方向都已經是既有機器人固定的屬性，不需要使用者再填一次——
+    // 隱藏這兩塊、只留商品與價量細節可以填，標題也跟著換成「新增監控商品」，呼應這個情境的實際動作
+    // 帳戶／方向命中併單時不能再改（會併去別的機器人），但欄位本身要維持顯示＋對齊，不能整列隱藏——
+    // 隱藏整列會讓帳戶資訊完全消失、後面的欄位版面也會跟著跑掉，改成沿用既有的「disabled 變灰」呈現方式
+    // （帳戶下拉沿用 .xsel-wrap:has(>select:disabled) 既有CSS，方向沿用 .seg-nav[data-locked="1"] 既有CSS）
+    // 建立流程一律不 disable 任何欄位——帳戶／方向跟佈单方式一樣，命中併單後仍維持可互動，
+    // 使用者要能自由改其中任何一項來決定是否要「跳出」這次併單、改建立/併去別支機器人，
+    // 三者的 onchange（sm-acct）／armSmartDir()／armPlaceCatSelectChange() 結尾都會重新呼叫 smartMergeCheck() 判斷新狀態
+    function _smartSyncMergeUI(isMerging) {
+      const titleEl = document.querySelector('#smart-modal .arm-header-title');
+      if (titleEl) titleEl.textContent = isMerging ? '新增監控商品' : '新增智慧單';
+    }
+    // 併單偵測：帳戶＋方向＋佈單方式都相符才算命中；命中則鎖定佈單方式(沿用既有機器人設定)
+    // 併單比對鍵是「帳號＋方向＋佈單大類」——一支機器人只能有一個方向(逐筆商品不能各自不同)，
+    // 所以同帳戶同大類但方向不同時，代表使用者要建立的是另一支獨立機器人，不能誤併在一起
+    function smartMergeCheck() {
       const acct = document.getElementById('sm-acct').value;
-      const match = SMART_ROBOT_REGISTRY.find(function (r) { return r.name === name && r.account === acct; });
-      const hint = document.getElementById('sm-merge-hint');
-      const placeSel = document.getElementById('arm-smart-place');
-      const submitBtn = document.getElementById('sm-submit-btn');
       const riskPreview = document.getElementById('sm-risk-preview');
       const sub = SUB_ACCOUNTS.find(function (s) { return s.name === acct; });
       if (riskPreview) {
         riskPreview.textContent = sub
           ? ('安控沿用子帳號「' + sub.name + '」：淨買超上限 ' + sub.netBuyCap + '萬／淨賣超上限 ' + sub.netSellCap + '萬／當沖上限 ' + sub.dayTradeCap + '萬')
-          : '未設定安控（建議先於「子帳號管理」建立子帳號）';
+          : '未設定安控';
       }
-      if (match && name) {
+      // 編輯機器人設定時，改帳戶只是單純欄位調整，不牽涉併單判斷——sm-acct 的 onchange 是建立/編輯共用的，
+      // 這裡要擋下，不然會誤觸發併單鎖定/覆蓋掉「儲存」按鈕文字
+      if (_smartEditMode) return;
+      // 佈单方式預設留空——選帳戶不能悄悄把空值當成'stp'去比對，那樣使用者才選帳戶就會被誤鎖，
+      // 一定要使用者自己選出實際的佈单方式，才有比對的資格
+      const place = document.getElementById('arm-smart-place')?.value || '';
+      const cat = place ? (PLACE_CAT_MAP[place] || place) : '';
+      const curIsLong = _smartDir !== 'sell';
+      const match = cat ? SMART_ROBOT_REGISTRY.find(function (r) { return r.account === acct && (PLACE_CAT_MAP[r.place] || r.place) === cat && (r.dir !== 'short') === curIsLong; }) : null;
+      const hint = document.getElementById('sm-merge-hint');
+      const placeSel = document.getElementById('arm-smart-place');
+      const submitBtn = document.getElementById('sm-submit-btn');
+      if (match) {
         _smartMergeTarget = match;
         if (hint) { hint.style.display = ''; document.getElementById('sm-merge-name').textContent = match.name; }
-        // 併單鎖定既有機器人的確切型別：對應大類按鈕標成 active＋鎖住，子選擇(市價/限價等)同步成正確狀態
-        _syncCatUIFromPlace(match.place, true);
-        // 併單也要鎖定交易方向，沿用既有機器人的多空方向，不能改（一支機器人只有一個方向，逐筆商品不能各自不同）
-        // 直接查側邊欄 DOM 取得 dataset.dir，不透過 ROBOTS 陣列——ROBOTS 只在 _applyRobot()/navRobot() 第一次呼叫時才會填入，
-        // 在側邊欄「新增機器人」入口開這個表單時 ROBOTS 可能還是空的，find() 會找不到、預設值就會猜錯方向
-        const targetItem = document.querySelector('.sb-item[title="' + match.name.replace(/"/g, '&quot;') + '"]');
-        const targetIsLong = (targetItem?.dataset?.dir) !== 'short';
-        _smartDir = targetIsLong ? 'buy' : 'sell';
-        const dirSeg = document.getElementById('arm-smart-dir');
-        if (dirSeg) {
-          dirSeg.querySelectorAll('.seg-btn').forEach(function (b) { b.classList.toggle('active', targetIsLong === b.classList.contains('dir-long')); });
-          dirSeg.dataset.locked = '1';
-        }
+        // 併單命中時把佈单方式同步成既有機器人的確切型別，但不鎖定（不 disable）——使用者選到後應該還能自己改，
+        // 不然選錯或想改成別的型別時會卡住改不了；真的改成別的大類時，armPlaceCatSelectChange() 結尾會重新呼叫
+        // 這個函式，屆時會正確重新判斷併單狀態（符合或不符合都會反映出來），不需要靠鎖定來防呆
+        _syncCatUIFromPlace(match.place, false);
+        // 方向現在是併單比對鍵的輸入之一（見上面 find() 的判斷式），命中當下方向本來就已經跟目標機器人一致，
+        // 不需要再反查 DOM 強制同步；同理也不鎖定方向——理由跟佈单方式一樣，使用者要能自由改方向來決定
+        // 是否要「跳出」這次併單去建立另一支獨立機器人，armSmartDir() 結尾會重新呼叫這個函式判斷新狀態
         if (submitBtn) submitBtn.innerHTML = '加入監控<i class="fas fa-chevron-right"></i>';
+        _smartSyncMergeUI(true);
       } else {
         _smartMergeTarget = null;
         if (hint) hint.style.display = 'none';
@@ -13435,6 +13630,7 @@
         const dirSeg = document.getElementById('arm-smart-dir');
         if (dirSeg) dirSeg.dataset.locked = '0';
         if (submitBtn) submitBtn.innerHTML = '建立<i class="fas fa-chevron-right"></i>';
+        _smartSyncMergeUI(false);
       }
     }
     // 佈單方式合併成 8 個大類(停損/觸價/移動停損/定時/開盤收盤/分段委託/拆單/定時定額)，用下拉選單(#sm-place-cat)選擇；
@@ -13445,6 +13641,12 @@
       stp: 'stp', stplmt: 'stp', mit: 'mit', lit: 'mit', trail: 'trail', traillmt: 'trail',
       gat: 'gat', moo: 'moo', loo: 'moo', moc: 'moo', loc: 'moo',
       batch: 'batch', splitqty: 'splitqty', twap: 'twap'
+    };
+    // 名稱不再由使用者輸入，新建機器人時依佈單大類自動取名（沿用既有 6 支示範機器人已經在用的名稱字串，
+    // moo/splitqty 兩類目前沒有示範機器人，補上合理預設名稱）
+    const PLACE_CAT_DEFAULT_NAME = {
+      stp: '停損單', mit: '觸價單', trail: '移動停損單', gat: '定時委託單',
+      moo: '開盤收盤單', batch: '分段委託單', splitqty: '拆單', twap: '定時定額單'
     };
     // 這個 demo 的 <select class="s-input"> 在頁面載入時都會被包成 .xsel-wrap 自訂下拉元件（樣式統一用），
     // 原生 select 本身會被 xsel 系統隱藏、實際顯示的是旁邊的 .xsel-wrap，
@@ -13460,6 +13662,9 @@
       const catSel = document.getElementById('sm-place-cat');
       if (catSel.disabled) { armPlaceMode(); return; }
       const cat = catSel.value;
+      // 編輯機器人設定（count===1 才可能選到這裡，count>1 時 catSel 本身就是 disabled）：
+      // 改佈单方式會影響這支機器人唯一一項商品的資料形狀，走專屬的確認/清空重填流程，不跟建立流程共用邏輯
+      if (_smartEditMode) { _armEditPlaceCatChange(cat); return; }
       const realSel = document.getElementById('arm-smart-place');
       if (!realSel) return;
       realSel.value = cat; // stp/mit/trail/gat/moo/batch/splitqty/twap 皆為該大類的預設子模式
@@ -13473,6 +13678,8 @@
         document.querySelectorAll('#arm-moocat-mode-seg .seg-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.mode === 'market'); });
       }
       armPlaceMode();
+      // 佈單大類是併單比對鍵的一部分，切換大類要重新判斷這個帳戶底下是不是已經有同大類的機器人
+      smartMergeCheck();
     }
     // 停損/觸價大類的委託方式(市價/限價/漲跌停)子選擇：同步成實際佈單方式 stp↔stplmt、mit↔lit
     function armLimitModeSmartExt() {
@@ -13541,32 +13748,133 @@
       if (place === 'twap') return val('arm-twap-start');
       return '—';
     }
+    // 依佈單方式取得監控列表的「委託價」欄位顯示值——只取委託價本身(市價/限價N/漲跌停等)，
+    // 不能直接沿用 _snapshotSmartArm() 的 summary(那是「觸發X → 委託Y」整句話，塞進委託價欄位會把觸發價重複顯示一次)
+    function _smartOrdDisplay(place) {
+      const val = (id) => document.getElementById(id)?.value ?? '';
+      if (place === 'stp' || place === 'stplmt' || place === 'mit' || place === 'lit') {
+        const limMode = document.getElementById('arm-limit-mode')?.value;
+        return limMode === 'market' ? '市價' : (limMode === 'chase' ? '漲跌停' : ('限價 ' + val('arm-limit-fixed')));
+      }
+      if (place === 'trail' || place === 'moo' || place === 'moc') return '市價';
+      if (place === 'traillmt') return '限價偏移 ±' + val('arm-traillmt-offset') + '檔';
+      if (place === 'gat') return _ordSummaryText('gat');
+      if (place === 'loo') return _ordSummaryText('loo');
+      if (place === 'loc') return _ordSummaryText('loc');
+      if (place === 'batch') return _ordSummaryText('batch');
+      if (place === 'splitqty') return _ordSummaryText('splitqty');
+      if (place === 'twap') return _ordSummaryText('twap');
+      return '市價';
+    }
     function confirmSmartCreate() {
-      const name = document.getElementById('sm-name').value.trim();
-      if (!name) { _armFlash(document.getElementById('sm-name')); return; }
       if (!armSmartFieldsValid()) return;
       const acct = document.getElementById('sm-acct').value;
       const snap = _snapshotSmartArm();
       const dirText = snap.dir === 'sell' ? '作空' : '作多';
       if (_smartMergeTarget) {
-        // 直接查側邊欄 DOM，不透過 ROBOTS 陣列——理由同 smartNameCheck() 裡的併單方向鎖定，ROBOTS 可能還沒被填入
+        // 直接查側邊欄 DOM，不透過 ROBOTS 陣列——理由同 smartMergeCheck() 裡的併單方向鎖定，ROBOTS 可能還沒被填入
         const targetItem = document.querySelector('.sb-item[title="' + _smartMergeTarget.name.replace(/"/g, '&quot;') + '"]');
         const meta = targetItem ? SMART_PLACE_META[targetItem.dataset.place] : null;
         const key = meta && meta.key;
         if (!key || !SMART_COMM[key]) { closeSmartModal(); return; }
-        SMART_COMM[key].watch.push([snap.sym, dirText, ARM_PLACE_LABEL[snap.place] || snap.place, _smartTrigDisplay(snap.place), snap.summary, '', snap.qty]);
+        SMART_COMM[key].watch.push([snap.sym, dirText, ARM_PLACE_LABEL[snap.place] || snap.place, _smartTrigDisplay(snap.place), _smartOrdDisplay(snap.place), '', snap.qty]);
         _smartMergeTarget.count = (_smartMergeTarget.count || 0) + 1;
         closeSmartModal();
         _applyRobot(_smartMergeTarget.name);
       } else {
+        // 新建機器人：名稱不再由使用者輸入，也不開放事後改名，固定用「佈單方式-方向-帳戶」這個公式產生——
+        // 這組合完全對應併單比對鍵本身(帳戶＋方向＋佈單大類)，同帳戶同方向同大類必然是併單、不會走到這個分支，天生不會撞名
+        const cat = PLACE_CAT_MAP[snap.place] || snap.place;
+        const autoName = (PLACE_CAT_DEFAULT_NAME[cat] || cat) + '-' + dirText + '-' + acct;
+        document.getElementById('sm-name').value = autoName;
         _createSmartRobotFresh({
-          name: name, account: acct, place: snap.place, dir: snap.dir,
+          name: autoName, account: acct, place: snap.place, dir: snap.dir,
           sym: snap.sym, qty: snap.qty, summary: snap.summary,
           validity: _smartValidity,
           capText: document.getElementById('sm-risk-preview')?.textContent || ''
         });
         closeSmartModal();
       }
+    }
+    // 編輯機器人設定：只有 count===1 時佈单方式下拉才可能被使用者改變（count>1 時下拉本身就是 disabled，選不到）。
+    // 改了大類會影響這支機器人唯一一項商品的資料形狀（型別間欄位完全不同，例如GAT要時間、TRAIL要移動幅度），
+    // 沒有安全的一對一轉換規則，所以是「清空重填」：跟建立流程共用同一套型別專屬欄位，就地借出顯示，
+    // 讓使用者在同一個編輯彈窗裡填好新型別的資料，不導向「編輯監控商品」那個簡化版表單
+    function _armEditPlaceCatChange(cat) {
+      const newPlace = cat; // 大類下拉的值即為該大類的預設(市價)子模式，跟建立流程 armPlaceCatSelectChange() 一致
+      const oldPlace = _smartEditReg.place;
+      const meta = SMART_PLACE_META[_smartEditEl.dataset.place];
+      const key = meta && meta.key;
+      const stillWatching = !!(key && SMART_COMM[key] && SMART_COMM[key].watch.length > 0);
+      const proceed = function () {
+        _smartEditPlaceChanged = true;
+        _syncCatUIFromPlace(newPlace, false);
+        _smartEditRevealProductFields();
+      };
+      const revert = function () { _syncCatUIFromPlace(oldPlace, false); };
+      if (stillWatching) {
+        xConfirm(
+          '修改佈單方式',
+          '這支機器人目前只有一項監控商品，修改佈單方式將清除該商品現有的設定資料，請重新填寫。',
+          proceed,
+          { onCancel: revert, confirmText: '繼續修改', cancelText: '取消' }
+        );
+      } else {
+        proceed();
+      }
+    }
+    // 借出 arm-smart-sym-sec／arm-smart-sec／arm-exit-protect 給編輯彈窗使用，重置成跟新建流程一樣的預設值，
+    // 讓使用者針對新選的佈单方式重新填寫——做法比照 openSmartCreateModal() 借出+重置同一段邏輯
+    function _smartEditRevealProductFields() {
+      const symSec = document.getElementById('arm-smart-sym-sec');
+      const placeSec = document.getElementById('arm-smart-sec');
+      const slot = document.getElementById('sm-fields-slot');
+      if (symSec && placeSec && slot) {
+        if (!_smartFieldsHome) {
+          _smartFieldsHome = { symParent: symSec.parentNode, symNext: symSec.nextSibling, placeParent: placeSec.parentNode, placeNext: placeSec.nextSibling };
+        }
+        slot.appendChild(symSec); symSec.style.display = '';
+        slot.appendChild(placeSec); placeSec.style.display = '';
+      }
+      const ocoSec = document.getElementById('arm-exit-protect');
+      const ocoSlot = document.getElementById('sm-oco-slot');
+      if (ocoSec && ocoSlot) {
+        if (!_smartFieldsHome.ocoParent) { _smartFieldsHome.ocoParent = ocoSec.parentNode; _smartFieldsHome.ocoNext = ocoSec.nextSibling; }
+        ocoSlot.appendChild(ocoSec); ocoSec.style.display = '';
+      }
+      ['arm-exit-sl-chk', 'arm-exit-tp-chk'].forEach(function (id) { const el = document.getElementById(id); if (el) el.checked = false; });
+      const _slVal = document.getElementById('arm-exit-sl-val'); if (_slVal) _slVal.value = '3';
+      const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '5';
+      const _ocoMaster = document.getElementById('arm-exit-master-chk'); if (_ocoMaster) _ocoMaster.checked = false;
+      const _ocoDetail = document.getElementById('arm-exit-detail'); if (_ocoDetail) _ocoDetail.style.display = 'none';
+      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = '台積電(2330)';
+      const _st = document.getElementById('arm-smart-trig'); if (_st) _st.value = '960';
+      armTrigCheck();
+    }
+    function confirmSmartEdit() {
+      const acct = document.getElementById('sm-acct').value;
+      _smartEditReg.account = acct;
+      if (_smartEditEl) _smartEditEl.dataset.account = acct;
+      if (_smartEditReg.count === 1) {
+        if (_smartEditPlaceChanged && !armSmartFieldsValid()) return;
+        const newPlace = document.getElementById('arm-smart-place').value;
+        _smartEditReg.place = newPlace;
+        _smartEditReg.dir = _smartDir === 'sell' ? 'short' : 'long';
+        if (_smartEditEl) _smartEditEl.dataset.dir = _smartEditReg.dir;
+        if (_smartEditPlaceChanged) {
+          const snap = _snapshotSmartArm();
+          const dirText = snap.dir === 'sell' ? '作空' : '作多';
+          const meta = SMART_PLACE_META[_smartEditEl.dataset.place];
+          const key = meta && meta.key;
+          if (key && SMART_COMM[key]) {
+            SMART_COMM[key].watch = [[snap.sym, dirText, ARM_PLACE_LABEL[snap.place] || snap.place, _smartTrigDisplay(snap.place), _smartOrdDisplay(snap.place), '', snap.qty]];
+            meta.placeLabel = ARM_PLACE_LABEL[snap.place] || snap.place;
+          }
+        }
+      }
+      const editedName = _smartEditReg.name;
+      closeSmartModal();
+      _applyRobot(editedName);
     }
     let _smartKeySeq = 0;
     // 從零建立一支全新智慧單機器人：不呼叫 armNext()（量化積木專屬保護函式），
@@ -13575,15 +13883,15 @@
       const key = 'nr' + (++_smartKeySeq);
       const isLong = info.dir !== 'sell';
       const placeLabel = ARM_PLACE_LABEL[info.place] || info.place;
-      SMART_PLACE_META[key] = { key: key, placeName: info.name, placeLabel: placeLabel, ordLabel: '' };
+      SMART_PLACE_META[key] = { key: key, placeLabel: placeLabel, ordLabel: '' };
       SMART_COMM[key] = {
         m: { cap: '$0', capBar: info.capText || '尚未設定安控', pct: 0, f: '0筆', fAmt: '($0)', fSub: '共0檔商品', b: '0筆', bAmt: '($0)', bSub: '共0檔商品', x: '0筆', xSub: '—' },
-        watch: [[info.sym, isLong ? '作多' : '作空', placeLabel, _smartTrigDisplay(info.place), info.summary, '', info.qty]],
+        watch: [[info.sym, isLong ? '作多' : '作空', placeLabel, _smartTrigDisplay(info.place), _smartOrdDisplay(info.place), '', info.qty]],
         sent: []
       };
       SMART_POS[key] = { m: { mv: '$0', cost: '$0', pnl: '$0', pnlPct: '0%', win: '0檔', winSub: '—', lose: '0檔', loseSub: '—' }, rows: [] };
       SMART_LOG[key] = [['—', info.name, 'trade', '機器人啟動', '開始監控 ' + info.sym + '，佈單方式 ' + placeLabel]];
-      SMART_ROBOT_REGISTRY.push({ name: info.name, account: info.account, place: info.place, validity: info.validity, count: 1, cap: SMART_WATCH_CAP });
+      SMART_ROBOT_REGISTRY.push({ name: info.name, account: info.account, place: info.place, dir: isLong ? 'long' : 'short', validity: info.validity, count: 1, cap: SMART_WATCH_CAP });
 
       const nameEsc = info.name.replace(/'/g, "\\'");
       const item = document.createElement('div');
@@ -13629,16 +13937,12 @@
 
       _patchSmartCard(card, { place: info.place, dir: info.dir, acct: info.account, sym: info.sym, qty: info.qty, summary: info.summary });
 
+      // 若使用者第一個動作就是建立新機器人（還沒點過任何既有側邊欄項目），ROBOTS 這時還是空陣列——
+      // 要先補建，不然直接 push 這一筆會讓 ROBOTS 之後只有這支新機器人，其他既有機器人的導覽全部失效
+      if (ROBOTS.length === 0) _updateRobotList();
       ROBOTS.push({ name: info.name, el: item });
       if (typeof _updateFilterCounts === 'function') _updateFilterCounts();
       _applyRobot(info.name);
-    }
-    function _registerNewSmartRobot() {
-      const acct = document.getElementById('arm-acct-select')?.value || '証-模擬交易(內建)-01';
-      const place = document.getElementById('arm-smart-place')?.value || 'stp';
-      const name = document.getElementById('arm-robot-name').value.trim() || '交易機器人 1';
-      const cap = SMART_WATCH_CAP;
-      SMART_ROBOT_REGISTRY.push({ name, account: acct, place, validity: _smartValidity, count: 1, cap });
     }
     // 精靈完成建立智慧單機器人後，讓總覽新卡片依實際選擇的佈單方式呈現內容，不改動 armNext() 本身
     const ARM_PLACE_LABEL = {
@@ -13653,7 +13957,6 @@
       gat: '定時委託單', moo: '開盤市價單', loo: '開盤限價單', moc: '收盤市價單', loc: '收盤限價單',
       batch: '分段委託單', splitqty: '拆單', twap: '定時定額單'
     };
-    let _pendingSmartArm = null;
     function _snapshotSmartArm() {
       const place = document.getElementById('arm-smart-place')?.value || 'stp';
       const val = (id) => document.getElementById(id)?.value ?? '';
@@ -13692,8 +13995,10 @@
     function _patchSmartCard(card, info) {
       const isLong = info.dir !== 'sell';
       const placeShort = ARM_PLACE_SHORT[info.place] || '智慧單';
+      // 帳戶／方向／佈單方式已經固定編碼在機器人名稱裡（見 confirmSmartCreate() 的命名公式），標題列已經顯示完整名稱，
+      // 這裡不用再重複說明一次，只留「智慧單」類別標籤＋商品
       const rsub = card.querySelector('.rh-sub');
-      if (rsub) rsub.innerHTML = info.acct + '｜<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span>智慧單 · ' + placeShort + ' · ' + info.sym;
+      if (rsub) rsub.innerHTML = '智慧單 · ' + info.sym;
       const body = card.querySelector('.pend-orders');
       if (body) {
         body.innerHTML = '<div class="s-section" style="padding:12px 16px 16px">'
@@ -13703,56 +14008,11 @@
           + '</tbody></table></div>';
       }
     }
-    (function () {
-      const dv = document.getElementById('ov-card');
-      if (!dv) return;
-      new MutationObserver(function (muts) {
-        if (!_pendingSmartArm) return;
-        for (const m of muts) {
-          for (const node of m.addedNodes) {
-            if (node.nodeType === 1 && node.classList.contains('r-card') && node.isConnected) {
-              _patchSmartCard(node, _pendingSmartArm);
-              _pendingSmartArm = null;
-              return;
-            }
-          }
-        }
-      }).observe(dv, { childList: true, subtree: true });
-    })();
-    // 智慧單新增：不再自動比對併單候選機器人（併單改由「既有機器人 → 新增監控商品」處理，見 openAddProdModal）；
-    // 量化積木與編輯模式一律直接呼叫原始 armNext()，不受影響
-    // 編輯機器人設定存檔時，把機器人層級欄位（帳號／交易方向／有效期）實際寫回 registry 與側邊欄 dataset，
-    // 並重新整理目前畫面，讓「編輯」不再是純裝飾用的假成功彈窗
-    function _applySmartRobotEdit() {
-      const cur = (typeof ROBOTS !== 'undefined' && ROBOTS[_curRobotIdx]) ? ROBOTS[_curRobotIdx] : null;
-      if (!cur) return;
-      const acct = document.getElementById('arm-acct-select')?.value;
-      const reg = SMART_ROBOT_REGISTRY.find(function (r) { return r.name === cur.name; });
-      if (reg) {
-        if (acct) reg.account = acct;
-        reg.validity = _smartValidity;
-      }
-      if (cur.el) {
-        if (acct) cur.el.dataset.account = acct;
-        cur.el.dataset.dir = _smartDir === 'sell' ? 'short' : 'long';
-      }
-    }
+    // 智慧單的建立／編輯都已經完全改用 #smart-modal（見 openSmartCreateModal/confirmSmartCreate、
+    // openSmartEditModal/confirmSmartEdit），不再有任何路徑會讓智慧單走到 #arm-modal 這個舊精靈，
+    // armNextGate() 只給量化積木用，單純轉呼叫保護函式 armNext()
     function armNextGate() {
-      const isSmart = !!document.querySelector('input[name="arm-src"][value="smart"]:checked');
-      const isNewSmart = armCurrentStep === ARM_STEPS - 1 && !_armEditMode && isSmart;
-      const isEditSmartSave = armCurrentStep === ARM_STEPS - 1 && _armEditMode && isSmart;
-      _pendingSmartArm = null;
-      if (isNewSmart) {
-        _pendingSmartArm = _snapshotSmartArm();
-        _registerNewSmartRobot();
-      } else if (isEditSmartSave) {
-        _applySmartRobotEdit();
-      }
       armNext();
-      if (isEditSmartSave) {
-        const cur = (typeof ROBOTS !== 'undefined' && ROBOTS[_curRobotIdx]) ? ROBOTS[_curRobotIdx] : null;
-        if (cur) _applyRobot(cur.name);
-      }
     }
     function armNext() {
       if (armCurrentStep === 0 && !armStep1Valid()) return;
@@ -13900,12 +14160,14 @@
       }
     }
     function armSmartDir(btn, dir) {
-      // 併單鎖定既有機器人時，交易方向要跟著鎖定、不能改（見 smartNameCheck() 的併單分支）
+      // 併單鎖定既有機器人時，交易方向要跟著鎖定、不能改（見 smartMergeCheck() 的併單分支）
       if (btn.closest('.seg-nav')?.dataset.locked === '1') return;
       _smartDir = dir;
       btn.closest('.seg-nav').querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       armTrigCheck();
+      // 方向是併單比對鍵的一部分，切換方向要重新判斷這個帳戶＋佈单方式底下是不是已經有同方向的機器人
+      if (typeof smartMergeCheck === 'function') smartMergeCheck();
     }
     function armOrdType(btn, t) {
       btn.closest('.seg-nav').querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
@@ -14358,12 +14620,12 @@
         '極端長度超級高頻當沖交易機器人Alpha版本滿版測試': ['BBand翻多極度無敵超長策略文字滿版顯示測試狀態（字數測試極限）', '証-模擬交易(內建)-01'],
         '現股波段趨勢跟蹤機器人高頻版Pro最終穩定測試版': ['KD高檔死亡交叉', '証-模擬交易(內建)-01'],
         // 智慧單機器人也比照量化積木呈現可點擊連結樣式
-        '停損單': ['停損單', '証-模擬交易(內建)-01'],
-        '觸價單': ['觸價單', '証-模擬交易(內建)-01'],
-        '移動停損單': ['移動停損單', '証-模擬交易(內建)-01'],
-        '定時委託單': ['定時委託單', '証-模擬交易(內建)-01'],
-        '分段委託單': ['分段委託單', '証-模擬交易(內建)-01'],
-        '定時定額單': ['定時定額單', '証-模擬交易(內建)-01'],
+        '停損單-作多-期-模擬交易-01': ['停損單-作多-期-模擬交易-01', '期-模擬交易-01'],
+        '觸價單-作多-証-模擬交易(內建)-01': ['觸價單-作多-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
+        '移動停損單-作空-証-模擬交易(內建)-01': ['移動停損單-作空-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
+        '定時委託單-作多-証-模擬交易(內建)-01': ['定時委託單-作多-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
+        '分段委託單-作空-証-模擬交易(內建)-01': ['分段委託單-作空-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
+        '定時定額單-作多-証-模擬交易(內建)-01': ['定時定額單-作多-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
       };
       // 機器人欄 index = 11 (col-chk + col-act + 委託時間 + 類別 + 商品 + 買賣 + 委託/成交 + 委託價 + 成交均價 + 狀態 + 委託書號 + 機器人)
       const COL = 11;
