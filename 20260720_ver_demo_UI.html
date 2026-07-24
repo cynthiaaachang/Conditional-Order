@@ -9581,6 +9581,11 @@
     #smart-modal.sm-add-product #sm-section-title,
     #smart-modal.sm-add-product #sm-merge-hint,
     #smart-modal.sm-add-product #sm-risk-preview { display: none; }
+    /* 「+新增監控商品」／「編輯監控商品」共用：帳戶/方向/佈单方式雖然整段隱藏，但沿用舊版「編輯監控商品」
+       表單原本就有的藍底資訊列，簡要標出這支機器人固定的帳號/佈单方式/有效期/目前監控額度，
+       維持一般「新增智慧單」/「編輯機器人設定」流程不顯示這個提示列（那兩種情境本來就能直接看到完整欄位） */
+    #sm-context-banner { display: none; }
+    #smart-modal.sm-add-product #sm-context-banner { display: flex; }
     /* 下單盒風格：真正的「切換型」按鈕(方向、開盤/收盤子選擇)加強視覺份量，比照下單盒買賣/現漲跌市那種明顯的選中色塊；
        純下拉選單(佈單大類、委託價方式等)維持原樣不轉成按鈕——第五輪已經跟使用者確認過這條界線，按鈕只用在開盤/收盤子選擇 */
     #smart-modal #arm-smart-dir .seg-btn { height: 34px; font-size: 15px; font-weight: 700; }
@@ -9600,6 +9605,14 @@
       <div class="arm-body">
         <div class="arm-content">
           <div class="arm-pane active">
+            <!-- 沿用舊版「編輯監控商品」(#add-prod-modal) 原本就有的藍底資訊列，帳戶/方向/佈单方式整段隱藏時
+                 用這裡簡要標出這支機器人固定的帳號/佈单方式/有效期/目前監控額度，見 _smartFillContextBanner() -->
+            <div id="sm-context-banner" style="flex-wrap:wrap;gap:6px 20px;background:var(--bg2);border-radius:var(--r-md);padding:10px 14px;margin-bottom:12px;font-size:var(--f-sm);color:var(--text3)">
+              <span>帳號：<strong id="sm-ctx-acct" style="color:var(--text)"></strong></span>
+              <span>佈單方式：<strong id="sm-ctx-place" style="color:var(--text)"></strong></span>
+              <span>有效期：<strong id="sm-ctx-validity" style="color:var(--text)"></strong></span>
+              <span>目前監控：<strong id="sm-ctx-count" style="color:var(--text)"></strong></span>
+            </div>
             <div class="arm-section-title" id="sm-section-title"><i class="far fa-lightbulb"></i>建立智慧單</div>
             <div class="s-section">
               <div class="sm-inline-row" id="sm-acct-row">
@@ -11237,6 +11250,16 @@
         +'<div class="sm-filter-bar"><div class="f-search-wrap"><i class="fas fa-magnifying-glass f-search-ico"></i><input class="f-input" placeholder="輸入股票代號或股名" oninput="smartCommSearch(this.value)"><button class="inp-clear" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))" title="清除"><i class="fas fa-xmark" style="font-size:14px;line-height:1"></i></button></div><select class="s-input" style="width:auto;height:var(--comp-ctrl-h)" onchange="smartCommStatus(this.value)"><option value="">全部委託</option><option value="pend">委託成功</option><option value="filled">完全成交</option><option value="partial">部分成交</option><option value="fail">委託失敗</option><option value="cancel">已刪單</option></select><div style="margin-left:auto;display:flex;gap:8px"><button class="add-prod-btn" onclick="_openAddCurrentRobotProd()" style="display:inline-flex;align-items:center;gap:6px"><i class="fas fa-plus" style="font-size:14px;line-height:1"></i><span>新增監控商品</span></button><button class="del-all-btn" onclick="delAllComm(this)" style="margin-left:0;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-trash" style="font-size:16px;line-height:1"></i><span>全部刪單</span></button></div></div>'
         +(d.watch.length?('<div class="s-section" style="padding:0;margin:16px 0"><div class="s-title" style="display:flex;align-items:center;gap:8px"><i class="far fa-lightbulb" style="color:var(--warning)"></i> 監控中（尚未送出委託）</div><table class="o-table" style="width:100%"><thead><tr><th>商品</th><th>委託商品</th><th>買賣</th><th>佈單方式</th>'+(showTime?'<th class="col-right">時間</th>':'')+'<th class="col-right">觸發價</th><th class="col-right">委託價</th><th class="col-right">委託量</th><th>盤別</th><th>委託別</th><th>狀態</th><th class="col-act" style="width:112px">操作</th></tr></thead><tbody>'+wr+'</tbody></table></div>'):'')
         +'<div class="s-section" style="padding:0;margin-bottom:16px"><div class="s-title">已送出委託（主單 + 停利／停損子單，揭示觸發價）</div><table class="o-table" style="width:100%"><thead><tr><th class="col-chk"><input type="checkbox" class="row-cb" onclick="toggleAllRows(this)"></th><th class="col-act"></th><th>停利停損</th><th>委託時間</th><th>商品</th><th>買賣</th><th class="col-right">觸發價</th><th class="col-right">委託/成交</th><th class="col-right">委託價</th><th class="col-right">成交均價</th><th class="col-right">停利</th><th class="col-right">停損</th><th>委託狀態</th><th>委託書號</th></tr></thead><tbody>'+sr+'</tbody></table></div>';
+    }
+    // 「+新增監控商品」／「編輯監控商品」共用的藍底資訊列：帳戶/方向/佈单方式整段隱藏後，
+    // 用這裡簡要標出這支機器人固定不變的帳號/佈单方式/有效期/目前監控額度，沿用舊版
+    // 「編輯監控商品」(#add-prod-modal) 原本就有的同一份資訊，只是改填進 #smart-modal 共用的欄位
+    function _smartFillContextBanner(reg) {
+      if (!reg) return;
+      const acctEl = document.getElementById('sm-ctx-acct'); if (acctEl) acctEl.textContent = reg.account || '—';
+      const placeEl = document.getElementById('sm-ctx-place'); if (placeEl) placeEl.textContent = ARM_PLACE_LABEL[reg.place] || reg.place || '—';
+      const validEl = document.getElementById('sm-ctx-validity'); if (validEl) validEl.textContent = reg.validity === 'multi' ? '多日有效' : '當日有效';
+      const countEl = document.getElementById('sm-ctx-count'); if (countEl) countEl.textContent = reg.count + ' / ' + (reg.cap || SMART_WATCH_CAP) + ' 檔';
     }
     // 智慧單：既有機器人加入監控商品（依你的決定，不再走「新增機器人」精靈的自動併單偵測，
     // 改成使用者主動站在既有機器人頁面裡加，帳號／佈單方式／有效期直接沿用該機器人設定，不用重填）
@@ -13505,6 +13528,9 @@
         // 這種情況才直接判斷併單；帳戶/方向/佈单方式三個欄位＋「建立智慧單」小標題／併單提示／安控預覽
         // 是否顯示，已經在函式最上方交給 #smart-modal.sm-add-product 這個 class 統一處理，這裡不用再逐一隱藏
         smartMergeCheck();
+        // smartMergeCheck() 命中的一定是這個 preset 對應的同一支機器人（帳戶+方向+佈单方式三者皆同）——
+        // 直接拿 _smartMergeTarget 這個 registry entry 填藍底資訊列，不用另外查一次
+        _smartFillContextBanner(_smartMergeTarget);
         if (titleEl0) titleEl0.textContent = '新增監控商品';
       } else {
         // 全新開表單：不能因為預設帳戶/佈單方式剛好跟某支既有機器人相同就自動鎖定併單，
