@@ -13875,12 +13875,14 @@
     // 帳戶／商品類型判斷：期貨帳戶只能交易期貨商品，股票帳戶只能交易股票商品——
     // 帳戶名稱用「期/証」前綴判斷(子帳號要反查 parent)，商品用代碼(括號內文字)是否含英文字母判斷
     // (股票代碼皆為純數字如 2330/0050，期貨代碼含英文字母如 TXF/FITXN*1，沿用商品查詢popup既有的示範資料規律)
+    // 判斷帳戶是不是期貨帳戶：模擬帳戶固定「期-」/「証-」開頭，但真實帳戶是「券商名+期/證-帳號-戶名」
+    // (例如「玉山期-123A1234567-某某某」)，「期」字不會在字串最前面——不能用 indexOf===0，
+    // 要看帳戶字串「-」前的券商/帳戶類型那一段是否含「期」字；子帳戶則看母帳戶
     function _acctIsFutures(acctName) {
       if (!acctName) return false;
-      if (acctName.indexOf('期') === 0) return true;
-      if (acctName.indexOf('証') === 0) return false;
       const sub = SUB_ACCOUNTS.find(function (s) { return s.name === acctName; });
-      return !!(sub && sub.parent.indexOf('期') === 0);
+      const target = sub ? sub.parent : acctName;
+      return target.split('-')[0].indexOf('期') >= 0;
     }
     function _symIsFutures(sym) {
       const m = sym && sym.match(/\(([^)]+)\)/);
@@ -14128,7 +14130,10 @@
       const _trailSel0 = document.getElementById('arm-trail-mode-sel');
       if (_trailSel0) { _trailSel0.value = 'market'; _xselSync(_trailSel0); }
       armPlaceMode();
-      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = '台積電(2330)';
+      // 預設商品要依帳戶類型給對應範例，不能不分帳戶類型都預填股票代碼——
+      // 期貨帳戶預填股票會在使用者送出時才被 armSmartFieldsValid() 擋下，體驗上等於白填一次
+      const _defAcct = document.getElementById('sm-acct')?.value || '';
+      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = _acctIsFutures(_defAcct) ? '台積電期(TXF)' : '台積電(2330)';
       _syncSymCodeDisplay('arm-smart-sym-disp');
       _syncSymCodeDisplay('arm-exec-sym-disp');
       const _st = document.getElementById('arm-smart-trig'); if (_st) _st.value = '960';
@@ -14408,6 +14413,17 @@
       while (SMART_ROBOT_REGISTRY.some(function (r) { return r.name === base + '-' + String(n).padStart(2, '0'); })) n++;
       return base + '-' + String(n).padStart(2, '0');
     }
+    // 智慧單機器人命名規則「佈單方式-真實帳戶後4碼 或 子帳戶名稱」的帳戶那半段：
+    // 子帳戶(SUB_ACCOUNTS)→子帳戶名稱；模擬帳戶(含「模擬」字樣)→完整帳戶字串；真實帳戶→帳戶字串中間ID段落後4碼
+    // (帳戶格式固定是「券商-帳號-戶名」三段式，取第2段)。跟示範機器人套用的命名規則同一套，不要漏掉新建流程。
+    function _smartNameAcctSuffix(acctName) {
+      const sub = SUB_ACCOUNTS.find(function (s) { return s.name === acctName; });
+      if (sub) return sub.name;
+      if (!acctName) return acctName;
+      if (acctName.indexOf('模擬') >= 0) return acctName;
+      const parts = acctName.split('-');
+      return parts.length >= 2 ? parts[1].slice(-4) : acctName;
+    }
     function confirmSmartCreate() {
       if (!armSmartFieldsValid()) return;
       const acct = document.getElementById('sm-acct').value;
@@ -14424,13 +14440,14 @@
         closeSmartModal();
         _applyRobot(_smartMergeTarget.name);
       } else {
-        // 新建機器人：名稱只留「佈單方式」，方向／帳戶都改由總覽卡片/機器人詳情頁的小標("帳戶｜方向 智慧單")
-        // 呈現，不再塞進名稱本身。但併單比對鍵仍是「帳戶＋方向＋佈單大類」三者全同才算併單，帳戶或方向不同、
-        // 佈單方式相同時不會走進上面的併單分支，這時名稱就可能撞名（例如作多停損單跟作空停損單分屬不同機器人，
-        // 但都想叫「停損單」）——用 _uniqueSmartName() 偵測撞名，撞名才補「-01」這種遞增後綴，不撞名維持原樣簡潔。
-        // 名稱事後仍可在「編輯機器人設定」自行修改（見 sm-edit-name-row/confirmSmartEdit()）。
+        // 新建機器人：名稱固定「佈單方式-帳戶那半段」(見 _smartNameAcctSuffix())，跟示範機器人套用的命名規則
+        // 一致，方向則仍由總覽卡片/機器人詳情頁的小標("帳戶｜方向 智慧單")呈現，不塞進名稱。但併單比對鍵是
+        // 「帳戶＋方向＋佈單大類」三者全同才算併單，帳戶或方向不同、佈單方式相同時不會走進上面的併單分支，
+        // 這時名稱仍可能撞名（例如同帳戶下作多停損單跟作空停損單）——用 _uniqueSmartName() 偵測撞名，
+        // 撞名才補「-01」這種遞增後綴，不撞名維持原樣。名稱事後仍可在「編輯機器人設定」自行修改。
         const cat = PLACE_CAT_MAP[snap.place] || snap.place;
-        const autoName = _uniqueSmartName(PLACE_CAT_DEFAULT_NAME[cat] || cat);
+        const baseLabel = PLACE_CAT_DEFAULT_NAME[cat] || cat;
+        const autoName = _uniqueSmartName(baseLabel + '-' + _smartNameAcctSuffix(acct));
         document.getElementById('sm-name').value = autoName;
         _createSmartRobotFresh({
           name: autoName, account: acct, place: snap.place, dir: snap.dir,
@@ -14492,7 +14509,8 @@
       const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '5';
       const _ocoMaster = document.getElementById('arm-exit-master-chk'); if (_ocoMaster) _ocoMaster.checked = false;
       const _ocoDetail = document.getElementById('arm-exit-detail'); if (_ocoDetail) _ocoDetail.style.display = 'none';
-      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = '台積電(2330)';
+      // 同 openSmartCreateModal()：預設商品要依這支機器人實際的帳戶類型給對應範例
+      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = _acctIsFutures(_smartEditReg?.account) ? '台積電期(TXF)' : '台積電(2330)';
       _syncSymCodeDisplay('arm-smart-sym-disp');
       _syncSymCodeDisplay('arm-exec-sym-disp');
       const _st = document.getElementById('arm-smart-trig'); if (_st) _st.value = '960';
@@ -14686,13 +14704,15 @@
       // 名稱改成「佈單方式-方向」不再帶帳戶（見 confirmSmartCreate()），總覽卡片小標要補回帳戶/方向資訊，
       // 格式比照量化積木卡片的「帳戶｜方向badge+描述」樣式，智慧單固定用「智慧單」三字取代策略描述
       const rsub = card.querySelector('.rh-sub');
-      if (rsub) rsub.innerHTML = info.acct + '｜<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span> 智慧單';
+      // 子帳戶要揭示完整「母帳戶 / 子帳戶」，跟 _applyRobot() 裡動態機器人的 rh-sub 同一條規則(見 _acctDisplayFull())
+      if (rsub) rsub.innerHTML = _acctDisplayFull(info.acct) + '｜<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span> 智慧單';
       const body = card.querySelector('.pend-orders');
       if (body) {
+        const qtyUnit = _symIsFutures(info.sym) ? ' 口' : ' 張';
         body.innerHTML = '<div class="s-section" style="padding:12px 16px 16px">'
           + '<div class="s-title" style="display:flex;align-items:center;gap:8px"><i class="far fa-lightbulb" style="color:var(--warning)"></i> 監控中（尚未送出委託）</div>'
           + '<table class="o-table" style="width:100%"><thead><tr><th>商品</th><th>買賣</th><th>佈單方式</th><th>委託量</th><th>設定摘要</th><th>狀態</th></tr></thead><tbody>'
-          + '<tr><td>' + info.sym + '</td><td>' + (isLong ? '<span class="side-buy">買進</span>' : '<span class="side-sell">賣出</span>') + '</td><td>' + (ARM_PLACE_LABEL[info.place] || placeShort) + '</td><td class="col-right">' + info.qty + ' 張</td><td>' + info.summary + '</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>'
+          + '<tr><td>' + info.sym + '</td><td>' + (isLong ? '<span class="side-buy">買進</span>' : '<span class="side-sell">賣出</span>') + '</td><td>' + (ARM_PLACE_LABEL[info.place] || placeShort) + '</td><td class="col-right">' + info.qty + qtyUnit + '</td><td>' + info.summary + '</td><td><span class="s-tag" style="background:var(--bg2);color:var(--text2)">監控中</span></td></tr>'
           + '</tbody></table></div>';
       }
     }
