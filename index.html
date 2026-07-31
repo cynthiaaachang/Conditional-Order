@@ -6533,7 +6533,7 @@
               <div class="r-header" onclick="toggleCard(this.closest('.r-card'))">
                 <div class="rh-name-block">
                   <div class="rh-title"><span class="rh-fav" onclick="event.stopPropagation();toggleFav(this)" title="加入收藏"><i class="far fa-bookmark"></i></span><span class="rh-title-link" onclick="event.stopPropagation();goToRobot('停損單-4567','玉山期-123A1234567-某某某')" title="停損單-4567">停損單-4567</span></div>
-                  <div class="rh-sub">玉山期-123A1234567-某某某｜<span class="dir-tag long">作多</span> 智慧單</div>
+                  <div class="rh-sub">玉山期-123A1234567-某某某｜<span class="type-tag t-futures" style="margin-right:4px">期貨</span><span class="dir-tag long">作多</span> 智慧單</div>
                 </div>
                 <div class="rh-signal-block">
                   <span class="rh-signal-lbl" style="cursor:default">最新委託 13:05:30</span>
@@ -12041,7 +12041,9 @@
           // 名稱現在只留「佈單方式」（見 confirmSmartCreate()），帳戶／方向不再編碼在名稱裡，
           // 小標格式比照總覽卡片(.rh-sub)的「帳戶｜方向 智慧單」，不再用「智慧單 · 商品N檔」這種舊格式
           const _acctFull = _acctDisplayFull(ds.account);
-          _rsub.innerHTML = _acctFull + '｜<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span> 智慧單';
+          // 期貨帳戶的智慧單機器人也要像量化積木一樣，在帳戶後面補「期貨」標籤(見 .rh-sub 總覽卡片同一套規則)
+          const _futTag = _acctIsFutures(ds.account) ? '<span class="type-tag t-futures" style="margin-right:4px">期貨</span>' : '';
+          _rsub.innerHTML = _acctFull + '｜' + _futTag + '<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span> 智慧單';
           _rsub.title = _acctFull + '｜' + (isLong ? '作多' : '作空') + ' 智慧單 · ' + _subProd;
         }
         const setT = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
@@ -14704,8 +14706,10 @@
       // 名稱改成「佈單方式-方向」不再帶帳戶（見 confirmSmartCreate()），總覽卡片小標要補回帳戶/方向資訊，
       // 格式比照量化積木卡片的「帳戶｜方向badge+描述」樣式，智慧單固定用「智慧單」三字取代策略描述
       const rsub = card.querySelector('.rh-sub');
-      // 子帳戶要揭示完整「母帳戶 / 子帳戶」，跟 _applyRobot() 裡動態機器人的 rh-sub 同一條規則(見 _acctDisplayFull())
-      if (rsub) rsub.innerHTML = _acctDisplayFull(info.acct) + '｜<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span> 智慧單';
+      // 子帳戶要揭示完整「母帳戶 / 子帳戶」，期貨帳戶要補「期貨」標籤，跟 _applyRobot() 裡動態機器人的
+      // rh-sub 同一條規則(見 _acctDisplayFull()/_acctIsFutures())
+      const futTag = _acctIsFutures(info.acct) ? '<span class="type-tag t-futures" style="margin-right:4px">期貨</span>' : '';
+      if (rsub) rsub.innerHTML = _acctDisplayFull(info.acct) + '｜' + futTag + '<span class="dir-tag ' + (isLong ? 'long' : 'short') + '">' + (isLong ? '作多' : '作空') + '</span> 智慧單';
       const body = card.querySelector('.pend-orders');
       if (body) {
         const qtyUnit = _symIsFutures(info.sym) ? ' 口' : ' 張';
@@ -15751,15 +15755,17 @@
       refreshOvFilterCounts();
       refreshOvTypeCounts();
       refreshOvBuySellCounts();
-      // 把所有 line-clamp-2 內的 prod-code 轉成 flex 結構，讓股號緊跟股名不溢出
+      // 把所有 line-clamp-2 內的 prod-code 轉成 flex 結構，讓股號緊跟股名不溢出——
+      // 一定要保留 name 那半段原本的 innerHTML(不能整個用 textContent 拉平重建)，不然像停利/停損子單
+      // 那種在名稱前面多包一層 <span class="tpsl-tag"> 上色的內容，會被這段初始化直接拆掉變成純文字
       document.querySelectorAll('.line-clamp-2').forEach(div => {
         const codeSpan = div.querySelector('.prod-code');
         if (!codeSpan) return;
-        const code = codeSpan.textContent.trim();
         codeSpan.remove();
-        const name = div.textContent.trim();
+        const nameHTML = div.innerHTML;
         div.className = 'batch-prod-cell';
-        div.innerHTML = `<span class="batch-prod-name">${name}</span><span class="prod-code">${code}</span>`;
+        div.innerHTML = `<span class="batch-prod-name">${nameHTML}</span>`;
+        div.appendChild(codeSpan);
       });
     });
   </script>
