@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雲端監控</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: "Microsoft JhengHei", "PingFang TC", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #d9d9d9;
+    font-size: 14px;
+    color: #333;
+  }
+  .win {
+    display: flex; flex-direction: column;
+    height: 100vh;
+    background: #ececec;
+    border: 1px solid #6b8cae;
+  }
+  /* ===== 標題列 ===== */
+  .win-titlebar {
+    flex-shrink: 0;
+    background: #85aed3;
+    color: #333;
+    display: flex; align-items: center;
+    padding: 0 10px;
+    height: 30px;
+    font-size: 14px;
+    user-select: none;
+  }
+  .win-titlebar .tb-title { flex: 1; font-weight: 600; }
+  .win-titlebar .tb-btn {
+    width: 26px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #fff; color: #4a6a8f;
+    border-radius: 3px; margin-left: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    border: 1px solid #d8d8d8;
+  }
+  .win-titlebar .tb-btn:hover { background: #eef4fb; }
+  .win-titlebar .tb-btn.tb-close {
+    background: #e5484d; color: #fff; border-color: #e5484d;
+  }
+  .win-titlebar .tb-btn.tb-close:hover { background: #d33; }
+  /* ===== 分頁列 ===== */
+  .win-tabs {
+    flex-shrink: 0;
+    display: flex; align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #c7c7c7;
+    padding: 6px 6px 0;
+  }
+  .win-tab {
+    padding: 8px 18px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+  }
+  .win-tab.active {
+    color: #2a6fbb;
+    font-weight: 700;
+    background: #dbe9f7;
+  }
+  .win-tabs .tb-opt {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #666; padding-right: 8px;
+  }
+  .win-tabs .tb-opt select {
+    font-size: 13px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px;
+  }
+  /* ===== 工具列 ===== */
+  .win-toolbar {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 18px;
+    padding: 8px 14px;
+    background: #fff;
+    border-bottom: 1px solid #e2e2e2;
+    font-size: 13px;
+  }
+  .win-toolbar .cnt-all { color: #333; }
+  .win-toolbar .cnt-other { color: #888; }
+  .win-toolbar .cnt-num { color: #2a6fbb; font-weight: 700; }
+  .win-toolbar .tb-link {
+    color: #2a6fbb; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .win-toolbar .tb-link:hover { text-decoration: underline; }
+  .win-toolbar .tb-search {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 6px; color: #2a6fbb; font-size: 13px;
+    min-width: 160px;
+  }
+  .win-toolbar .tb-search input {
+    border: none; outline: none; font-size: 13px; flex: 1; color: #333;
+  }
+  /* ===== 內容區 ===== */
+  .win-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    background: #e5e5e5;
+  }
+  .prod-card {
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    overflow: hidden;
+  }
+  .prod-hdr {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 12px 16px 8px;
+  }
+  .prod-hdr .prod-selall { margin-right: 2px; cursor: pointer; }
+  .prod-hdr .prod-name { font-size: 16px; font-weight: 700; color: #2a6fbb; }
+  .prod-hdr .prod-sub { font-size: 12.5px; color: #999; }
+  .prod-hdr .prod-actions { margin-left: auto; display: flex; gap: 14px; font-size: 13px; }
+  .prod-hdr .prod-actions a { color: #2a6fbb; cursor: pointer; text-decoration: none; }
+  .prod-hdr .prod-actions a:hover { text-decoration: underline; }
+  .cond-scroll { max-height: 260px; overflow-y: auto; }
+  .cond-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 16px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 13.5px;
+  }
+  .cond-row .cond-cb { flex-shrink: 0; cursor: pointer; }
+  .cond-row .ic-del, .cond-row .ic-bell {
+    width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;
+    color: #b0b0b0; cursor: pointer; flex-shrink: 0;
+  }
+  .cond-row .ic-bell.on { color: #2a6fbb; }
+  .cond-row .ic-bell.off { color: #c9c9c9; }
+  .cond-row .cond-field { display: flex; align-items: center; gap: 6px; color: #555; }
+  .cond-row input[type="text"] {
+    width: 70px; padding: 3px 6px; border: 1px solid #d4d4d4; border-radius: 3px;
+    font-size: 13px; text-align: right;
+  }
+  .cond-row select {
+    padding: 3px 6px; border: 1px solid #d4d4d4; border-radius: 3px; font-size: 13px; color: #555;
+  }
+  /* 雲端側刪除/停用本來就允許（只是要跳警示），只有參數欄位(單量/通知)在機器人執行中時才鎖住不能改，
+     刪除/鈴鐺兩個icon不受.locked影響、永遠可以點 */
+  .cond-row.locked input,
+  .cond-row.locked select {
+    opacity: .5; pointer-events: none;
+  }
+  .cond-row .robot-tags {
+    margin-left: auto;
+    display: flex; flex-direction: column; gap: 3px; align-items: flex-end;
+  }
+  .cond-row .robot-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #eaf2fb; color: #2a6fbb;
+    border: 1px solid #cfe1f5;
+    border-radius: 12px;
+    padding: 3px 10px 3px 8px;
+    font-size: 12px; white-space: nowrap;
+    cursor: default;
+  }
+  .cond-row .robot-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; flex-shrink: 0; }
+  .cond-row .robot-tag.stopped-tag { background: #f2f2f2; color: #888; border-color: #e0e0e0; }
+  .cond-row .robot-tag.stopped-tag .dot { background: #b0b0b0; }
+  .cond-more { text-align: center; padding: 8px; font-size: 12.5px; color: #999; }
+  .empty-tab {
+    padding: 60px 20px; text-align: center; color: #aaa; font-size: 14px;
+  }
+  /* ===== 編輯條件（選擇條件）子畫面 ===== */
+  .picker-back {
+    display: flex; align-items: center; gap: 14px; padding: 10px 14px;
+    background: #fff; border-bottom: 1px solid #e2e2e2;
+  }
+  .picker-back .back-link { color: #2a6fbb; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
+  .picker-back .back-link:hover { text-decoration: underline; }
+  .picker-back .picker-search { margin-left: auto; display: flex; align-items: center; gap: 5px; border: 1px solid #d4d4d4; border-radius: 4px; padding: 4px 10px; color: #999; font-size: 13px; min-width: 220px; }
+  .picker-search input { border: none; outline: none; font-size: 13px; flex: 1; }
+  .picker-wrap { flex: 1; display: flex; overflow: hidden; }
+  .picker-left { width: 300px; flex-shrink: 0; border-right: 1px solid #e2e2e2; background: #fff; overflow-y: auto; padding: 14px; }
+  .picker-left .prod-name { font-size: 16px; font-weight: 700; color: #333; }
+  .picker-left .prod-sub { font-size: 12.5px; color: #999; margin-bottom: 8px; }
+  .picker-right { flex: 1; overflow-y: auto; padding: 14px 18px; background: #fafbfc; }
+  .picker-right-title { text-align: center; font-size: 16px; font-weight: 700; color: #2a6fbb; margin-bottom: 12px; }
+  .picker-segrow { display: flex; gap: 8px; margin-bottom: 8px; }
+  .picker-seg { flex: 1; text-align: center; padding: 8px; border: 1px solid #d4d4d4; border-radius: 4px; font-size: 13px; color: #666; cursor: pointer; background: #fff; }
+  .picker-seg.active { background: #dceafd; color: #2a6fbb; border-color: #a9cdf5; font-weight: 700; }
+  .picker-catrow { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .picker-cat { padding: 6px 12px; font-size: 13px; color: #666; border-bottom: 2px solid transparent; cursor: pointer; }
+  .picker-cat.active { color: #2a6fbb; font-weight: 700; border-bottom-color: #2a6fbb; }
+  .picker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .picker-btn {
+    border: 1px solid #f0c9c9; background: #fff7f7; color: #c0392b;
+    border-radius: 4px; padding: 16px 10px; text-align: center;
+    font-size: 13.5px; font-weight: 600; cursor: pointer; position: relative;
+  }
+  .picker-btn:hover { background: #fdeaea; }
+  .picker-btn .info-i { position: absolute; top: 4px; right: 6px; font-size: 10px; color: #c9a; opacity: .6; }
+  /* ===== 自訂確認popup(取代原生window.confirm，樣式比照20260805_ver_demo_UI.html的_xpopShow) ===== */
+  .cm-pop-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 1000; align-items: center; justify-content: center;
+  }
+  .cm-pop-overlay.show { display: flex; }
+  .cm-pop-box {
+    background: #fff; border-radius: 10px; width: min(320px, 88vw);
+    box-shadow: 0 16px 48px rgba(0,0,0,.35); overflow: hidden;
+  }
+  .cm-pop-body { padding: 24px 20px 16px; text-align: center; }
+  .cm-pop-icon { font-size: 26px; margin-bottom: 10px; color: #e0a030; }
+  .cm-pop-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 8px; }
+  .cm-pop-msg { font-size: 13.5px; color: #666; line-height: 1.5; }
+  .cm-pop-footer { display: flex; border-top: 1px solid #eee; }
+  .cm-pop-footer button { flex: 1; padding: 13px 0; background: none; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .cm-pop-cancel { color: #888; border-right: 1px solid #eee; }
+  .cm-pop-cancel:hover { background: #f5f5f5; }
+  .cm-pop-confirm { color: #2a6fbb; }
+  .cm-pop-confirm:hover { background: rgba(42,111,187,.08); }
+  .cm-pop-confirm.danger { color: #e5484d; }
+  .cm-pop-confirm.danger:hover { background: rgba(229,72,77,.08); }
+  /* ===== 批次操作列(比照20260805_ver_demo_UI.html的#watch-batch-bar) ===== */
+  .cm-batch-bar {
+    display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #fff; border: 1px solid #d8d8d8; border-radius: 24px;
+    padding: 9px 16px; align-items: center; gap: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25); z-index: 900; white-space: nowrap;
+  }
+  .cm-batch-bar.show { display: flex; }
+  .cm-batch-count { font-size: 13.5px; color: #555; font-weight: 600; }
+  .cm-batch-sep { width: 1px; height: 18px; background: #e0e0e0; }
+  .cm-batch-bar button {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 5px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; background: none;
+  }
+  .cm-batch-off-btn { border: 1px solid #2a6fbb !important; color: #2a6fbb; }
+  .cm-batch-off-btn:hover { background: rgba(42,111,187,.08); }
+  .cm-batch-del-btn { background: #e5484d; color: #fff; }
+  .cm-batch-del-btn:hover { opacity: .85; }
+  .cm-batch-cancel-btn { border: 1px solid #d8d8d8 !important; color: #888; }
+  .cm-batch-cancel-btn:hover { background: #f5f5f5; }
+</style>
+</head>
+<body>
+<div class="win">
+  <div class="win-titlebar">
+    <span class="tb-title">雲端監控</span>
+    <span class="tb-btn" title="放大字級">A+</span>
+    <span class="tb-btn" title="縮小字級">A-</span>
+    <span class="tb-btn" title="最小化">—</span>
+    <span class="tb-btn" title="最大化">▢</span>
+    <span class="tb-btn tb-close" title="關閉" onclick="window.close()">✕</span>
+  </div>
+  <div class="win-tabs">
+    <div class="win-tab active" onclick="switchTab('prod')">商品監控</div>
+    <div class="win-tab" onclick="switchTab('list')">清單監控</div>
+    <div class="win-tab" onclick="switchTab('pos')">庫存監控</div>
+    <div class="tb-opt">
+      <label><input type="checkbox"> 啟用音效</label>
+      <select><option>DTL</option></select>
+    </div>
+  </div>
+  <div class="win-toolbar" id="toolbar-prod">
+    <span class="cnt-all">全部(<span class="cnt-num" id="cnt-all">0</span>)</span>
+    <span class="cnt-other">啟用中(<span class="cnt-num" id="cnt-on">0</span>)</span>
+    <span class="cnt-other">未啟用(<span class="cnt-num" id="cnt-off">0</span>)</span>
+    <span class="tb-link"><i class="fas fa-plus"></i> 新增商品</span>
+    <span class="tb-link"><i class="fas fa-sort"></i> 依股號遞增排序</span>
+    <span class="tb-link"><i class="fas fa-trash"></i> 全部刪除</span>
+    <div class="tb-search"><i class="fas fa-magnifying-glass"></i><input type="text" placeholder="過濾商品" oninput="filterProd(this.value)"></div>
+  </div>
+  <div class="win-body" id="body-prod"></div>
+  <div class="win-body" id="body-list" style="display:none"><div class="empty-tab">（清單監控——demo未提供內容）</div></div>
+  <div class="win-body" id="body-pos" style="display:none"><div class="empty-tab">（庫存監控——demo未提供內容）</div></div>
+  <!-- 編輯條件（選擇條件）子畫面：點某商品的「編輯條件」才會顯示，仿真實雲端監控「返回」+左側既有條件+
+       右側選擇條件分類/按鈕網格的版面。條件類型按鈕是純示範用途(靜態，不會真的新增條件)，這次的重點是
+       版面呈現，不是做一個真正可運作的條件編輯器 -->
+  <div id="picker-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="picker-back">
+      <span class="back-link" onclick="closeEditCondition()">‹ 返回</span>
+      <div class="picker-search"><i class="fas fa-magnifying-glass"></i><input type="text" placeholder="輸入商品名稱或代碼"></div>
+    </div>
+    <div class="picker-wrap">
+      <div class="picker-left" id="picker-left"></div>
+      <div class="picker-right">
+        <div class="picker-right-title">選擇條件</div>
+        <div class="picker-segrow">
+          <div class="picker-seg active">全部</div>
+          <div class="picker-seg">多方</div>
+          <div class="picker-seg">空方</div>
+        </div>
+        <div class="picker-catrow">
+          <div class="picker-cat active">價格</div>
+          <div class="picker-cat">量能</div>
+          <div class="picker-cat">型態</div>
+          <div class="picker-cat">關鍵價格</div>
+          <div class="picker-cat">技術指標</div>
+          <div class="picker-cat">大戶動向</div>
+          <div class="picker-cat">事件</div>
+        </div>
+        <div class="picker-grid" id="picker-grid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cm-pop-overlay" id="cm-pop-overlay">
+    <div class="cm-pop-box">
+      <div class="cm-pop-body">
+        <div class="cm-pop-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        <div class="cm-pop-title" id="cm-pop-title"></div>
+        <div class="cm-pop-msg" id="cm-pop-msg"></div>
+      </div>
+      <div class="cm-pop-footer">
+        <button class="cm-pop-cancel" onclick="_cmPopClose()">取消</button>
+        <button class="cm-pop-confirm" id="cm-pop-confirm-btn" onclick="_cmPopConfirm()">確認</button>
+      </div>
+    </div>
+  </div>
+  <div class="cm-batch-bar" id="cm-batch-bar">
+    <span class="cm-batch-count" id="cm-batch-count">已選 0 筆</span>
+    <div class="cm-batch-sep"></div>
+    <button class="cm-batch-off-btn" onclick="batchOffConds()"><i class="fas fa-bell-slash"></i> 批次停用</button>
+    <button class="cm-batch-del-btn" onclick="batchDelConds()"><i class="fas fa-trash"></i> 批次刪除</button>
+    <div class="cm-batch-sep"></div>
+    <button class="cm-batch-cancel-btn" onclick="clearCondBatchSel()">取消選取</button>
+  </div>
+</div>
+<script>
+  // 這份是獨立的雲端監控demo，刻意不跟 20260805_ver_demo_UI.html 共用任何資料/變數(使用者明確決定不做
+  // 真的跨檔案localStorage同步)——兩邊只有「智慧單新增機器人時，商品已達這裡的50個條件上限」這一個情境
+  // 會互相牽涉，靠 20260805 那邊 window.open('cloud_monitor_demo.html') 開新分頁做單向連結。
+  // 「台泥(1101)」是刻意示範已達50個條件上限的商品，機器人標籤引用20260805裡真實存在的機器人名稱
+  // (定時定額單-動能策略：20260805裡真的有監控台泥、示範執行中鎖定；觸價單-証-模擬交易(內建)-01：
+  // 20260805裡真的是idle狀態，借來示範「已停止、條件保留但解除鎖定」的視覺，不代表它在20260805裡真的監控台泥，
+  // 純粹借用一個真實存在、目前確實idle的機器人名稱，比原本完全虛構的名字更好對照)。
+  // 「台積電(2330)」示範一般情況(比照使用者提供的截圖)。
+  // linkedRobots 是陣列——同一個條件可以被多支機器人共用，這是這次改版的重點：不是靠「同一個機器人名稱
+  // 出現在兩列」來表示共用，而是同一列的linkedRobots本身有多個名字。
+  //
+  // 2026-08-06追加：以下把20260805_ver_demo_UI.html裡SMART_COMM各機器人「監控中(尚未送出委託)」的watch
+  // 清單，逐一對應成這裡的商品/條件(帳戶欄位這份demo沒有畫面呈現，純粹是資料來源依據，不影響畫面)：
+  //   停損單-4567(玉山期-123A1234567-某某某)：台積電(2330)——執行中(綠燈)
+  //     (該機器人watch清單裡另外3筆「聯發科期(DV)/台指期近月(FITXN*1)/廣達期(DK)」監控的是期貨合約本身，
+  //     不是股票——雲端監控「商品監控」這個分頁本來就只涵蓋股票警示條件，不涵蓋期貨，所以這3筆故意不建進來；
+  //     台積電(2330)這筆會留著，是因為它監控的是股票本身，只是「看A下B」時委託目標換成期貨(TXF)，監控條件
+  //     本身仍然是股票，屬於商品監控的範圍)
+  //   觸價單-証-模擬交易(內建)-01：中華電(2412)/日月光投控(3711)——已停止(灰燈)
+  //   移動停損單-証-模擬交易(內建)-01：統一(1216)/中鋼(2002)——執行中(綠燈)
+  //   定時委託單-証-模擬交易(內建)-01：兆豐金(2886)/玉山金(2884)——已停止(灰燈)
+  //   分段委託單-証-模擬交易(內建)-01：華碩(2357)/技嘉(2376)——已停止(灰燈)
+  //   定時定額單-動能策略：台泥(1101)/亞泥(1102)——執行中(綠燈)，台泥(1101)本來就是既有的「已達上限」示範商品，
+  //     它的第1筆條件本來就是這支機器人，現在補上這句說明：不再只是「巧合同一組dir/place」，而是真的對應
+  // qty/notifyTimes是這份demo自己的「單量>=」條件參數，跟智慧單那邊的觸發價/委託價是兩套不相關的欄位，
+  // 這裡只是挑合理的示範數字，不代表任何真實對應關係；on/running則忠實對應各機器人側邊欄dot的執行狀態。
+  //
+  // 中信金(2891)：額外示範「同一個雲端條件同時連結2支以上機器人」——20260805裡目前這6支智慧單機器人彼此
+  // 帳戶/佈单大類都不同(依照_findCloudCond的比對規則，帳戶+商品+方向+佈单大類都相同才會共用同一條件)，沒有
+  // 真的自然重複的情境，所以這筆是純示範用途(借用2支目前都是執行中、已經在別處用過的真實機器人名稱，讓
+  // linkedRobots陣列裡有2個名字，展示tag區塊可以同時堆疊多個機器人標籤，而不是像舊版bug那樣拆成兩列重複)。
+  const PRODUCTS = [
+    {
+      name: '台積電(2330)',
+      conditions: [
+        { qty: 20, notifyTimes: 1, on: false, linkedRobots: [] },
+        { qty: 10, notifyTimes: 1, on: true, linkedRobots: [] },
+        { qty: 50, notifyTimes: 1, on: true, linkedRobots: ['停損單-4567'], running: true }
+      ]
+    },
+    { name: '中華電(2412)', conditions: [{ qty: 40, notifyTimes: 1, on: false, linkedRobots: ['觸價單-証-模擬交易(內建)-01'], running: false }] },
+    { name: '日月光投控(3711)', conditions: [{ qty: 35, notifyTimes: 1, on: false, linkedRobots: ['觸價單-証-模擬交易(內建)-01'], running: false }] },
+    { name: '統一(1216)', conditions: [{ qty: 25, notifyTimes: 1, on: true, linkedRobots: ['移動停損單-証-模擬交易(內建)-01'], running: true }] },
+    { name: '中鋼(2002)', conditions: [{ qty: 90, notifyTimes: 1, on: true, linkedRobots: ['移動停損單-証-模擬交易(內建)-01'], running: true }] },
+    { name: '兆豐金(2886)', conditions: [{ qty: 55, notifyTimes: 1, on: false, linkedRobots: ['定時委託單-証-模擬交易(內建)-01'], running: false }] },
+    { name: '玉山金(2884)', conditions: [{ qty: 70, notifyTimes: 1, on: false, linkedRobots: ['定時委託單-証-模擬交易(內建)-01'], running: false }] },
+    { name: '華碩(2357)', conditions: [{ qty: 65, notifyTimes: 1, on: false, linkedRobots: ['分段委託單-証-模擬交易(內建)-01'], running: false }] },
+    { name: '技嘉(2376)', conditions: [{ qty: 80, notifyTimes: 1, on: false, linkedRobots: ['分段委託單-証-模擬交易(內建)-01'], running: false }] },
+    { name: '中信金(2891)', conditions: [{ qty: 66, notifyTimes: 1, on: true, linkedRobots: ['移動停損單-証-模擬交易(內建)-01', '定時定額單-動能策略'], running: true }] },
+    {
+      name: '台泥(1101)',
+      conditions: Array.from({ length: 50 }, function (_, i) {
+        // 第1筆是真的對應「定時定額單-動能策略」目前真實監控中的商品（鎖定參數，刪除/停用仍可點但會跳警示）；
+        // 第2筆示範真實存在但已停止的機器人（不鎖定，條件保留、tag顯示已停止樣式）；
+        // 其餘47筆是雲端監控自己既有、跟智慧單無關的一般條件，湊滿50個上限
+        if (i === 0) return { qty: 120, notifyTimes: 1, on: true, linkedRobots: ['定時定額單-動能策略'], running: true };
+        if (i === 1) return { qty: 60, notifyTimes: 2, on: false, linkedRobots: ['觸價單-証-模擬交易(內建)-01'], running: false };
+        return { qty: 100 + i * 8, notifyTimes: 1, on: true, linkedRobots: [] };
+      })
+    },
+    { name: '亞泥(1102)', conditions: [{ qty: 42, notifyTimes: 1, on: true, linkedRobots: ['定時定額單-動能策略'], running: true }] }
+  ];
+
+  // pIdx/cIdx只有在「商品監控」主列表才會傳入(給批次選取checkbox用)；「編輯條件」子畫面左側的
+  // 條件參考列表只是唯讀展示，不需要checkbox，兩個都省略時就不渲染checkbox
+  function condRowHtml(c, pIdx, cIdx) {
+    const locked = !!c.running;
+    const hasIdx = pIdx !== undefined && cIdx !== undefined;
+    let tagsHtml = '';
+    if (c.linkedRobots && c.linkedRobots.length) {
+      tagsHtml = '<div class="robot-tags">' + c.linkedRobots.map(function (name) {
+        return '<span class="robot-tag' + (locked ? '' : ' stopped-tag') + '" title="' + (locked ? '此條件由「' + name + '」使用中，執行中無法調整參數' : '此條件由「' + name + '」使用，機器人目前已停止') + '">'
+          + '<span class="dot"></span><i class="fas fa-link"></i> ' + name + '</span>';
+      }).join('') + '</div>';
+    }
+    return '<div class="cond-row' + (locked ? ' locked' : '') + '">'
+      + (hasIdx ? '<input type="checkbox" class="cond-cb" data-pidx="' + pIdx + '" data-cidx="' + cIdx + '" onchange="onCondCbChange()">' : '')
+      + '<span class="ic-del" title="刪除" onclick="delCondClick(this)"><i class="fas fa-trash"></i></span>'
+      + '<span class="ic-bell ' + (c.on ? 'on' : 'off') + '" title="' + (c.on ? '啟用中，點擊停用' : '未啟用，點擊啟用') + '" onclick="toggleCondClick(this)"><i class="fas ' + (c.on ? 'fa-bell' : 'fa-bell-slash') + '"></i></span>'
+      + '<span class="cond-field">單量&gt;= <input type="text" value="' + c.qty + '"></span>'
+      + '<span class="cond-field">通知 <select><option' + (c.notifyTimes === 1 ? ' selected' : '') + '>1次</option><option' + (c.notifyTimes === 2 ? ' selected' : '') + '>2次</option><option>不限次數</option></select></span>'
+      + tagsHtml
+      + '</div>';
+  }
+
+  function renderProducts(filterText) {
+    const body = document.getElementById('body-prod');
+    const kw = (filterText || '').trim().toLowerCase();
+    let totalAll = 0, totalOn = 0, totalOff = 0;
+    // 先保留原始PRODUCTS索引再filter，避免搜尋過濾後pIdx變成「過濾後陣列的索引」跟真正的PRODUCTS索引對不上
+    // (data-pidx要能正確反查回PRODUCTS[pIdx]，過濾中的商品位置不能影響這個索引)
+    const html = PRODUCTS
+      .map(function (p, i) { return { p: p, pIdx: i }; })
+      .filter(function (o) { return !kw || o.p.name.toLowerCase().includes(kw); })
+      .map(function (o) {
+      const p = o.p, pIdx = o.pIdx;
+      const n = p.conditions.length;
+      totalAll += n;
+      p.conditions.forEach(function (c) { if (c.on) totalOn++; else totalOff++; });
+      const showRows = p.conditions.slice(0, 8); // 只展開前8筆，其餘用「還有N筆」摘要，避免50筆列表撐爆版面
+      const restCount = n - showRows.length;
+      return '<div class="prod-card" data-pidx="' + pIdx + '">'
+        + '<div class="prod-hdr">'
+        + '<input type="checkbox" class="prod-selall" title="全選此商品的條件" onclick="toggleAllCondRows(this,' + pIdx + ')">'
+        + '<span class="prod-name">' + p.name + '</span>'
+        + '<span class="prod-sub">共 ' + n + ' 個條件（上限 50 個）</span>'
+        + '<span class="prod-actions"><a onclick="openEditCondition(' + pIdx + ')"><i class="fas fa-sliders"></i> 編輯條件</a><a onclick="delAllClick(' + pIdx + ')"><i class="fas fa-trash"></i> 全部刪除</a></span>'
+        + '</div>'
+        + '<div class="cond-scroll">' + showRows.map(function (c, cIdx) { return condRowHtml(c, pIdx, cIdx); }).join('') + '</div>'
+        + (restCount > 0 ? '<div class="cond-more">還有 ' + restCount + ' 筆條件（示範用途，此處省略顯示，實際視窗可捲動看到全部 ' + n + ' 筆）</div>' : '')
+        + '</div>';
+    }).join('');
+    body.innerHTML = html || '<div class="empty-tab">找不到符合的商品</div>';
+    _hideBatchBar(); // 重繪後checkbox都是全新未勾選的元素，批次列跟著重置，避免殘留舊的勾選狀態
+    document.getElementById('cnt-all').textContent = totalAll;
+    document.getElementById('cnt-on').textContent = totalOn;
+    document.getElementById('cnt-off').textContent = totalOff;
+  }
+
+  // 找出某個 cond-row 元素對應的 {product, condition, condIdx}——用DOM位置反查，不用額外維護一份索引表
+  function _locateCond(rowEl) {
+    const card = rowEl.closest('.prod-card');
+    const pIdx = parseInt(card.dataset.pidx, 10);
+    const p = PRODUCTS[pIdx];
+    const rows = [...card.querySelectorAll('.cond-row')];
+    const cIdx = rows.indexOf(rowEl);
+    return { p: p, pIdx: pIdx, cIdx: cIdx, c: p.conditions[cIdx] };
+  }
+  // 自訂確認popup，取代原生window.confirm(樣式醜、無法自訂)——比照20260805_ver_demo_UI.html的_xpopShow
+  let _cmPopOnOk = null;
+  function _cmPopShow({ title, msg, confirmText, danger, onOk }) {
+    document.getElementById('cm-pop-title').textContent = title;
+    document.getElementById('cm-pop-msg').textContent = msg;
+    const btn = document.getElementById('cm-pop-confirm-btn');
+    btn.textContent = confirmText || '確認';
+    btn.className = 'cm-pop-confirm' + (danger ? ' danger' : '');
+    _cmPopOnOk = onOk;
+    document.getElementById('cm-pop-overlay').classList.add('show');
+  }
+  function _cmPopClose() {
+    document.getElementById('cm-pop-overlay').classList.remove('show');
+    _cmPopOnOk = null;
+  }
+  function _cmPopConfirm() {
+    const fn = _cmPopOnOk;
+    _cmPopClose();
+    if (fn) fn();
+  }
+  // 雲端監控端刪除條件：若有連結機器人，跳警示告知會停止哪些機器人的監控商品；沒有連結的條件直接確認即可刪除
+  function delCondClick(el) {
+    const row = el.closest('.cond-row');
+    const loc = _locateCond(row);
+    const names = (loc.c.linkedRobots || []).join('、');
+    const msg = names
+      ? '此條件目前由「' + names + '」使用中，刪除後將停止該機器人中對應的監控商品（停止監控）。確定要刪除嗎？'
+      : '確定要刪除這筆條件嗎？此動作無法復原。';
+    _cmPopShow({
+      title: '刪除條件', msg: msg, confirmText: '確認刪除', danger: true,
+      onOk: function () {
+        loc.p.conditions.splice(loc.cIdx, 1);
+        renderProducts(document.querySelector('.tb-search input')?.value || '');
+      }
+    });
+  }
+  // 雲端監控端停用(點鈴鐺關掉通知)：跟刪除同一個規則——有連結機器人時停用等於「刪除/停用聯動智慧單的
+  // 雲端監控條件 → 停止執行智慧單」，一樣要跳警示；改回啟用不影響機器人，不用警示
+  // 條件的啟用/停用連動linkedRobots的執行狀態(c.running)：停用=連結的機器人一併停止(鎖定解除、點變灰)，
+  // 啟用=連結的機器人一併啟動(重新鎖定、點變綠)——這只是這份獨立demo自己畫面內的呈現，不是真的去改
+  // 20260805_ver_demo_UI.html裡的機器人資料(兩份檔案本來就刻意不共用資料)
+  function toggleCondClick(el) {
+    const row = el.closest('.cond-row');
+    const loc = _locateCond(row);
+    if (!loc.c.on) {
+      const onNames = (loc.c.linkedRobots || []).join('、');
+      if (!onNames) {
+        loc.c.on = true;
+        renderProducts(document.querySelector('.tb-search input')?.value || '');
+        return;
+      }
+      _cmPopShow({
+        title: '啟用條件', msg: '此條件目前由「' + onNames + '」使用，啟用後將重新啟動該機器人中對應的監控商品（恢復監控）。確定要啟用嗎？', confirmText: '確認啟用', danger: false,
+        onOk: function () {
+          loc.c.on = true;
+          loc.c.running = true;
+          renderProducts(document.querySelector('.tb-search input')?.value || '');
+        }
+      });
+      return;
+    }
+    const names = (loc.c.linkedRobots || []).join('、');
+    if (!names) { loc.c.on = false; renderProducts(document.querySelector('.tb-search input')?.value || ''); return; }
+    _cmPopShow({
+      title: '停用條件', msg: '此條件目前由「' + names + '」使用中，停用後將停止該機器人中對應的監控商品（停止監控）。確定要停用嗎？', confirmText: '確認停用', danger: true,
+      onOk: function () {
+        loc.c.on = false;
+        loc.c.running = false;
+        renderProducts(document.querySelector('.tb-search input')?.value || '');
+      }
+    });
+  }
+  function delAllClick(pIdx) {
+    const p = PRODUCTS[pIdx];
+    const linkedNames = [...new Set(p.conditions.flatMap(function (c) { return c.linkedRobots || []; }))];
+    const msg = linkedNames.length
+      ? '「' + p.name + '」共 ' + p.conditions.length + ' 個條件，其中包含「' + linkedNames.join('、') + '」使用中的條件，全部刪除後將停止這些機器人中對應的監控商品。確定要全部刪除嗎？'
+      : '確定要刪除「' + p.name + '」全部 ' + p.conditions.length + ' 個條件嗎？此動作無法復原。';
+    _cmPopShow({
+      title: '全部刪除', msg: msg, confirmText: '全部刪除', danger: true,
+      onOk: function () {
+        PRODUCTS.splice(pIdx, 1);
+        renderProducts(document.querySelector('.tb-search input')?.value || '');
+      }
+    });
+  }
+
+  // ===== 批次選取/停用/刪除(比照20260805_ver_demo_UI.html的#watch-batch-bar)：checkbox上的data-pidx/
+  // data-cidx記的是原始PRODUCTS索引(renderProducts()已經修正過濾後索引錯位的問題)，可以直接拿來查資料 =====
+  function _hideBatchBar() {
+    const bar = document.getElementById('cm-batch-bar');
+    if (bar) bar.classList.remove('show');
+    const cnt = document.getElementById('cm-batch-count');
+    if (cnt) cnt.textContent = '已選 0 筆';
+  }
+  function onCondCbChange() {
+    const checked = document.querySelectorAll('.cond-cb:checked');
+    const bar = document.getElementById('cm-batch-bar');
+    if (checked.length) {
+      document.getElementById('cm-batch-count').textContent = '已選 ' + checked.length + ' 筆';
+      bar.classList.add('show');
+    } else {
+      bar.classList.remove('show');
+    }
+  }
+  function toggleAllCondRows(cb, pIdx) {
+    document.querySelectorAll('.prod-card[data-pidx="' + pIdx + '"] .cond-cb').forEach(function (el) { el.checked = cb.checked; });
+    onCondCbChange();
+  }
+  function clearCondBatchSel() {
+    document.querySelectorAll('.cond-cb:checked').forEach(function (el) { el.checked = false; });
+    document.querySelectorAll('.prod-selall').forEach(function (el) { el.checked = false; });
+    _hideBatchBar();
+  }
+  function _condBatchSelectedItems() {
+    return [...document.querySelectorAll('.cond-cb:checked')].map(function (el) {
+      return { pIdx: parseInt(el.dataset.pidx, 10), cIdx: parseInt(el.dataset.cidx, 10) };
+    });
+  }
+  // 批次停用：跟單筆停用同一個規則——只處理目前還是開啟的條件(已經是停用狀態的選了也不用重複處理)，
+  // 有連結機器人的話警示列出所有受影響機器人名稱
+  function batchOffConds() {
+    const items = _condBatchSelectedItems();
+    const conds = items.map(function (it) { return PRODUCTS[it.pIdx] && PRODUCTS[it.pIdx].conditions[it.cIdx]; }).filter(function (c) { return c && c.on; });
+    if (!conds.length) { clearCondBatchSel(); return; }
+    const linkedNames = [...new Set(conds.flatMap(function (c) { return c.linkedRobots || []; }))];
+    const msg = linkedNames.length
+      ? '已選的條件中包含「' + linkedNames.join('、') + '」使用中的條件，停用後將停止這些機器人中對應的監控商品。確定要批次停用嗎？'
+      : '確定要停用已選的 ' + conds.length + ' 筆條件嗎？';
+    _cmPopShow({
+      title: '批次停用', msg: msg, confirmText: '確認停用', danger: true,
+      onOk: function () {
+        conds.forEach(function (c) { c.on = false; c.running = false; });
+        renderProducts(document.querySelector('.tb-search input')?.value || '');
+      }
+    });
+  }
+  function batchDelConds() {
+    const items = _condBatchSelectedItems();
+    const valid = items.filter(function (it) { return PRODUCTS[it.pIdx] && PRODUCTS[it.pIdx].conditions[it.cIdx]; });
+    if (!valid.length) { clearCondBatchSel(); return; }
+    const linkedNames = [...new Set(valid.flatMap(function (it) { return PRODUCTS[it.pIdx].conditions[it.cIdx].linkedRobots || []; }))];
+    const msg = linkedNames.length
+      ? '確定要刪除已選的 ' + valid.length + ' 筆條件嗎？其中包含「' + linkedNames.join('、') + '」使用中的條件，刪除後將停止這些機器人中對應的監控商品。此動作無法復原。'
+      : '確定要刪除已選的 ' + valid.length + ' 筆條件嗎？此動作無法復原。';
+    _cmPopShow({
+      title: '批次刪除', msg: msg, confirmText: '確認刪除', danger: true,
+      onOk: function () {
+        // 同商品內的cIdx要由大到小排序再splice，不然刪掉前面那筆會讓後面的cIdx跟著錯位
+        const byProd = {};
+        valid.forEach(function (it) { (byProd[it.pIdx] = byProd[it.pIdx] || []).push(it.cIdx); });
+        Object.keys(byProd).forEach(function (pIdx) {
+          byProd[pIdx].sort(function (a, b) { return b - a; }).forEach(function (cIdx) {
+            PRODUCTS[pIdx].conditions.splice(cIdx, 1);
+          });
+        });
+        renderProducts(document.querySelector('.tb-search input')?.value || '');
+      }
+    });
+  }
+
+  function filterProd(v) { renderProducts(v); }
+
+  function switchTab(tab) {
+    closeEditCondition();
+    document.querySelectorAll('.win-tab').forEach(function (el, i) {
+      el.classList.toggle('active', (tab === 'prod' && i === 0) || (tab === 'list' && i === 1) || (tab === 'pos' && i === 2));
+    });
+    document.getElementById('toolbar-prod').style.display = tab === 'prod' ? 'flex' : 'none';
+    document.getElementById('body-prod').style.display = tab === 'prod' ? '' : 'none';
+    document.getElementById('body-list').style.display = tab === 'list' ? '' : 'none';
+    document.getElementById('body-pos').style.display = tab === 'pos' ? '' : 'none';
+  }
+
+  // ===== 編輯條件（選擇條件）子畫面：純版面示範，右側條件類型按鈕不會真的新增條件 =====
+  const PICKER_BTNS = [
+    '成交價>=(設定值)', '成交價向上穿越(設定值)', '上漲>=(設定值)',
+    '漲幅>=(設定值)%', '漲幅<=(設定值)%', '開高',
+    '成交價漲停', '成交價即將漲停', '漲停打開',
+    '漲停後持續成交', '漲停後即將鎖死', '急拉(設定值)%',
+    '拉尾盤', '開低走高', '開高後不拉回'
+  ];
+  function openEditCondition(pIdx) {
+    const p = PRODUCTS[pIdx];
+    document.getElementById('picker-left').innerHTML =
+      '<div class="prod-name">' + p.name + '</div>'
+      + '<div class="prod-sub">共 ' + p.conditions.length + ' 個條件（上限 50 個）</div>'
+      + '<div class="cond-scroll" style="max-height:none">' + p.conditions.slice(0, 8).map(condRowHtml).join('') + '</div>';
+    document.getElementById('picker-grid').innerHTML = PICKER_BTNS.map(function (label, i) {
+      return '<div class="picker-btn">' + label + (i % 4 === 1 ? '<span class="info-i">ⓘ</span>' : '') + '</div>';
+    }).join('');
+    document.getElementById('body-prod').style.display = 'none';
+    document.getElementById('toolbar-prod').style.display = 'none';
+    document.getElementById('picker-view').style.display = 'flex';
+  }
+  function closeEditCondition() {
+    document.getElementById('picker-view').style.display = 'none';
+    document.getElementById('toolbar-prod').style.display = 'flex';
+    document.getElementById('body-prod').style.display = '';
+  }
+
+  renderProducts('');
+</script>
+</body>
+</html>
