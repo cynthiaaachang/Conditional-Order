@@ -9606,7 +9606,7 @@
                   <label style="display:flex;align-items:center;gap:6px;font-size:var(--f-base);cursor:pointer;color:var(--text);white-space:nowrap">
                     <input type="checkbox" id="arm-exit-tp-chk"> 停利　<span style="color:var(--text2)">獲利達</span></label>
                   <div style="display:flex;align-items:center;gap:6px">
-                    <div class="num-wrap" style="width:70px"><input type="text" id="arm-exit-tp-val" inputmode="decimal" value="5"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
+                    <div class="num-wrap" style="width:70px"><input type="text" id="arm-exit-tp-val" inputmode="decimal" value="3"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
                     <select class="s-input" id="arm-exit-tp-unit" style="width:64px"><option>%</option><option>元</option></select>
                     <span style="font-size:var(--f-base);color:var(--text2);white-space:nowrap">時出場</span>
                   </div>
@@ -13962,11 +13962,27 @@
       const v = place ? place.value : 'stp';
       const fail = (id) => { const el = document.getElementById(id); _armFlash(el ? (el.closest('.s-row') || el) : null); return false; };
       const numOk = (id) => { const el = document.getElementById(id); return !!el && el.value.trim() !== '' && !isNaN(parseFloat(el.value)); };
+      // 帳戶預設是「(無帳戶)」佔位選項(value="")，使用者一定要自己選一個真實帳戶才能送出——
+      // 沒選就擋下，跟下面佈单方式的擋法同一套（閃爍xsel-wrap，因為select本身被自訂下拉包住不可見）
+      const acctSel = document.getElementById('sm-acct');
+      if (!acctSel?.value) {
+        _armFlash(acctSel ? (acctSel.closest('.xsel-wrap') || acctSel) : null);
+        return false;
+      }
       // 佈单方式預設留空，使用者一定要自己選一個大類才能送出——沒選就擋下，不能用任何預設值悄悄通過驗證。
       // sm-place-cat 會被 xsel 包裝成 .xsel-wrap，原生 select 本身不可見，要閃爍 wrapper 使用者才看得到
       if (!v) {
         const catSel = document.getElementById('sm-place-cat');
         _armFlash(catSel ? (catSel.closest('.xsel-wrap') || catSel) : null);
+        return false;
+      }
+      // 商品也改成預設留空，一樣要使用者自己主動選才能送出——沒選就擋下，跟量測型別是否相符的檢查分開判斷，
+      // 沒填商品時直接擋，不用等到跑到下面的期貨/股票型別比對（那邊比對的前提是已經有商品可以比對）
+      const sameSymOn0 = document.getElementById('arm-same-sym')?.checked !== false;
+      const symDispEl = document.getElementById(sameSymOn0 ? 'arm-smart-sym-disp' : 'arm-exec-sym-disp');
+      if (!symDispEl?.value) {
+        const codeEl = document.getElementById(sameSymOn0 ? 'arm-smart-sym-code' : 'arm-exec-sym-code');
+        _armFlash(codeEl || symDispEl);
         return false;
       }
       // 商品類型要跟帳戶類型一致（期貨帳戶只能交易期貨商品，股票帳戶只能交易股票商品）——
@@ -14253,7 +14269,10 @@
     }
     // 帳戶選單只列真實券商帳號，供智慧單建立表單的帳戶選單使用
     function _buildAcctOptionsHtml() {
-      return '<option>証-模擬交易(內建)-01</option><option>証-模擬交易(內建)-02</option><option>証-實戶-01</option><option>期-模擬交易(內建)-01</option><option>期-模擬交易(內建)-02</option><option>期-實戶-01</option><option>玉山證-123A1234567-某某某</option><option>玉山期-123A1234567-某某某</option>';
+      // 第一個選項是「(無帳戶)」佔位用途(value="")——新增智慧單表單預設不代使用者選帳戶，
+      // 逼使用者自己主動選；openSmartEditModal()/openSmartCreateModal()帶preset時都會緊接著把
+      // .value設成實際帳戶字串覆蓋掉這個預設，不影響那兩種情境
+      return '<option value="">(無帳戶)</option><option>証-模擬交易(內建)-01</option><option>証-模擬交易(內建)-02</option><option>証-實戶-01</option><option>期-模擬交易(內建)-01</option><option>期-模擬交易(內建)-02</option><option>期-實戶-01</option><option>玉山證-123A1234567-某某某</option><option>玉山期-123A1234567-某某某</option>';
     }
     // ===== 新增智慧單：單頁表單（取代舊精靈的智慧單分支）=====
     // arm-smart-sym-sec／arm-smart-sec 這兩塊是智慧單專屬、非保護函式驅動的既有欄位(監控/執行商品＋佈單方式與14種專屬欄位)，
@@ -14372,7 +14391,7 @@
       // 每次重新開表單，停利/停損(OCO) 都收回成預設收合、未勾選狀態
       ['arm-exit-sl-chk', 'arm-exit-tp-chk'].forEach(function (id) { const el = document.getElementById(id); if (el) el.checked = false; });
       const _slVal = document.getElementById('arm-exit-sl-val'); if (_slVal) _slVal.value = '3';
-      const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '5';
+      const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '3';
       const _ocoMaster = document.getElementById('arm-exit-master-chk'); if (_ocoMaster) _ocoMaster.checked = false;
       const _ocoDetail = document.getElementById('arm-exit-detail'); if (_ocoDetail) _ocoDetail.style.display = 'none';
       const _symTypeHint = document.getElementById('arm-sym-type-hint'); if (_symTypeHint) _symTypeHint.style.display = 'none';
@@ -14400,10 +14419,9 @@
       const _trailSel0 = document.getElementById('arm-trail-mode-sel');
       if (_trailSel0) { _trailSel0.value = 'market'; _xselSync(_trailSel0); }
       armPlaceMode();
-      // 預設商品要依帳戶類型給對應範例，不能不分帳戶類型都預填股票代碼——
-      // 期貨帳戶預填股票會在使用者送出時才被 armSmartFieldsValid() 擋下，體驗上等於白填一次
-      const _defAcct = document.getElementById('sm-acct')?.value || '';
-      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = _acctIsFutures(_defAcct) ? '台積電期(TXF)' : '台積電(2330)';
+      // 商品預設留空，不再自動填範例代碼——使用者要自己主動選帳戶＋商品，不能讓表單看起來已經填好、
+      // 誤以為可以直接送出。armSmartFieldsValid() 已經補上商品必填的檢查，沒填會被擋下
+      const _sd = document.getElementById('arm-smart-sym-disp'); if (_sd) _sd.value = '';
       _syncSymCodeDisplay('arm-smart-sym-disp');
       _syncSymCodeDisplay('arm-exec-sym-disp');
       const _st = document.getElementById('arm-smart-trig'); if (_st) _st.value = '960';
@@ -14490,6 +14508,11 @@
       const hint = document.getElementById('sm-merge-hint');
       const placeSel = document.getElementById('arm-smart-place');
       const submitBtn = document.getElementById('sm-submit-btn');
+      // 安控是機器人層級設定，併單（不管是「+新增監控商品」的硬性preset模式，還是這裡邊填邊命中的軟性併單）
+      // 都不該再讓使用者重設安控——命中的既有機器人已經有自己的安控值。硬性preset模式本來就有
+      // #smart-modal.sm-add-product 的CSS規則隱藏#sm-risk-protect；但這裡邊填邊命中的情境沒有套用那個class
+      // （帳戶/方向/佈单方式都刻意保持可見可改，讓使用者能跳出併單），所以要在這裡額外直接控制它的顯示——
+      // 用 '' 而非強制'block'，命中時才明確設'none'，這樣preset模式下(.sm-add-product仍在)CSS繼續掌控不受影響
       if (match) {
         _smartMergeTarget = match;
         if (hint) { hint.style.display = ''; document.getElementById('sm-merge-name').textContent = match.name; }
@@ -14513,6 +14536,14 @@
         if (submitBtn) submitBtn.innerHTML = '建立<i class="fas fa-chevron-right"></i>';
         _smartSyncMergeUI(false);
       }
+      // 安控是機器人層級設定，併單（不管是「+新增監控商品」的硬性preset模式，還是這裡邊填邊命中的軟性併單）
+      // 都不該再讓使用者重設安控——命中的既有機器人已經有自己的安控值。硬性preset模式本來就有
+      // #smart-modal.sm-add-product 的CSS規則隱藏#sm-risk-protect；但這裡邊填邊命中的情境沒有套用那個class
+      // （帳戶/方向/佈单方式都刻意保持可見可改，讓使用者能跳出併單），所以要在這裡額外直接控制它的顯示。
+      // 放在函式最後（_syncCatUIFromPlace/_smartSyncMergeUI 都跑完之後）才設定，避免被那幾個呼叫裡任何一個
+      // 意外覆蓋掉——用 '' 而非強制'block'，命中時才明確設'none'，這樣preset模式下(.sm-add-product仍在)CSS繼續掌控
+      const riskSec = document.getElementById('sm-risk-protect');
+      if (riskSec) riskSec.style.display = match ? 'none' : '';
     }
     // 佈單方式合併成 8 個大類(停損/觸價/移動停損/定時/開盤收盤/分段委託/拆單/定時定額)，用下拉選單(#sm-place-cat)選擇；
     // 開盤／收盤大類底下的「時機」與「委託方式」子選擇維持按鈕(seg-nav)，其餘子選擇(市價/限價等)都用小下拉。
@@ -14706,7 +14737,7 @@
           msg: '「' + snap.sym + '」在雲端監控已達單一商品 ' + CLOUD_COND_CAP + ' 個條件上限，請先於雲端監控清理不需要的條件後再試一次。',
           type: 'alert',
           confirmText: '前往雲端監控',
-          onOk: () => { window.open('./cloud-monitor/', '_blank'); }
+          onOk: () => { window.open('cloud_monitor_demo.html', '_blank'); }
         });
         return;
       }
@@ -14795,7 +14826,7 @@
       }
       ['arm-exit-sl-chk', 'arm-exit-tp-chk'].forEach(function (id) { const el = document.getElementById(id); if (el) el.checked = false; });
       const _slVal = document.getElementById('arm-exit-sl-val'); if (_slVal) _slVal.value = '3';
-      const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '5';
+      const _tpVal = document.getElementById('arm-exit-tp-val'); if (_tpVal) _tpVal.value = '3';
       const _ocoMaster = document.getElementById('arm-exit-master-chk'); if (_ocoMaster) _ocoMaster.checked = false;
       const _ocoDetail = document.getElementById('arm-exit-detail'); if (_ocoDetail) _ocoDetail.style.display = 'none';
       // 同 openSmartCreateModal()：預設商品要依這支機器人實際的帳戶類型給對應範例
