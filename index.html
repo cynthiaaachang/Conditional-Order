@@ -9559,10 +9559,14 @@
                 <div class="num-wrap" style="width:75px"><input type="text" inputmode="numeric" value="10" min="1"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
                 <span>萬元</span>
                 <span id="arm-fut-margin" style="display:none;align-items:center;gap:6px">
-                  <span style="color:var(--text2);margin-left:10px">期貨保證金成數</span>
-                  <div class="num-wrap" style="width:72px"><input type="text" inputmode="decimal" value="13.5" min="1"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
-                  <span>%</span><span title="期貨等額換算：口數 = 固定金額 ÷（每口契約價值 × 保證金成數）。成數預設 13.5%（股票期貨原始保證金多數標的成數；指數期貨依期交所公告），可自行調整，與積木回測基準一致。" style="cursor:help;color:var(--accent);font-weight:700;font-size:11px;border:1px solid var(--accent);border-radius:50%;min-width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">i</span>
+                  <i class="icon-info" style="cursor:help" data-tip="根據期交所規定，每個商品保證金都不一樣&#10;由系統依所選商品自動帶入，非估算換算，使用者無法調整&#10;口數 ＝ 固定金額 ÷ 每口保證金（期交所公告值）"></i>
                 </span>
+              </div>
+              <div id="arm-margin-example" style="display:none;margin-top:6px;padding:10px 12px;background:var(--bg2,#f5f6f8);border-radius:8px;font-size:var(--f-xs,12px);color:var(--text2);line-height:1.7">
+                <div style="font-weight:600;color:var(--text);margin-bottom:2px">口數怎麼算？根據期交所規定，每個商品保證金都不一樣，系統依所選商品自動帶入，不可調整。</div>
+                <div style="margin-bottom:4px">以台指期為例：現價 <strong>17,000</strong>、契約乘數 <strong>50</strong> → 每口契約價值 ＝ 17,000 × 50 ＝ 850,000；期交所公告原始保證金率約 13.5% → <strong>每口保證金 ≈ NT$114,750</strong>（實際以期交所當下公告值為準，非本系統估算）</div>
+                <div>固定金額 <strong>100</strong> 萬 → 口數 ＝ 100萬 ÷ 114,750 ＝ <span id="arm-margin-ex-result1">8.7</span> → 捨去為 <strong id="arm-margin-ex-lots1">8</strong> 口</div>
+                <div>固定金額 <strong>10</strong> 萬 → 口數 ＝ 10萬 ÷ 114,750 ＝ <span id="arm-margin-ex-result2">0.87</span> → 不足 1 口，捨去為 0 口、不下單</div>
               </div>
               <div id="arm-qmode-qty" style="display:flex;align-items:center;gap:8px;font-size:var(--f-base)">
                 <span style="color:var(--text2)">固定每筆數量</span>
@@ -10018,15 +10022,38 @@
         });
       });
     });
-    // 選期貨時，等額顯示保證金成數欄、等量單位改「口」
+    // 選期貨時，等額顯示保證金試算說明、等量單位改「口」
+    // 每口保證金 —— 依商品讀取期交所公告值，非估算換算，使用者不可調整
+    function armUpdateMarginDisplay() {
+      var marginPerLot = 114750; // 範例：台指期，實際應依所選商品從契約規格資料源即時讀取（連動 FU6）
+      var amt1 = 1000000, amt2 = 100000;
+      var result1 = amt1 / marginPerLot;
+      var result2 = amt2 / marginPerLot;
+      var r1 = document.getElementById('arm-margin-ex-result1');
+      if (r1) r1.textContent = result1.toFixed(2);
+      var l1 = document.getElementById('arm-margin-ex-lots1');
+      if (l1) l1.textContent = Math.floor(result1);
+      var r2 = document.getElementById('arm-margin-ex-result2');
+      if (r2) r2.textContent = result2.toFixed(2);
+    }
     function armCtypeChange() {
       const futRadio = document.querySelectorAll('[name="arm-ctype"]')[3];
       const isFut = !!(futRadio && futRadio.checked);
-      const m = document.getElementById('arm-fut-margin');
-      if (m) m.style.display = isFut ? 'inline-flex' : 'none';
       const u = document.getElementById('arm-qty-unit-q');
       if (u) u.textContent = isFut ? '口' : '張';
       document.querySelectorAll('#arm-pane-2 .pos-unit').forEach(function (el) { el.textContent = isFut ? '口' : '張'; });
+      _armUpdateFuturesMarginUI();
+    }
+    function _armUpdateFuturesMarginUI() {
+      const futRadio = document.querySelectorAll('[name="arm-ctype"]')[3];
+      const isFut = !!(futRadio && futRadio.checked);
+      const amountMode = document.getElementById('arm-qmode-amount').style.display !== 'none';
+      const show = isFut && amountMode;
+      const m = document.getElementById('arm-fut-margin');
+      if (m) m.style.display = show ? 'inline-flex' : 'none';
+      const example = document.getElementById('arm-margin-example');
+      if (example) example.style.display = show ? 'block' : 'none';
+      if (show) armUpdateMarginDisplay();
     }
     function armAcctChange(sel) {
       const opt = sel.options[sel.selectedIndex];
@@ -10194,6 +10221,7 @@
     function armQModeSwitch(mode) {
       document.getElementById('arm-qmode-amount').style.display = mode === 'amount' ? 'flex' : 'none';
       document.getElementById('arm-qmode-qty').style.display = mode === 'qty' ? 'flex' : 'none';
+      _armUpdateFuturesMarginUI();
     }
 
     function checkRobotName(input) {
@@ -11612,17 +11640,14 @@
       const item = _sbItemForKey(key);
       return item ? (item.getAttribute('title') || item.textContent.trim()) : '';
     }
-    // 這支機器人目前是否執行中——雲端監控條件執行中無法調整參數的規則要靠這個判斷
-    function _isKeyRobotRunning(key) {
-      const item = _sbItemForKey(key);
-      return !!(item && item.querySelector('.sb-dot.green'));
-    }
     function openEditProdModal(key, idx) {
       const row = SMART_COMM[key]?.watch[idx];
       if (!row) return;
-      // 雲端監控條件執行中無法調整參數——機器人執行中時這個商品的監控條件也算執行中，直接擋下編輯
-      if (_isKeyRobotRunning(key)) {
-        xAlert('無法編輯', '此監控商品的雲端監控條件正在執行中，無法調整參數，請先暫停或停止機器人後再編輯。', '<i class="fas fa-triangle-exclamation" style="color:var(--warning)"></i>');
+      // 商品參數是否能改，只看這一列自己有沒有暫停(row[7])，不受雲端監控條件或機器人是否執行中影響——
+      // 雲端監控條件是伺服器端持續運算的，機器人執行中也不代表這個商品此刻真的在監控，唯一可靠的依據
+      // 是使用者自己按下的「暫停」狀態
+      if (!row[7]) {
+        xAlert('無法編輯', '此監控商品尚未暫停，無法調整參數，請先暫停此監控商品後再編輯。', '<i class="fas fa-triangle-exclamation" style="color:var(--warning)"></i>');
         return;
       }
       const curRobot = ROBOTS[_curRobotIdx];
@@ -13250,7 +13275,7 @@
         const i = ROBOTS.findIndex(function (r) { return r.name === name; });
         if (i >= 0) _curRobotIdx = i;
       }
-      openEditProdModal(key, idx); // 執行中無法編輯的擋下邏輯已經在 openEditProdModal() 裡，這裡不用重複判斷
+      openEditProdModal(key, idx); // 未暫停無法編輯的擋下邏輯已經在 openEditProdModal() 裡，這裡不用重複判斷
     }
     function ovToggleWatchRow(key, idx) {
       const d = SMART_COMM[key];
