@@ -6313,7 +6313,7 @@
     /* 展開時整個 chevron 轉 90 度（▸ → ▾），收合時轉回來 */
     :is(#ov-smartlist, #smart-view, #ov-comm) .sl-exp.open { transform: rotate(90deg); color: var(--accent) }
     #ov-smartlist tr.sl-child { background: color-mix(in srgb, var(--bg2) 45%, transparent) }
-    /* 子單標籤：鋪單/TWAP/拆單的「第N筆」用中性色，OCO 停利停損沿用既有 .tpsl-tag 配色 */
+    /* 子單標籤：鋪單/拆單的「第N筆」用中性色，OCO 停利停損沿用既有 .tpsl-tag 配色 */
     #ov-smartlist .sl-leg-tag {
       display: inline-block; padding: 1px 6px; border-radius: var(--r-sm);
       background: var(--bg2); color: var(--text3); font-size: var(--f-xs); white-space: nowrap;
@@ -7172,7 +7172,7 @@
             <!-- ===== 智慧單條列（下區）=====
                  所有智慧單一起條列，每一列就是一張智慧單——沒有機器人這層容器，也沒有名稱與安控。
                  「監控中（尚未觸發）」與「已送出委託」合在同一張表，用「狀態」欄區分。
-                 鋪單(SCALE)／定時定額(TWAP)／拆單(SPLIT)／停利停損(OCO) 這些一次產生多筆委託的，
+                 鋪單(SCALE)／拆單(SPLIT)／停利停損(OCO) 這些一次產生多筆委託的，
                  母列顯示彙總、點 ▸ 展開才看子單。渲染見 renderSmartList()。 -->
             <!-- 智慧單在「機器人」分頁裡收成一個可展開的區塊（跟量化積木卡片並列），
                  首頁預設收合保持乾淨；要看細節則進左側「智慧單」資料夾的專屬頁面 -->
@@ -7194,7 +7194,7 @@
                   <table class="o-table" id="sl-table">
                     <thead>
                       <tr>
-                        <th class="col-chk"><input type="checkbox" class="row-cb" onclick="toggleAllSmartRows(this)"></th>
+                        <th class="col-chk"><input type="checkbox" class="row-cb" onclick="toggleAllSmartRows(this,'sl-tbody')"></th>
                         <th class="col-act" style="width:112px"></th>
                         <th style="width:26px"></th>
                         <th data-sortable data-sortkey="time" data-sort-dir="desc" onclick="slSort(this,'time')">委託時間</th>
@@ -7401,7 +7401,7 @@
 
       <!-- ===== 智慧單專屬頁 =====
            從左側「智慧單」資料夾進來。監控中與已送出委託合在同一張表，用狀態欄與狀態篩選區分，
-           不再拆成兩個分頁；子母單（鋪單/TWAP/拆單/OCO）用展開呈現。渲染見 renderSmartView()。 -->
+           不再拆成兩個分頁；子母單（鋪單/拆單/OCO）用展開呈現。渲染見 renderSmartView()。 -->
       <div id="smart-view" class="main" style="display:none">
         <div class="hdr det-hdr">
           <div class="det-hdr-row1">
@@ -7475,7 +7475,6 @@
                   <option value="moo">開盤收盤</option>
                   <option value="scale">鋪單</option>
                   <option value="splitqty">拆單</option>
-                  <option value="twap">定時定額</option>
                 </select>
                 <button class="op-btn op-red" onclick="showPauseAllSmart()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:var(--comp-ctrl-h);font-size:14px;padding:0 14px">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg>
@@ -7489,7 +7488,7 @@
                 <table class="o-table" id="sv-table">
                   <thead>
                     <tr>
-                      <th class="col-chk"><input type="checkbox" onclick="toggleAllOvWatchRows(this)"></th>
+                      <th class="col-chk"><input type="checkbox" onclick="toggleAllSmartRows(this,'sv-tbody')"></th>
                       <th class="col-act" style="width:112px"></th>
                       <th style="width:26px"></th>
                       <th data-sortable data-sortkey="time" data-sort-dir="desc" onclick="svSort(this,'time')" title="長效單會在時間下方標出建立日期">時間</th>
@@ -8930,7 +8929,7 @@
               </div>
             </div>
             <!-- 智慧單：佈單設定（STP / STP LMT） -->
-            <!-- 智慧單：執行商品（圖2 設定區 → 圖1 popup） -->
+            <!-- 智慧單：商品與下單商品（觸發後可改送其他商品，即看A下B） -->
             <div class="s-section" id="arm-smart-sym-sec" style="display:none">
               <div class="sm-inline-row">
                 <span class="sm-inline-label">商品</span>
@@ -8941,9 +8940,9 @@
                   <button type="button" class="arm-cancel" style="flex-shrink:0;white-space:nowrap" onclick="openSymPop('main')">選擇…</button>
                 </div>
               </div>
-              <label style="display:flex;align-items:center;gap:6px;margin:-4px 0 10px 88px;cursor:pointer;font-size:var(--f-sm);color:var(--text3)"><input type="checkbox" id="arm-same-sym" checked onchange="armSameSym(this)"> 觸發後同商品下單（取消可看A下B指定其他執行商品）</label>
+              <label style="display:flex;align-items:center;gap:6px;margin:-4px 0 10px 88px;cursor:pointer;font-size:var(--f-sm);color:var(--text3)"><input type="checkbox" id="arm-same-sym" checked onchange="armSameSym(this)"> 觸發後同商品下單（取消可指定其他下單商品）</label>
               <div class="sm-inline-row" id="arm-exec-row" style="display:none">
-                <span class="sm-inline-label">執行商品</span>
+                <span class="sm-inline-label">下單商品</span>
                 <div class="sm-inline-field">
                   <input class="s-input" id="arm-exec-sym-code" style="width:100px;flex:0 0 auto" placeholder="代碼" oninput="armSymCodeInput(this)" onchange="armSymCodeCommit(this)" title="輸入代碼識別商品">
                   <span id="arm-exec-sym-name" style="font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
@@ -8974,7 +8973,6 @@
                     <option value="moo">開盤／收盤（MOO/LOO/MOC/LOC）</option>
                     <option value="scale">鋪單（SCALE）</option>
                     <option value="splitqty">拆單（SPLIT）</option>
-                    <option value="twap">定時定額（TWAP）</option>
                   </select>
                 </div>
               </div>
@@ -8992,7 +8990,6 @@
                 <option value="loc">收盤限價（LOC）</option>
                 <option value="scale">鋪單</option>
                 <option value="splitqty">拆單</option>
-                <option value="twap">定時定額（TWAP）</option>
               </select>
               <!-- 開盤／收盤大類的子選擇：時機(開盤/收盤) × 委託方式(市價/限價) -->
               <div class="sm-inline-row sm-adv-box" id="arm-moocat-row" style="display:none">
@@ -9021,7 +9018,7 @@
                     <option value="fixed">限價（指定價）</option>
                     <option value="chase">漲跌停</option>
                     <!-- 範圍市價(Range Market Order)是期貨/選擇權專屬委託方式，股票沒有——預設 hidden，
-                         只有執行商品是期貨時才由 _armSyncRangeOption() 顯示，見該函式註解 -->
+                         只有下單商品是期貨時才由 _armSyncRangeOption() 顯示，見該函式註解 -->
                     <option value="range" hidden>範圍市價</option>
                   </select>
                   <div class="num-wrap" id="arm-limit-fixed-wrap" style="width:100px;display:none"><input type="text" inputmode="decimal" id="arm-limit-fixed" value="958"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
@@ -9144,22 +9141,6 @@
                   <div class="num-wrap" id="arm-splitqty-fixed-wrap" style="width:100px;display:none"><input type="text" inputmode="decimal" id="arm-splitqty-fixed" value="0"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
                   <div style="display:none;align-items:center;gap:6px" id="arm-splitqty-offset-wrap"><span style="font-size:var(--f-base)">±</span><div class="num-wrap" style="width:64px"><input type="text" inputmode="numeric" id="arm-splitqty-offset" value="1"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div><span style="font-size:var(--f-base)">檔</span></div>
                   <div style="display:none;align-items:center;gap:6px" id="arm-splitqty-level-wrap"><div class="num-wrap" style="width:56px"><input type="text" inputmode="numeric" id="arm-splitqty-level" value="1" min="1" max="5"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div></div>
-                </div>
-              </div>
-              <!-- 定時定額（TWAP）專屬欄位 -->
-              <div class="sm-inline-row sm-adv-box" id="arm-twap-row" style="display:none">
-                <span class="sm-inline-label">執行區間</span>
-                <div class="sm-inline-field">
-                  <input type="time" class="s-input" id="arm-twap-start" value="09:00" style="width:120px">
-                  <span style="color:var(--text2)">～</span>
-                  <input type="time" class="s-input" id="arm-twap-end" value="13:00" style="width:120px">
-                  <span style="font-size:var(--f-base);color:var(--text2)">切</span>
-                  <div class="num-wrap" style="width:64px"><input type="text" inputmode="numeric" id="arm-twap-cnt" value="4" min="2"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
-                  <span style="font-size:var(--f-base);color:var(--text2)">段</span>
-                  <select class="s-input" id="arm-twap-ord" style="width:140px" onchange="armOrdSetChange('twap')"><option value="market">市價</option><option value="fixed">指定價格</option><option value="last">最新價</option><option value="bid">買</option><option value="ask">賣</option><option value="mid">中價</option><option value="limitud">漲跌停</option><option value="open">開盤</option><option value="close">收盤</option><option value="high">最高</option><option value="low">最低</option></select>
-                  <div class="num-wrap" id="arm-twap-fixed-wrap" style="width:100px;display:none"><input type="text" inputmode="decimal" id="arm-twap-fixed" value="0"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div>
-                  <div style="display:none;align-items:center;gap:6px" id="arm-twap-offset-wrap"><span style="font-size:var(--f-base)">±</span><div class="num-wrap" style="width:64px"><input type="text" inputmode="numeric" id="arm-twap-offset" value="1"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div><span style="font-size:var(--f-base)">檔</span></div>
-                  <div style="display:none;align-items:center;gap:6px" id="arm-twap-level-wrap"><div class="num-wrap" style="width:56px"><input type="text" inputmode="numeric" id="arm-twap-level" value="1" min="1" max="5"><div class="num-arrows"><button type="button" onclick="numStep(this,1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 0L10 6H0L5 0Z"/></svg></button><button type="button" onclick="numStep(this,-1)"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0H10L5 6Z"/></svg></button></div></div></div>
                 </div>
               </div>
               <div class="sm-inline-row">
@@ -11083,24 +11064,8 @@
           ['13:48:30','技嘉(2376)','作空','鋪單（限價）','298.0','296.0','1 / 0','S23060004','pend','main','','']
         ]
       },
-      twap: {
-        m: { f:'1筆', fAmt:'($70,600)', fSub:'共1檔商品', b:'2筆', bAmt:'($157,700)', bSub:'共2檔商品', x:'1筆', xSub:'共1檔商品' },
-        // watch 第9欄(index 8)：TWAP 的真正監控參數是時間區間+切幾段，這裡存排程摘要供表格顯示
-        watch: [['台泥(1101)','作多','定時定額（TWAP）','35.5','35.3','','','','09:00~13:00（4段）'],['亞泥(1102)','作多','定時定額（TWAP）','52.0','51.8','','','','09:15~11:15（3段）']],
-        sent: [
-          // TWAP 依時間切段送出，母列彙總、展開看每一段
-          ['09:02:00','台泥(1101)','作多','定時定額（限價）','35.5','35.3','4 / 3','W23060001','partial','main','','',
-            [['09:02:00','35.3','1 / 1','W23060001-1','filled'],
-             ['10:02:00','35.3','1 / 1','W23060001-2','filled'],
-             ['11:02:00','35.3','1 / 1','W23060001-3','filled'],
-             ['12:02:00','35.3','1 / 0','W23060001-4','pend']]],
-          ['09:40:15','台泥(1101)','作多','定時定額（限價）','35.5','35.3','3 / 1','W23060002','partial','main','',''],
-          ['10:20:33','亞泥(1102)','作多','定時定額（限價）','52.0','51.8','1 / 0','W23060003','fail','main','',''],
-          ['13:05:50','亞泥(1102)','作多','定時定額（限價）','52.0','51.8','1 / 0','W23060004','pend','main','','']
-        ]
-      },
       // 開盤／收盤：原本沒有示範資料（過去這一大類沒有對應的示範機器人），智慧單條列化後
-      // 清單面板要能列出 8 個佈單大類各自的筆數，補一組最小示範
+      // 清單面板要能列出各佈單大類各自的筆數，補一組最小示範
       moo: {
         m: { cap:'$0', pct:0, f:'0筆', fAmt:'($0)', fSub:'—', b:'1筆', bAmt:'($188,000)', bSub:'共1檔商品', x:'0筆', xSub:'—' },
         watch: [['元大台灣50(0050)','作多','開盤限價（LOO）','188.0','187.5','','2']],
@@ -11132,7 +11097,6 @@
       trail: { m: { mv:'$0', cost:'$0', pnl:'$0', pnlPct:'0%', win:'0檔', winSub:'—', lose:'0檔', loseSub:'—' }, rows: [] },
       gat: { m: { mv:'$0', cost:'$0', pnl:'$0', pnlPct:'0%', win:'0檔', winSub:'—', lose:'0檔', loseSub:'—' }, rows: [] },
       scale: { m: { mv:'$0', cost:'$0', pnl:'$0', pnlPct:'0%', win:'0檔', winSub:'—', lose:'0檔', loseSub:'—' }, rows: [] },
-      twap: { m: { mv:'$0', cost:'$0', pnl:'$0', pnlPct:'0%', win:'0檔', winSub:'—', lose:'0檔', loseSub:'—' }, rows: [] },
       moo:  { m: { mv:'$0', cost:'$0', pnl:'$0', pnlPct:'0%', win:'0檔', winSub:'—', lose:'0檔', loseSub:'—' }, rows: [] },
       splitqty: { m: { mv:'$0', cost:'$0', pnl:'$0', pnlPct:'0%', win:'0檔', winSub:'—', lose:'0檔', loseSub:'—' }, rows: [] }
     };
@@ -11224,7 +11188,7 @@
       if (sameChk) { sameChk.checked = !hasExec; armSameSym(sameChk); }
       if (hasExec) { const execEl = document.getElementById('arm-exec-sym-disp'); if (execEl) execEl.value = row[5]; _syncSymCodeDisplay('arm-exec-sym-disp'); }
       armTrigCheck();
-      // 執行商品(看A下B時才會在上面才設定完)確定之後才能正確判斷是不是期貨、要不要顯示範圍市價/切換張口單位，
+      // 下單商品(看A下B時才會在上面才設定完)確定之後才能正確判斷是不是期貨、要不要顯示範圍市價/切換張口單位，
       // 保險起見在這裡最後再同步一次，不依賴前面幾個呼叫鏈裡順序剛好正確
       _armSyncProductTypeUI();
     }
@@ -11240,10 +11204,9 @@
       else if (place === 'moc') set('arm-moc-time', v);
       else if (place === 'loc') set('arm-loc-time', v);
       else if (place === 'trail' || place === 'traillmt') set('arm-trail-arm', v === '—' ? '' : v);
-      else if (place === 'twap') set('arm-twap-start', v);
     }
     // 反向對照 _smartOrdDisplay()：只有 stp/stplmt/mit/lit(市價/漲跌停/限價N可以逐字解析回去)跟
-    // traillmt(限價偏移±N檔可解析)兩組能可靠還原；其餘型別(gat/loo/loc/batch/splitqty/twap)的委託價是
+    // traillmt(限價偏移±N檔可解析)兩組能可靠還原；其餘型別(gat/loo/loc/scale/splitqty)的委託價是
     // 多欄位組成的摘要句子，無法無損反解，維持建立流程的預設值
     function _smartFillOrdFromDisplay(place, v) {
       if (place === 'stp' || place === 'stplmt' || place === 'mit' || place === 'lit') {
@@ -11282,7 +11245,7 @@
       const execSym = sameSymOn ? '' : (document.getElementById('arm-exec-sym-disp')?.value || '');
       const old = d.watch[idx];
       const paused = old ? old[7] : undefined;
-      // 覆蓋既有列：商品/方向/觸發價/委託價/委託量/執行商品全部改成表單目前的值，保留第 8 欄的 paused 狀態不受影響
+      // 覆蓋既有列：商品/方向/觸發價/委託價/委託量/下單商品全部改成表單目前的值，保留第 8 欄的 paused 狀態不受影響
       // 第 10/11 欄(帳號/建立時間)是這一列自己的身分資料，編輯參數時原封保留
       d.watch[idx] = [snap.sym, dirText, ARM_PLACE_LABEL[snap.place] || snap.place, _smartTrigDisplay(snap.place), _smartOrdDisplay(snap.place), execSym, snap.qty, paused, old ? old[8] : '', old ? old[9] : '', old ? old[10] : '', old ? old[11] : ''];
       closeSmartModal();
@@ -11298,8 +11261,7 @@
       'mit':     { key: 'mit',     placeLabel: '觸價（MIT）',          ordLabel: '市價' },
       'trail':   { key: 'trail',   placeLabel: '移動停損（TRAIL）',    ordLabel: '市價' },
       'gat':     { key: 'gat',     placeLabel: '定時（GAT）',          ordLabel: '限價（指定價）' },
-      'scale':   { key: 'scale',   placeLabel: '鋪單（SCALE）',      ordLabel: '指定價格' },
-      'twap':    { key: 'twap',    placeLabel: '定時定額（TWAP）',      ordLabel: '限價（指定價）' }
+      'scale':   { key: 'scale',   placeLabel: '鋪單（SCALE）',      ordLabel: '指定價格' }
     };
     function _applyRobot(name) {
       if (ROBOTS.length === 0) _updateRobotList();
@@ -12397,7 +12359,7 @@
 
     /* ===================== 當日委託：依訊號來源分三組 =====================
        量化積木／手動兩組是靜態示範列（寫在 HTML 裡）；智慧單那組由這裡渲染，
-       因為它要有子母單下拉（OCO 停利停損、鋪單/TWAP/拆單的各筆委託）。 */
+       因為它要有子母單下拉（OCO 停利停損、鋪單/拆單的各筆委託）。 */
     const _ocGrpOpen = { smart: true, block: true, manual: true };
     function toggleCommGroup(key) {
       _ocGrpOpen[key] = !_ocGrpOpen[key];
@@ -12462,7 +12424,7 @@
     /* ===================== 智慧單專屬頁：監控 / 委託 兩分頁 ===================== */
 
     /* ===================== 智慧單專屬頁：監控與委託同一張表 =====================
-       狀態欄與狀態篩選負責區分監控中／已送出；子母單（鋪單/TWAP/拆單/OCO）用展開呈現。
+       狀態欄與狀態篩選負責區分監控中／已送出；子母單（鋪單/拆單/OCO）用展開呈現。
        指標卡是所有智慧單的委託狀態一覽，也當快速篩選用。 */
     let _svSortKey = 'time', _svSortAsc = false;
     let _svStatus = '';   // 由指標卡或狀態下拉設定
@@ -12527,7 +12489,7 @@
           && (!cat || SMART_KEY_CAT[r.key] === cat)
           && (!kw || (r.sym + ' ' + r.exec).toLowerCase().indexOf(kw) >= 0);
       });
-      // 子單（鋪單/TWAP/拆單的各筆、OCO 停利停損）有自己的狀態，也要能被篩到：
+      // 子單（鋪單/拆單的各筆、OCO 停利停損）有自己的狀態，也要能被篩到：
       // 母單自己符合 → 照常顯示；母單不符合但底下有符合的子單 → 母單留著當脈絡，並自動展開
       rows = scope.filter(function (r) {
         return _slStatusMatch(r, _svStatus)
@@ -12598,7 +12560,7 @@
       const trig = (isWatch && r.key === 'trail' && r.extra)
         ? r.trig + ' <span style="color:var(--text2);font-size:var(--f-xs)" title="移動停損的觸發價會隨行情動態調整，此為移動幅度">（移動' + r.extra + '）</span>'
         : (r.trig || '—');
-      const placeCell = (r.extra && (r.key === 'gat' || r.key === 'twap' || r.key === 'moo'))
+      const placeCell = (r.extra && (r.key === 'gat' || r.key === 'moo'))
         ? r.place + ' <span style="color:var(--text3);font-size:var(--f-xs)">' + r.extra + '</span>'
         : r.place;
       let expandCell = '<td></td>';
@@ -12609,13 +12571,15 @@
       }
       let chkCell = '<td class="col-chk"></td>', actCell;
       if (isWatch) {
-        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
+        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="watch" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
         actCell = '<td class="col-act" style="width:112px"><div class="act-slots">'
           + '<button class="ico-btn" onclick="ovOpenEditProdModal(&quot;' + r.key + '&quot;,' + r.idx + ')" title="編輯此智慧單"><i class="fas fa-pen"></i></button>'
           + '<button class="ico-btn" onclick="ovToggleWatchRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="' + (paused ? '恢復監控' : '暫停監控') + '"><i class="fas ' + (paused ? 'fa-play' : 'fa-pause') + '"></i></button>'
           + '<button class="ico-btn del" onclick="ovDelWatchRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="刪除此智慧單"><i class="fas fa-trash"></i></button></div></td>';
       } else {
         const cxl = (r.status === 'pend' || r.status === 'partial');
+        // 可刪單的委託才給勾選——完全成交/失敗/已刪單既不能改也不能刪，勾了也沒有動作可做
+        if (cxl) chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="sent" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
         const delTitle = r.children.length ? ('刪單（將一併刪除 ' + r.children.length + ' 筆子單）') : '刪單';
         actCell = '<td class="col-act" style="width:112px"><div class="act-slots">'
           + (cxl
@@ -12784,13 +12748,13 @@
     /* ===================== 智慧單條列 =====================
        智慧單不再掛在機器人底下，每一張就是這張表上的一列（沒有名稱、沒有安控）。
        「監控中（尚未觸發）」與「已送出委託」合在同一張表，用狀態欄區分。
-       鋪單(SCALE)／定時定額(TWAP)／拆單(SPLIT) 一次送出多筆委託，停利停損(OCO) 一次掛兩張出場單，
+       鋪單(SCALE)／拆單(SPLIT) 一次送出多筆委託，停利停損(OCO) 一次掛兩張出場單，
        這些都用「母列彙總 + 展開看子單」呈現，同一套展開元件也能直接接未來的 VWAP。 */
 
     // 佈單大類 → SMART_COMM key（停損大類的 key 是歷史沿用的 'market'，其餘與大類同名）
-    const SMART_CAT_KEY = { stp: 'market', mit: 'mit', trail: 'trail', gat: 'gat', moo: 'moo', scale: 'scale', splitqty: 'splitqty', twap: 'twap' };
-    const SMART_KEY_CAT = { market: 'stp', mit: 'mit', trail: 'trail', gat: 'gat', moo: 'moo', scale: 'scale', splitqty: 'splitqty', twap: 'twap' };
-    const SMART_CAT_LABEL = { stp: '停損', mit: '觸價', trail: '移動停損', gat: '定時', moo: '開盤收盤', scale: '鋪單', splitqty: '拆單', twap: '定時定額' };
+    const SMART_CAT_KEY = { stp: 'market', mit: 'mit', trail: 'trail', gat: 'gat', moo: 'moo', scale: 'scale', splitqty: 'splitqty' };
+    const SMART_KEY_CAT = { market: 'stp', mit: 'mit', trail: 'trail', gat: 'gat', moo: 'moo', scale: 'scale', splitqty: 'splitqty' };
+    const SMART_CAT_LABEL = { stp: '停損', mit: '觸價', trail: '移動停損', gat: '定時', moo: '開盤收盤', scale: '鋪單', splitqty: '拆單' };
     // 表格「佈單方式」欄一律顯示這 8 個——跟建立智慧單時的佈單方式下拉(#sm-place-cat)逐字相同。
     // 示範資料裡原本混著「停損市價（STP）」「停損（限價）」「鋪單（限價）」等 19 種寫法，那些是
     // 大類底下的市價/限價子模式，不是使用者建立時會看到的選項；子模式的差別在「委託價」欄已經看得到，
@@ -12800,17 +12764,17 @@
     // 會把欄寬撐得很長，且建立流程的下拉本來就看得到完整寫法，表格不需要重複
     function _smartPlaceLabel(key) { return SMART_CAT_LABEL[SMART_KEY_CAT[key]] || ''; }
     // 清單面板的分類順序，跟建立流程的佈單方式下拉同一個順序
-    const SMART_CAT_ORDER = ['stp', 'mit', 'trail', 'gat', 'moo', 'scale', 'splitqty', 'twap'];
+    const SMART_CAT_ORDER = ['stp', 'mit', 'trail', 'gat', 'moo', 'scale', 'splitqty'];
     // 智慧單脫離機器人後，帳號改記在每一列上（watch index 9 / sent index 13）。既有示範資料還沒
     // 逐列補帳號的，用這張表當預設值——就是原本那 6 支示範機器人各自的帳戶
     const SMART_KEY_ACCT = {
       market: '玉山期-123A1234567-某某某', mit: '証-模擬交易(內建)-01', trail: '証-模擬交易(內建)-01',
       gat: '証-模擬交易(內建)-01', moo: '証-模擬交易(內建)-01', scale: '証-模擬交易(內建)-01',
-      splitqty: '証-模擬交易(內建)-01', twap: '証-模擬交易(內建)-01'
+      splitqty: '証-模擬交易(內建)-01'
     };
     // 大類的代表 place 代碼：編輯智慧單時用它決定顯示哪組型別專屬欄位。逐列若能從佈單方式
     // 顯示字串反查到更精確的代碼（例如 stplmt / lit / loo），以反查結果為優先
-    const SMART_KEY_PLACE = { market: 'stp', mit: 'mit', trail: 'trail', gat: 'gat', moo: 'moo', scale: 'scale', splitqty: 'splitqty', twap: 'twap' };
+    const SMART_KEY_PLACE = { market: 'stp', mit: 'mit', trail: 'trail', gat: 'gat', moo: 'moo', scale: 'scale', splitqty: 'splitqty' };
     function _smartCatKey(place) { return SMART_CAT_KEY[PLACE_CAT_MAP[place] || place] || 'market'; }
     function _placeFromLabel(label) {
       return Object.keys(ARM_PLACE_LABEL).find(function (k) { return ARM_PLACE_LABEL[k] === label; }) || '';
@@ -12869,13 +12833,13 @@
               id: key + '|s|' + i, key: key, kind: 'sent', idx: i, seq: seq,
               acct: acct, sym: r[1], exec: '', dir: r[2], place: _smartPlaceLabel(key),
               trig: r[4], ord: r[5], qty: (qf[0] || '').trim(), fill: (qf[1] || '').trim(),
-              // 示範資料沒有獨立的成交均價欄位：有子單(鋪單/TWAP/拆單)的母單用已成交子單加權算，
+              // 示範資料沒有獨立的成交均價欄位：有子單(鋪單/拆單)的母單用已成交子單加權算，
               // 其餘沿用舊 _smAvg() 的簡化做法拿委託價當均價（鋪單母單的委託價是價格區間，直接拿會是錯的）
               avg: _smartAvgPrice(r),
               status: r[8], ordNo: r[7], time: r[0], date: r[14] || SMART_TODAY, extra: '', children: []
             };
             lastMainFilled = (r[8] === 'filled');
-            // 鋪單／TWAP／拆單：一次送出多筆委託，legs(index 12) 展開成子列
+            // 鋪單／拆單：一次送出多筆委託，legs(index 12) 展開成子列
             (r[12] || []).forEach(function (g, gi) {
               const gqf = ('' + (g[2] || '')).split('/');
               lastMain.children.push({
@@ -12915,7 +12879,7 @@
       if (typeof _updateFilterCounts === 'function') _updateFilterCounts();
     });
     (function _seedSmartRowIdentity() {
-      const t0 = { market: '09:00:05', mit: '09:00:05', trail: '09:00:05', gat: '09:00:05', scale: '09:00:05', twap: '09:00:05', moo: '09:00:01', splitqty: '10:10:00' };
+      const t0 = { market: '09:00:05', mit: '09:00:05', trail: '09:00:05', gat: '09:00:05', scale: '09:00:05', moo: '09:00:01', splitqty: '10:10:00' };
       const ALT_ACCT = { '台指期近月(FITXN*1)': '期-模擬交易(內建)-01', '廣達期(DK)': '期-模擬交易(內建)-01' };
       // 長效單（多日有效）：這兩檔刻意標成前幾天建立，用來示範時間欄的日期揭示
       const LONG_LIVED = { '台指期近月(FITXN*1)': '2026/08/24', '統一(1216)': '2026/08/25' };
@@ -13053,8 +13017,8 @@
       const trig = (r.kind === 'watch' && r.key === 'trail' && r.extra)
         ? r.trig + ' <span style="color:var(--text2);font-size:var(--f-xs)" title="移動停損的觸發價會隨行情動態調整，此為移動幅度">（移動' + r.extra + '）</span>'
         : (r.trig || '—');
-      // GAT／TWAP／開盤收盤的監控參數是時間或排程，接在佈單方式後面當旁註
-      const placeCell = (r.extra && (r.key === 'gat' || r.key === 'twap' || r.key === 'moo'))
+      // GAT／開盤收盤的監控參數是時間或排程，接在佈單方式後面當旁註
+      const placeCell = (r.extra && (r.key === 'gat' || r.key === 'moo'))
         ? r.place + ' <span style="color:var(--text3);font-size:var(--f-xs)">' + r.extra + '</span>'
         : r.place;
       let expandCell = '<td></td>';
@@ -13066,14 +13030,14 @@
       let chkCell = '<td class="col-chk"></td>', actCell = '<td class="col-act" style="width:112px"></td>';
       if (r.kind === 'watch') {
         const paused = r.status === 'paused';
-        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
+        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="watch" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
         actCell = '<td class="col-act" style="width:112px"><div class="act-slots">'
           + '<button class="ico-btn" onclick="ovOpenEditProdModal(&quot;' + r.key + '&quot;,' + r.idx + ')" title="編輯此智慧單"><i class="fas fa-pen"></i></button>'
           + '<button class="ico-btn" onclick="ovToggleWatchRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="' + (paused ? '恢復監控' : '暫停監控') + '"><i class="fas ' + (paused ? 'fa-play' : 'fa-pause') + '"></i></button>'
           + '<button class="ico-btn del" onclick="ovDelWatchRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="刪除此智慧單"><i class="fas fa-trash"></i></button></div></td>';
       } else {
-        // 已送出委託：智慧單目前不支援修改單筆委託；可刪單的才給刪除鍵
         const cxl = (r.status === 'pend' || r.status === 'partial');
+        if (cxl) chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="sent" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
         const delTitle = r.children.length ? ('刪單（將一併刪除 ' + r.children.length + ' 筆子單）') : '刪單';
         actCell = '<td class="col-act" style="width:112px"><div class="act-slots">'
           + (cxl
@@ -13184,24 +13148,34 @@
     }
     // ===== 條列表批次操作：checkbox 記「key+idx」配對，共用既有的批次列(#watch-batch-bar) =====
     function onOvWatchCbChange() {
-      const n = document.querySelectorAll('.watch-cb[data-key]:checked').length;
+      const picked = [...document.querySelectorAll('.watch-cb[data-key]:checked')];
+      const n = picked.length;
       const bar = document.getElementById('watch-batch-bar');
       if (bar) bar.classList.toggle('show', n > 0);
       const countEl = document.getElementById('watch-batch-count');
       if (countEl && n > 0) countEl.textContent = '已選 ' + n + '筆';
-      const all = document.querySelectorAll('#sl-tbody .watch-cb');
-      const nInTab = document.querySelectorAll('#sl-tbody .watch-cb:checked').length;
-      const allCb = document.querySelector('#sl-table thead .col-chk input[type="checkbox"]');
-      if (allCb) allCb.checked = all.length > 0 && nInTab === all.length;
-      const pauseBtn = document.querySelector('#watch-batch-bar .batch-mod-btn');
-      const delBtn = document.querySelector('#watch-batch-bar .batch-del-btn');
-      if (pauseBtn) pauseBtn.setAttribute('onclick', 'batchPauseOvWatch()');
-      if (delBtn) delBtn.setAttribute('onclick', 'batchDelOvWatch()');
-      const cancelBtn = document.querySelector('#watch-batch-bar .batch-cancel-btn');
-      if (cancelBtn) cancelBtn.setAttribute('onclick', 'clearOvWatchBatchSel()');
+      // 兩張表各自的「全選」勾選狀態
+      [['sl-tbody', '#sl-table'], ['sv-tbody', '#sv-table']].forEach(function (a) {
+        const all = document.querySelectorAll('#' + a[0] + ' .watch-cb');
+        const hit = document.querySelectorAll('#' + a[0] + ' .watch-cb:checked').length;
+        const head = document.querySelector(a[1] + ' thead .col-chk input[type="checkbox"]');
+        if (head) head.checked = all.length > 0 && hit === all.length;
+      });
+      // 可用動作＝所有被選列都支援的動作：
+      //   全是監控中 → 批次暫停 ＋ 批次刪除
+      //   全是委託   → 批次修改 ＋ 批次刪除
+      //   兩者混選   → 只有批次刪除（監控的修改跟委託的修改是兩回事，暫停也不適用委託）
+      const hasWatch = picked.some(function (c) { return c.dataset.kind === 'watch'; });
+      const hasSent = picked.some(function (c) { return c.dataset.kind === 'sent'; });
+      const show = function (id, on) { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
+      show('wb-mod', hasSent && !hasWatch);
+      show('wb-pause', hasWatch && !hasSent);
+      show('wb-del', true);
     }
-    function toggleAllSmartRows(cb) {
-      document.querySelectorAll('#sl-tbody .watch-cb').forEach(function (c) { c.checked = cb.checked; });
+    // 全選：要指定是哪一張表的 tbody（智慧單頁與機器人分頁的條列表是兩張不同的表，
+    // 之前寫死指向條列表，智慧單頁的全選等於沒作用）
+    function toggleAllSmartRows(cb, tbodyId) {
+      document.querySelectorAll('#' + (tbodyId || 'sl-tbody') + ' .watch-cb').forEach(function (c) { c.checked = cb.checked; });
       onOvWatchCbChange();
     }
     function clearOvWatchBatchSel() {
@@ -13212,7 +13186,7 @@
     }
     function _ovWatchSelectedItems() {
       return Array.from(document.querySelectorAll('.watch-cb[data-key]:checked')).map(function (c) {
-        return { key: c.dataset.key, idx: parseInt(c.dataset.idx, 10) };
+        return { key: c.dataset.key, idx: parseInt(c.dataset.idx, 10), kind: c.dataset.kind || 'watch' };
       });
     }
     // 智慧單沒有機器人這層了，編輯這一列要帶的帳戶／佈單方式／方向全部從這一列自己身上取
@@ -13236,6 +13210,54 @@
         type: 'confirm', confirmText: '確認刪除', cancelText: '取消', confirmCls: 'danger', noClose: true,
         onOk: () => { d.watch.splice(idx, 1); _renderAllSmartViews(); }
       });
+    }
+    // 智慧單委託的批次修改：沿用量化積木那顆 #batch-mod-modal 版面，但資料來源與寫回都是
+    // SMART_COMM（積木那套 showBatchMod() 是直接讀寫 <tr>，智慧單的表是重新渲染出來的，不能那樣做）
+    let _smartBatchItems = [];
+    function showSmartBatchMod() {
+      _smartBatchItems = _ovWatchSelectedItems().filter(function (it) { return it.kind === 'sent'; });
+      if (!_smartBatchItems.length) return;
+      const body = document.getElementById('batch-mod-body');
+      body.innerHTML = _smartBatchItems.map(function (it, i) {
+        const r = SMART_COMM[it.key].sent[it.idx];
+        const qty = ('' + (r[6] || '')).split('/')[0].trim();
+        const isFut = _symIsFutures(r[1]);
+        const side = r[2] === '作多' ? '買進' : '賣出';
+        const sideCls = r[2] === '作多' ? 'side-buy' : 'side-sell';
+        return '<div class="batch-mod-row" data-i="' + i + '">'
+          + '<div class="batch-mod-prod"><span class="' + sideCls + '" style="font-size:var(--f-xs)">' + side + '</span> '
+          + _symDisplayName(r[1]) + ' <span style="color:var(--text3);font-size:var(--f-xs)">' + r[7] + '</span></div>'
+          + '<div class="batch-mod-field">數量<input type="number" class="sbm-qty" value="' + qty + '" data-orig="' + qty + '"></div>'
+          + '<div class="batch-mod-field">委託價<input type="text" class="sbm-price" value="' + r[5] + '" data-orig="' + r[5] + '"></div>'
+          + '</div>';
+      }).join('');
+      document.getElementById('batch-mod-modal').classList.add('show');
+      // 送出按鈕臨時改指智慧單版本，關閉時再換回量化積木版（兩邊共用同一顆彈窗）
+      const ok = document.querySelector('#batch-mod-modal .m-confirm');
+      if (ok) ok.setAttribute('onclick', 'confirmSmartBatchMod()');
+    }
+    function confirmSmartBatchMod() {
+      const rows = [...document.querySelectorAll('#batch-mod-body .batch-mod-row')];
+      let changed = 0;
+      rows.forEach(function (row) {
+        const it = _smartBatchItems[parseInt(row.dataset.i, 10)];
+        const d = it && SMART_COMM[it.key];
+        const r = d && d.sent[it.idx];
+        if (!r) return;
+        const q = row.querySelector('.sbm-qty'), p = row.querySelector('.sbm-price');
+        const nq = ('' + q.value).trim(), np = ('' + p.value).trim();
+        if (nq && nq !== q.dataset.orig) {
+          r[6] = nq + ' / ' + (('' + (r[6] || '')).split('/')[1] || '0').trim();
+          changed++;
+        }
+        if (np && np !== p.dataset.orig) { r[5] = np; changed++; }
+      });
+      closeModal('batch-mod-modal');
+      const ok = document.querySelector('#batch-mod-modal .m-confirm');
+      if (ok) ok.setAttribute('onclick', 'confirmBatchMod()');
+      if (!changed) { xAlert('未修改任何內容', '請修改數量或價格後再送出', 'ℹ️'); return; }
+      _renderAllSmartViews();
+      xAlert('委託已更新', '已修改 ' + _smartBatchItems.length + ' 筆委託。', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
     }
     // 智慧單委託的「修改數量／價格」：沿用量化積木那顆 #mod-modal，但改的是 SMART_COMM 的資料，
     // 不是像 modRow() 那樣直接改 DOM（智慧單的表都是重新渲染出來的，改 DOM 會被下次渲染蓋掉）
@@ -13262,7 +13284,7 @@
       document.getElementById('mod-price-new').value = r[5];
       document.getElementById('mod-modal').classList.add('show');
     }
-    // 刪除已送出的母單：一併刪掉它的子單（OCO 停利停損、或鋪單/TWAP/拆單的各筆委託）
+    // 刪除已送出的母單：一併刪掉它的子單（OCO 停利停損、或鋪單/拆單的各筆委託）
     function slDelSentRow(key, idx) {
       const d = SMART_COMM[key];
       const row = d && d.sent[idx];
@@ -13287,25 +13309,35 @@
     function batchPauseOvWatch() {
       const items = _ovWatchSelectedItems();
       if (!items.length) return;
-      items.forEach(function (it) { const d = SMART_COMM[it.key]; if (d && d.watch[it.idx]) d.watch[it.idx][7] = true; });
+      items.filter(function (it) { return it.kind === 'watch'; })
+        .forEach(function (it) { const d = SMART_COMM[it.key]; if (d && d.watch[it.idx]) d.watch[it.idx][7] = true; });
       _renderAllSmartViews();
     }
     function batchDelOvWatch() {
       const items = _ovWatchSelectedItems();
       if (!items.length) return;
+      const nWatch = items.filter(function (it) { return it.kind === 'watch'; }).length;
+      const nSent = items.length - nWatch;
+      const what = [nWatch ? (nWatch + ' 張監控中的智慧單') : '', nSent ? (nSent + ' 筆委託') : ''].filter(Boolean).join('、');
       _xpopShow({
         icon: '<i class="fas fa-triangle-exclamation" style="color:var(--warning)"></i>',
-        title: '批次刪除智慧單',
-        msg: '確定要刪除已選的 ' + items.length + ' 張智慧單嗎？此動作無法復原。',
+        title: '批次刪除',
+        msg: '確定要刪除已選的 ' + what + '嗎？此動作無法復原。',
         type: 'confirm', confirmText: '確認刪除', cancelText: '取消', confirmCls: 'danger', noClose: true,
         onOk: () => {
-          // 同一個key可能選了好幾列，splice前idx要由大到小排序，不然刪掉前面那筆會讓後面的idx全部錯位
+          // 同一個 key 可能選了好幾列，splice 前 idx 要由大到小排序，
+          // 不然刪掉前面那筆會讓後面的 idx 全部錯位；委託還要連同它的子單一起刪
           const byKey = {};
-          items.forEach(function (it) { (byKey[it.key] = byKey[it.key] || []).push(it.idx); });
+          items.forEach(function (it) { (byKey[it.key] = byKey[it.key] || []).push(it); });
           Object.keys(byKey).forEach(function (key) {
             const d = SMART_COMM[key];
             if (!d) return;
-            byKey[key].sort(function (a, b) { return b - a; }).forEach(function (idx) { d.watch.splice(idx, 1); });
+            byKey[key].sort(function (a, b) { return b.idx - a.idx; }).forEach(function (it) {
+              if (it.kind === 'watch') { d.watch.splice(it.idx, 1); return; }
+              let n = 1;
+              while (it.idx + n < d.sent.length && (d.sent[it.idx + n][9] || 'main') !== 'main') n++;
+              d.sent.splice(it.idx, n);
+            });
           });
           _renderAllSmartViews();
         }
@@ -13926,7 +13958,7 @@
         return false;
       }
       // 商品類型要跟帳戶類型一致（期貨帳戶只能交易期貨商品，股票帳戶只能交易股票商品）——
-      // 實際送出委託的是「看A下B」開啟時的執行商品(B)，關閉時等同監控商品本身，檢查對象要看這個開關狀態
+      // 實際送出委託的是「看A下B」開啟時的下單商品(B)，關閉時等同監控商品本身，檢查對象要看這個開關狀態
       const typeHint = document.getElementById('arm-sym-type-hint');
       const sameSymOn = document.getElementById('arm-same-sym')?.checked !== false;
       const commitSymEl = document.getElementById(sameSymOn ? 'arm-smart-sym-disp' : 'arm-exec-sym-disp');
@@ -13973,11 +14005,6 @@
         if (!numOk('arm-splitqty-total') || parseInt(document.getElementById('arm-splitqty-total').value, 10) < 1) return fail('arm-splitqty-total');
         if (!numOk('arm-splitqty-unit') || parseInt(document.getElementById('arm-splitqty-unit').value, 10) < 1) return fail('arm-splitqty-unit');
         if (!_ordFieldValid('splitqty')) return fail(_ordFieldId('splitqty'));
-      } else if (v === 'twap') {
-        const s = document.getElementById('arm-twap-start').value, e = document.getElementById('arm-twap-end').value;
-        if (!s || !e || s >= e) return fail('arm-twap-end');
-        if (!numOk('arm-twap-cnt') || parseInt(document.getElementById('arm-twap-cnt').value, 10) < 2) return fail('arm-twap-cnt');
-        if (!_ordFieldValid('twap')) return fail(_ordFieldId('twap'));
       }
       return true;
     }
@@ -14086,14 +14113,14 @@
       if (m) return m[1];
       return sym;
     }
-    // 判斷實際送出委託的執行商品是不是期貨——看A下B開啟時是B，否則是監控商品本身，
+    // 判斷實際送出委託的下單商品是不是期貨——看A下B開啟時是B，否則是監控商品本身，
     // 跟 armSmartFieldsValid() 判斷帳戶/商品型別是否一致時看的是同一個目標
     function _commitSymIsFutures() {
       const sameSymOn = document.getElementById('arm-same-sym')?.checked !== false;
       const commitSymEl = document.getElementById(sameSymOn ? 'arm-smart-sym-disp' : 'arm-exec-sym-disp');
       return _symIsFutures(commitSymEl?.value || '');
     }
-    // 股票/期貨單位說法(張/口)比照量化積木armCtypeChange()的做法動態切換——依實際執行商品是否為期貨，
+    // 股票/期貨單位說法(張/口)比照量化積木armCtypeChange()的做法動態切換——依實際下單商品是否為期貨，
     // 把 #arm-smart-sec 裡所有 .sm-unit-word(委託量單位、鋪單/拆單專屬欄位裡的單位字) 一併同步成單一詞。
     // 這裡同時處理真正「功能」層面的差異：
     // (1) 範圍市價(Range Market Order)是TAIFEX期貨/選擇權專屬委託方式，股票沒有這個選項；
@@ -14125,7 +14152,7 @@
       return '<option value="">(無帳戶)</option><option>証-模擬交易(內建)-01</option><option>証-模擬交易(內建)-02</option><option>証-實戶-01</option><option>期-模擬交易(內建)-01</option><option>期-模擬交易(內建)-02</option><option>期-實戶-01</option><option>玉山證-123A1234567-某某某</option><option>玉山期-123A1234567-某某某</option>';
     }
     // ===== 新增智慧單：單頁表單（取代舊精靈的智慧單分支）=====
-    // arm-smart-sym-sec／arm-smart-sec 這兩塊是智慧單專屬、非保護函式驅動的既有欄位(監控/執行商品＋佈單方式與14種專屬欄位)，
+    // arm-smart-sym-sec／arm-smart-sec 這兩塊是智慧單專屬、非保護函式驅動的既有欄位(監控/下單商品＋佈單方式與14種專屬欄位)，
     // 用「搬移 DOM 節點」取代整段複製一份，openSmartCreateModal 借出、closeSmartModal 還回舊精靈原位，
     // 避免重寫 armPlaceMode()/armSmartFieldsValid()/_snapshotSmartArm() 這些已經驗證過很多輪的邏輯
     let _smartFieldsHome = null;
@@ -14235,20 +14262,20 @@
       }
       document.getElementById('smart-modal').classList.remove('show');
     }
-    // 佈單方式合併成 8 個大類(停損/觸價/移動停損/定時/開盤收盤/鋪單/拆單/定時定額)，用下拉選單(#sm-place-cat)選擇；
+    // 佈單方式合併成 7 個大類(停損/觸價/移動停損/定時/開盤收盤/鋪單/拆單)，用下拉選單(#sm-place-cat)選擇；
     // 開盤／收盤大類底下的「時機」與「委託方式」子選擇維持按鈕(seg-nav)，其餘子選擇(市價/限價等)都用小下拉。
     // 底層 arm-smart-place(14值系統)完全沒變，永遠隱藏，值由這幾個函式同步維護——
     // armPlaceMode()/armSmartFieldsValid()/_snapshotSmartArm() 等既有函式一律只認 arm-smart-place.value，不用管上面這層選單/按鈕 UI
     const PLACE_CAT_MAP = {
       stp: 'stp', stplmt: 'stp', mit: 'mit', lit: 'mit', trail: 'trail', traillmt: 'trail',
       gat: 'gat', moo: 'moo', loo: 'moo', moc: 'moo', loc: 'moo',
-      scale: 'scale', splitqty: 'splitqty', twap: 'twap'
+      scale: 'scale', splitqty: 'splitqty'
     };
     // 名稱不再由使用者輸入，新建機器人時依佈單大類自動取名（沿用既有 6 支示範機器人已經在用的名稱字串，
     // moo/splitqty 兩類目前沒有示範機器人，補上合理預設名稱）
     const PLACE_CAT_DEFAULT_NAME = {
       stp: '停損單', mit: '觸價單', trail: '移動停損單', gat: '定時委託單',
-      moo: '開盤收盤單', scale: '鋪單', splitqty: '拆單', twap: '定時定額單'
+      moo: '開盤收盤單', scale: '鋪單', splitqty: '拆單'
     };
     // 這個 demo 的 <select class="s-input"> 在頁面載入時都會被包成 .xsel-wrap 自訂下拉元件（樣式統一用），
     // 原生 select 本身會被 xsel 系統隱藏、實際顯示的是旁邊的 .xsel-wrap，
@@ -14268,7 +14295,7 @@
       // 改佈单方式會影響這支機器人唯一一項商品的資料形狀，走專屬的確認/清空重填流程，不跟建立流程共用邏輯
       const realSel = document.getElementById('arm-smart-place');
       if (!realSel) return;
-      realSel.value = cat; // stp/mit/trail/gat/moo/batch/splitqty/twap 皆為該大類的預設子模式
+      realSel.value = cat; // stp/mit/trail/gat/moo/scale/splitqty 皆為該大類的預設子模式
       realSel.disabled = false;
       const lim = document.getElementById('arm-limit-mode');
       if (lim) { lim.value = 'market'; _xselSync(lim); }
@@ -14366,7 +14393,6 @@
       if (place === 'moc') return val('arm-moc-time');
       if (place === 'loc') return val('arm-loc-time');
       if (place === 'trail' || place === 'traillmt') return val('arm-trail-arm') || '—';
-      if (place === 'twap') return val('arm-twap-start');
       return '—';
     }
     // 依佈單方式取得監控列表的「委託價」欄位顯示值——只取委託價本身(市價/限價N/漲跌停等)，
@@ -14384,7 +14410,6 @@
       if (place === 'loc') return _ordSummaryText('loc');
       if (place === 'scale') return _ordSummaryText('scale');
       if (place === 'splitqty') return _ordSummaryText('splitqty');
-      if (place === 'twap') return _ordSummaryText('twap');
       return '市價';
     }
     // 智慧單建立：沒有機器人這層容器了，也沒有名稱與安控——建好就是條列表上獨立的一列。
@@ -14414,13 +14439,13 @@
       stp: '停損市價（STP）', stplmt: '停損限價（STP LMT）', mit: '觸價市價（MIT）', lit: '觸價限價（LIT）',
       trail: '移動停損市價（TRAIL）', traillmt: '移動停損限價（TRAIL LMT）',
       gat: '定時委託（GAT）', moo: '開盤市價（MOO）', loo: '開盤限價（LOO）', moc: '收盤市價（MOC）', loc: '收盤限價（LOC）',
-      scale: '鋪單', splitqty: '拆單', twap: '定時定額（TWAP）'
+      scale: '鋪單', splitqty: '拆單'
     };
     const ARM_PLACE_SHORT = {
       stp: '停損市價單', stplmt: '停損限價單', mit: '觸價單', lit: '觸價限價單',
       trail: '移動停損單', traillmt: '移動停損限價單',
       gat: '定時委託單', moo: '開盤市價單', loo: '開盤限價單', moc: '收盤市價單', loc: '收盤限價單',
-      scale: '鋪單', splitqty: '拆單', twap: '定時定額單'
+      scale: '鋪單', splitqty: '拆單'
     };
     function _snapshotSmartArm() {
       const place = document.getElementById('arm-smart-place')?.value || 'stp';
@@ -14452,8 +14477,6 @@
         const sqUnit = _commitSymIsFutures() ? '口' : '張';
         summary = '總量 ' + val('arm-splitqty-total') + ' ' + sqUnit + '，單筆 ' + val('arm-splitqty-unit') + ' ' + sqUnit + '，拆 ' + val('arm-splitqty-cnt') + ' 筆　→　' + _ordSummaryText('splitqty');
         qty = val('arm-splitqty-total');
-      } else if (place === 'twap') {
-        summary = val('arm-twap-start') + '～' + val('arm-twap-end') + '　切 ' + val('arm-twap-cnt') + ' 段　→　' + _ordSummaryText('twap');
       }
       const acct = document.getElementById('arm-acct-select')?.value || '証-模擬交易(內建)-01';
       return { place, dir: _smartDir, acct, sym: document.getElementById('arm-smart-sym-disp')?.value || '—', qty, summary };
@@ -14732,7 +14755,7 @@
       }
     }
     // _symPopTarget 記錄這次開查詢商品popup是要寫回「商品」(main/#arm-smart-sym-disp)
-    // 還是「執行商品」(exec/#arm-exec-sym-disp)——兩個欄位共用同一個popup，靠這個變數分流
+    // 還是「下單商品」(exec/#arm-exec-sym-disp)——兩個欄位共用同一個popup，靠這個變數分流
     let _symPopTarget = 'main';
     function openSymPop(target) {
       _symPopTarget = target === 'exec' ? 'exec' : 'main';
@@ -14770,7 +14793,7 @@
       if (disp) {
         disp.value = name + '(' + raw + ')';
         _syncSymCodeDisplay(dispId);
-        // 只有「商品」欄位在勾選同商品下單時才會連動覆蓋執行商品；反過來選執行商品不會覆蓋商品本身
+        // 只有「商品」欄位在勾選同商品下單時才會連動覆蓋下單商品；反過來選下單商品不會覆蓋商品本身
         if (_symPopTarget === 'main') {
           const _same = document.getElementById('arm-same-sym');
           const _ex = document.getElementById('arm-exec-sym-disp');
@@ -14794,7 +14817,7 @@
       if (wrap) { const v = wrap.querySelector('.xsel-val'); if (v) v.textContent = sel.options[sel.selectedIndex]?.text || ''; }
       if (sel._xselRebuild) sel._xselRebuild();
     }
-    // 參考價選單（GAT/鋪單/拆單/TWAP/LOC/LOO 共用）：市價/最新價/中價無需額外輸入，
+    // 參考價選單（GAT/鋪單/拆單/LOC/LOO 共用）：市價/最新價/中價無需額外輸入，
     // 指定價格需填固定價，漲跌停/開盤/收盤/最高/最低/試搓成交價需填 ±N 檔偏移，買/賣需填第 1~5 檔的檔位
     const ORD_REF_LABEL = {
       market: '市價', fixed: '指定價格', last: '最新價', bid: '買', ask: '賣',
@@ -14903,30 +14926,28 @@
       show('arm-loc-row', v === 'loc');
       show('arm-scale-row', v === 'scale');
       show('arm-splitqty-row', v === 'splitqty');
-      show('arm-twap-row', v === 'twap');
       if (v === 'gat') armOrdSetChange('gat');
       if (v === 'loo') armOrdSetChange('loo');
       if (v === 'loc') armOrdSetChange('loc');
       if (v === 'scale') { armOrdSetChange('scale'); armScaleCalc(); }
       if (v === 'splitqty') { armOrdSetChange('splitqty'); armSplitQtyCalc('unit'); }
-      if (v === 'twap') armOrdSetChange('twap');
 
-      // 委託量欄位：twap 語意上是「總委託量」；batch/splitqty 有自己的專屬數量欄位，隱藏通用委託量列
+      // 委託量欄位：鋪單/拆單有自己的專屬數量欄位，隱藏通用的委託量。
       const qtyLabel = document.getElementById('arm-qty-label');
-      if (qtyLabel) qtyLabel.textContent = (v === 'twap') ? '總委託量' : '委託量';
+      if (qtyLabel) qtyLabel.textContent = '委託量';
       const qtyRowNormal = document.getElementById('arm-qty-row');
       const qtyHide = (v === 'scale' || v === 'splitqty');
       if (qtyRowNormal && !_armEditMode) qtyRowNormal.style.display = qtyHide ? 'none' : '';
       if (qtyLabel && !_armEditMode) qtyLabel.style.display = qtyHide ? 'none' : '';
 
-      // 編輯機器人設定時，商品層級欄位（監控/執行商品、觸發價、委託量、各佈單方式專屬欄位）一律隱藏，
+      // 編輯機器人設定時，商品層級欄位（監控/下單商品、觸發價、委託量、各佈單方式專屬欄位）一律隱藏，
       // 這些現在改由監控中表格的每一列自己管理（新增監控商品／刪除／暫停），避免跟機器人設定的存檔互相覆蓋
       if (_armEditMode) {
         const symSec = document.getElementById('arm-smart-sym-sec');
         if (symSec) symSec.style.display = 'none';
         place.disabled = true;
         if (trigRow) trigRow.style.display = 'none';
-        ['arm-trail-row', 'arm-trail-amt-row', 'arm-traillmt-row', 'arm-gat-row', 'arm-moo-row', 'arm-loo-row', 'arm-moc-row', 'arm-loc-row', 'arm-scale-row', 'arm-splitqty-row', 'arm-twap-row'].forEach(function (id) {
+        ['arm-trail-row', 'arm-trail-amt-row', 'arm-traillmt-row', 'arm-gat-row', 'arm-moo-row', 'arm-loo-row', 'arm-moc-row', 'arm-loc-row', 'arm-scale-row', 'arm-splitqty-row'].forEach(function (id) {
           const el = document.getElementById(id);
           if (el) el.style.display = 'none';
         });
@@ -14935,7 +14956,7 @@
       } else {
         place.disabled = false;
       }
-      // 範圍市價/張口/元點這些單位差異跟「目前是哪個佈单大類」無關(只看執行商品是不是期貨)，
+      // 範圍市價/張口/元點這些單位差異跟「目前是哪個佈单大類」無關(只看下單商品是不是期貨)，
       // 不能只掛在 usesTrig 分支裡，不然切到 trail/batch/splitqty 時單位文字不會同步
       _armSyncProductTypeUI();
     }
@@ -14945,7 +14966,7 @@
         const el = document.getElementById(id);
         if (el) { el.disabled = on; el.style.opacity = on ? '.45' : ''; el.style.pointerEvents = on ? 'none' : ''; }
       });
-      // 精簡表單：勾選(同商品)時把整列收起來，取消勾選才展開「執行商品」列，減少預設就佔用的高度
+      // 精簡表單：勾選(同商品)時把整列收起來，取消勾選才展開「下單商品」列，減少預設就佔用的高度
       const execRow = document.getElementById('arm-exec-row');
       if (execRow) execRow.style.display = on ? 'none' : '';
       if (on) {
@@ -15199,7 +15220,6 @@
         '移動停損單-証-模擬交易(內建)-01': ['移動停損單-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
         '定時委託單-証-模擬交易(內建)-01': ['定時委託單-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
         '鋪單-証-模擬交易(內建)-01': ['鋪單-証-模擬交易(內建)-01', '証-模擬交易(內建)-01'],
-        '定時定額單-動能策略': ['定時定額單-動能策略', '証-模擬交易(內建)-01'],
       };
       // 機器人欄 index = 11 (col-chk + col-act + 委託時間 + 類別 + 商品 + 買賣 + 委託/成交 + 委託價 + 成交均價 + 狀態 + 委託書號 + 機器人)
       const COL = 11;
@@ -15521,11 +15541,14 @@
   </div>
 
   <!-- 智慧單「監控中」批次工具列：只支援批次暫停／刪除，智慧單不像量化積木支援批次修改 -->
+  <!-- 智慧單的批次列：監控中與已送出委託在同一張表，可用的動作依選取內容而定，
+       由 onOvWatchCbChange() 決定這三顆各自要不要出現 -->
   <div class="batch-bar" id="watch-batch-bar">
     <span class="batch-count" id="watch-batch-count">已選 0筆</span>
     <div class="batch-sep"></div>
-    <button class="batch-mod-btn" onclick="batchPauseOvWatch()"><i class="fas fa-pause"></i> 批次暫停</button>
-    <button class="batch-del-btn" onclick="batchDelOvWatch()"><i class="fas fa-trash"></i> 批次刪除</button>
+    <button class="batch-mod-btn" id="wb-mod" onclick="showSmartBatchMod()"><i class="fas fa-pen"></i> 批次修改</button>
+    <button class="batch-mod-btn" id="wb-pause" onclick="batchPauseOvWatch()"><i class="fas fa-pause"></i> 批次暫停</button>
+    <button class="batch-del-btn" id="wb-del" onclick="batchDelOvWatch()"><i class="fas fa-trash"></i> 批次刪除</button>
     <div class="batch-sep"></div>
     <button class="batch-cancel-btn" onclick="clearOvWatchBatchSel()">取消選取</button>
   </div>
