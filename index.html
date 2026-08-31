@@ -12919,14 +12919,16 @@
           } else {
             // OCO 停利／停損子單緊跟在母單之後，掛到母列的 children
             if (!lastMain) return;
+            // 母單還沒完全成交前，OCO 子單只是「已規劃、待啟用」，不算真的在監控
+            const waitParent = (r[8] === 'wait' && !lastMainFilled);
             lastMain.children.push({
               id: lastMain.id + '|' + role, kind: 'oco', role: role,
               label: role === 'tp' ? '停利' : '停損',
               sym: r[1], dir: r[2], place: '', trig: r[4], ord: r[5],
               qty: (qf[0] || '').trim(), fill: (qf[1] || '').trim(),
-              // 母單還沒完全成交前，OCO 子單只是「已規劃、待啟用」，不算真的在監控
-              status: (r[8] === 'wait' && !lastMainFilled) ? 'waitparent' : r[8],
-              ordNo: r[7], time: r[0]
+              status: waitParent ? 'waitparent' : r[8],
+              // 待母單成交＝委託根本還沒送出去，券商不會給書號
+              ordNo: waitParent ? '' : r[7], time: r[0]
             });
           }
         });
