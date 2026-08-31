@@ -6261,6 +6261,13 @@
       background: var(--bg);
     }
 
+    /* 依時間瀏覽時全部混在一起，訊號來源的群組標頭就沒有意義了 */
+    .all-orders-wrap.oc-time-mode .oc-grp-hdr { display: none }
+
+    /* 當日委託的瀏覽方式切換列 */
+    .oc-mode-bar { display: flex; align-items: center; gap: 10px; padding: 0 0 12px }
+    .oc-mode-label { font-size: var(--f-sm); color: var(--text3) }
+
     /* 當日委託：依訊號來源分組，群組標頭可收合 */
     tr.oc-grp-hdr { cursor: pointer; user-select: none }
     tr.oc-grp-hdr > td { background: var(--bg2); padding: 7px 12px !important; border-top: 1px solid var(--border) }
@@ -6578,8 +6585,9 @@
         <!-- 控制列 -->
         <div class="ctrl-bar">
           <div class="seg-nav">
-            <button class="seg-btn active" id="vbtn-card" onclick="ovSwitch('card')">機器人</button>
             <button class="seg-btn" id="vbtn-all" onclick="ovSwitch('all')">當日委託</button>
+            <button class="seg-btn active" id="vbtn-card" onclick="ovSwitch('card')">機器人</button>
+            <button class="seg-btn" id="vbtn-smart" onclick="ovSwitch('smart')">智慧單</button>
           </div>
           <select class="s-input" id="ov-acct-filter" style="width:auto" onchange="ovAcctFilter(this.value)">
             <option value="">全部帳號</option>
@@ -7169,55 +7177,6 @@
 
 
             </div><!-- /ov-blocks -->
-            <!-- ===== 智慧單條列（下區）=====
-                 所有智慧單一起條列，每一列就是一張智慧單——沒有機器人這層容器，也沒有名稱與安控。
-                 「監控中（尚未觸發）」與「已送出委託」合在同一張表，用「狀態」欄區分。
-                 鋪單(SCALE)／拆單(SPLIT)／停利停損(OCO) 這些一次產生多筆委託的，
-                 母列顯示彙總、點 ▸ 展開才看子單。渲染見 renderSmartList()。 -->
-            <!-- 智慧單在「機器人」分頁裡收成一個可展開的區塊（跟量化積木卡片並列），
-                 首頁預設收合保持乾淨；要看細節則進左側「智慧單」資料夾的專屬頁面 -->
-            <div id="ov-smartlist" class="sl-block">
-              <div class="sl-hdr" onclick="toggleSmartBlock()">
-                <button class="sl-block-caret" type="button" title="展開／收合智慧單"><i class="fas fa-chevron-right"></i></button>
-                <div class="sl-title">
-                  <i class="far fa-lightbulb" style="color:var(--warning)"></i> 智慧單
-                  <span class="sl-count" id="sl-count">—</span>
-                </div>
-                <div class="ov-filter-tag" id="sl-cat-tag" style="display:none" onclick="event.stopPropagation()">
-                  <span class="tag-label" id="sl-cat-tag-label"></span>
-                  <button class="tag-close" onclick="smartCatSelect('all')" title="清除佈單方式篩選"><i class="fas fa-xmark" style="font-size:16px;line-height:1"></i></button>
-                </div>
-                <button class="sl-goto" type="button" onclick="event.stopPropagation();showSmartView(true)" title="開啟智慧單專屬頁面">前往智慧單<i class="fas fa-chevron-right" style="font-size:10px;margin-left:4px"></i></button>
-              </div>
-              <div class="sl-body" id="sl-body" style="display:none">
-                <div class="all-orders-wrap">
-                  <table class="o-table" id="sl-table">
-                    <thead>
-                      <tr>
-                        <th class="col-chk"><input type="checkbox" class="row-cb" onclick="toggleAllSmartRows(this,'sl-tbody')"></th>
-                        <th class="col-act" style="width:112px"></th>
-                        <th style="width:26px"></th>
-                        <th data-sortable data-sortkey="time" data-sort-dir="desc" onclick="slSort(this,'time')">委託時間</th>
-                        <th data-sortable data-sortkey="acct" onclick="slSort(this,'acct')">帳號</th>
-                        <th class="col-prod" data-sortable data-sortkey="sym" onclick="slSort(this,'sym')">商品</th>
-                        <th>委託商品</th>
-                        <th>買賣</th>
-                        <th>佈單方式</th>
-                        <th class="col-right">觸發價</th>
-                        <th class="col-right">委託價</th>
-                        <th class="col-right">委託/成交</th>
-                        <th>狀態</th>
-                        <th title="券商委託回報書號，供核對用">委託書號</th>
-                      </tr>
-                    </thead>
-                    <tbody id="sl-tbody"></tbody>
-                  </table>
-                  <div class="sl-empty" id="sl-empty" style="display:none">
-                    <i class="far fa-lightbulb"></i> 目前沒有符合條件的智慧單
-                  </div>
-                </div>
-              </div>
-            </div>
 
           </div>
 
@@ -7285,6 +7244,13 @@
             </div>
             <button class="empty-action-btn" onclick="openQuotaModal('upgrade')" style="margin-top:4px;">前往升級</button>
           </div>
+          <div class="oc-mode-bar">
+            <span class="oc-mode-label">瀏覽方式</span>
+            <div class="seg-nav">
+              <button class="seg-btn active" id="ocm-group" onclick="ovCommMode('group')">依訊號來源</button>
+              <button class="seg-btn" id="ocm-time" onclick="ovCommMode('time')">依時間</button>
+            </div>
+          </div>
           <div class="all-orders-wrap data-view">
             <table class="o-table">
               <thead>
@@ -7325,8 +7291,8 @@
                   </select></th>
                 </tr>
               </thead>
-                            <tbody class="oc-grp" id="oc-grp-smart">
-                <tr class="oc-grp-hdr" onclick="toggleCommGroup('smart')">
+              <tbody id="oc-tbody">
+                <tr class="oc-grp-hdr" data-src="smart" onclick="toggleCommGroup('smart')">
                   <td colspan="14">
                     <button class="oc-grp-caret open" type="button"><i class="fas fa-chevron-right"></i></button>
                     <span class="src-tag src-smart"><i class="far fa-lightbulb"></i>智慧單</span>
@@ -7334,68 +7300,99 @@
                   </td>
                 </tr>
                 <!-- 智慧單的列由 renderCommSmartGroup() 渲染，才能沿用子母單下拉 -->
-              </tbody>
-              <tbody class="oc-grp" id="oc-grp-block">
-                <tr class="oc-grp-hdr" onclick="toggleCommGroup('block')">
+              
+                <tr class="oc-grp-hdr" data-src="block" onclick="toggleCommGroup('block')">
                   <td colspan="14">
                     <button class="oc-grp-caret open" type="button"><i class="fas fa-chevron-right"></i></button>
                     <span class="src-tag src-block"><i class="fas fa-cube"></i>量化積木</span>
                     <span class="oc-grp-cnt" id="oc-cnt-block"></span>
                   </td>
                 </tr>
-<tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>14:20:30</td><td><span class="type-tag t-odd">零股</span></td><td class="col-prod">
+<tr data-src="block" data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>14:20:30</td><td><span class="type-tag t-odd">零股</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="台新金 2887">台新金 <span class="prod-code">2887</span></div>
                   </td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="7">7</span>/<span>0</span>股</td><td><span class="edit-val" data-price="27.5">27.5</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">C14200733</td><td>
                     <button class="o-robot-link" title="機器人 1" onclick="goToRobot('機器人 1','')">機器人 1</button>
                   </td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-<tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>11:20:05</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
+<tr data-src="block" data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>11:20:05</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="鴻海 2317">鴻海 <span class="prod-code">2317</span></div>
                   </td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="20">20</span>/<span>8</span>張</td><td><span class="edit-val" data-price="182">182</span></td><td>181.5</td><td><span class="s-tag s-partial">部分成交</span></td><td title="委託書號">A11200399</td><td>
                     <button class="o-robot-link" title="機器人 1" onclick="goToRobot('機器人 1','')">機器人 1</button>
                   </td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-<tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>10:15:30</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
+<tr data-src="block" data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>10:15:30</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="聯發科 2454">聯發科 <span class="prod-code">2454</span></div>
                   </td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="100">100</span>/<span>20</span>張</td><td><span class="edit-val" data-price="1245">1,245</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">B10150099</td><td>
                     <button class="o-robot-link" title="機器人 2" onclick="goToRobot('機器人 2','')">機器人 2</button>
                   </td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-<tr data-account="期-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>10:05:10</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
+<tr data-src="block" data-account="期-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>10:05:10</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="滬海 6837">滬海 <span class="prod-code">6837</span></div>
                   </td><td class="side-buy">買進</td><td>50/50張</td><td>38.50</td><td class="col-right">38.25</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">B10050211</td><td>
                     <button class="o-robot-link" title="機器人 2" onclick="goToRobot('機器人 2','')">機器人 2</button>
                   </td><td title="期-模擬交易(內建)-01">期-模擬-01</td></tr>
-<tr data-account="期-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>09:45:00</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
+<tr data-src="block" data-account="期-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>09:45:00</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="台積電 2330">台積電 <span class="prod-code">2330</span></div>
                   </td><td class="side-sell">賣出</td><td>10/10張</td><td>920.0</td><td class="col-right">921.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">B09450055</td><td>
                     <button class="o-robot-link" title="現股波段趨勢跟蹤機器人高頻版Pro最終穩定測試版" onclick="goToRobot('現股波段趨勢跟蹤機器人高頻版Pro最終穩定測試版','')">現股波段趨勢跟蹤機器人高頻版Pro最終穩定測試版</button>
                   </td><td title="期-模擬交易(內建)-01">期-模擬-01</td></tr>
-<tr data-account="期-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>10:05:10</td><td><span class="type-tag t-futures">期貨</span></td><td class="col-prod">
+<tr data-src="block" data-account="期-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>10:05:10</td><td><span class="type-tag t-futures">期貨</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="臺股期貨 TXFH6（2026/08 近月）">臺股期貨</div>
                   </td><td class="side-sell">賣出</td><td>3/3口</td><td>22,150</td><td class="col-right">22,148</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">F10050211</td><td>
                     <button class="o-robot-link" title="交易機器人 3" onclick="goToRobot('交易機器人 3','期-模擬交易(內建)-01')">交易機器人 3</button>
                   </td><td title="期-模擬交易(內建)-01">期-模擬-01</td></tr>
-<tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>09:30:15</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
+<tr data-src="block" data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" disabled></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>09:30:15</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod">
                     <div class="line-clamp-2" title="聯發科 2454">聯發科 <span class="prod-code">2454</span></div>
                   </td><td class="side-buy">買進</td><td>25/25張</td><td>1,240</td><td class="col-right">1,240.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">B09300412</td><td>
                     <button class="o-robot-link" title="機器人 2" onclick="goToRobot('機器人 2','')">機器人 2</button>
                   </td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-              </tbody>
-              <tbody class="oc-grp" id="oc-grp-manual">
-                <tr class="oc-grp-hdr" onclick="toggleCommGroup('manual')">
+              
+                <tr class="oc-grp-hdr" data-src="manual" onclick="toggleCommGroup('manual')">
                   <td colspan="14">
                     <button class="oc-grp-caret open" type="button"><i class="fas fa-chevron-right"></i></button>
                     <span class="src-tag src-manual"><i class="far fa-hand-pointer"></i>手動</span>
                     <span class="oc-grp-cnt" id="oc-cnt-manual"></span>
                   </td>
                 </tr>
-<tr data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td></td><td>09:31:22</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod"><div class="line-clamp-2" title="元大台灣50 0050">元大台灣50 <span class="prod-code">0050</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="5">5</span>/<span>5</span>張</td><td><span class="edit-val" data-price="188.0">188.0</span></td><td>188.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">H23060101</td><td class="col-robot" style="color:var(--text3)">—</td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
-<tr data-account="玉山期-123A1234567-某某某"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td></td><td>10:48:05</td><td><span class="type-tag t-futures">期貨</span></td><td class="col-prod"><div class="line-clamp-2" title="台指期近月">台指期近月</div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="2">2</span>/<span>0</span>口</td><td><span class="edit-val" data-price="23250">23250</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">H23060102</td><td class="col-robot" style="color:var(--text3)">—</td><td title="玉山期-123A1234567-某某某">玉山期-4567</td></tr>
-<tr data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>13:22:40</td><td><span class="type-tag t-odd">零股</span></td><td class="col-prod"><div class="line-clamp-2" title="台積電 2330">台積電 <span class="prod-code">2330</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="300">300</span>/<span>0</span>股</td><td><span class="edit-val" data-price="1105">1105</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-cancel">已刪單</span></td><td title="委託書號">H23060103</td><td class="col-robot" style="color:var(--text3)">—</td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+<tr data-src="manual" data-account="証-模擬交易(內建)-01"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td></td><td>09:31:22</td><td><span class="type-tag t-stock">整股</span></td><td class="col-prod"><div class="line-clamp-2" title="元大台灣50 0050">元大台灣50 <span class="prod-code">0050</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="5">5</span>/<span>5</span>張</td><td><span class="edit-val" data-price="188.0">188.0</span></td><td>188.0</td><td><span class="s-tag s-filled">完全成交</span></td><td title="委託書號">H23060101</td><td class="col-robot" style="color:var(--text3)">—</td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+<tr data-src="manual" data-account="玉山期-123A1234567-某某某"><td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td><td class="col-act"><button class="ico-btn edit" onclick="modRow(this)" title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" onclick="delRow(this)" title="刪單"><i class="fas fa-trash"></i></button></td><td></td><td>10:48:05</td><td><span class="type-tag t-futures">期貨</span></td><td class="col-prod"><div class="line-clamp-2" title="台指期近月">台指期近月</div></td><td class="side-sell">賣出</td><td><span class="edit-val" data-qty="2">2</span>/<span>0</span>口</td><td><span class="edit-val" data-price="23250">23250</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-pend">委託成功</span></td><td title="委託書號">H23060102</td><td class="col-robot" style="color:var(--text3)">—</td><td title="玉山期-123A1234567-某某某">玉山期-4567</td></tr>
+<tr data-src="manual" data-account="証-模擬交易(內建)-01"><td class="col-chk"></td><td class="col-act"><button class="ico-btn edit" disabled title="修改"><i class="fas fa-pen"></i></button><button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button></td><td></td><td>13:22:40</td><td><span class="type-tag t-odd">零股</span></td><td class="col-prod"><div class="line-clamp-2" title="台積電 2330">台積電 <span class="prod-code">2330</span></div></td><td class="side-buy">買進</td><td><span class="edit-val" data-qty="300">300</span>/<span>0</span>股</td><td><span class="edit-val" data-price="1105">1105</span></td><td class="col-right" style="color:var(--text4)">—</td><td><span class="s-tag s-cancel">已刪單</span></td><td title="委託書號">H23060103</td><td class="col-robot" style="color:var(--text3)">—</td><td title="証-模擬交易(內建)-01">証-模擬-01</td></tr>
+              
               </tbody>
             </table>
           </div>
         </div>
 
 
+            <!-- ===== 智慧單分頁：所有智慧單的完整資訊（監控中與已送出委託同一張表）=====
+                 每一列就是一張智慧單，子母單用展開呈現。渲染見 renderSmartList()。 -->
+            <div id="ov-smart" style="display:none">
+              <div class="sl-body" id="sl-body">
+                <div class="all-orders-wrap">
+                  <table class="o-table" id="sl-table">
+                    <thead>
+                      <tr>
+                        <th class="col-chk"><input type="checkbox" class="row-cb" onclick="toggleAllSmartRows(this,'sl-tbody')"></th>
+                        <th class="col-act" style="width:112px"></th>
+                        <th style="width:26px"></th>
+                        <th data-sortable data-sortkey="time" data-sort-dir="desc" onclick="slSort(this,'time')">委託時間</th>
+                        <th data-sortable data-sortkey="acct" onclick="slSort(this,'acct')">帳號</th>
+                        <th class="col-prod" data-sortable data-sortkey="sym" onclick="slSort(this,'sym')">商品</th>
+                        <th>委託商品</th>
+                        <th>買賣</th>
+                        <th>佈單方式</th>
+                        <th class="col-right">觸發價</th>
+                        <th class="col-right">委託價</th>
+                        <th class="col-right">委託/成交</th>
+                        <th>狀態</th>
+                        <th title="券商委託回報書號，供核對用">委託書號</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sl-tbody"></tbody>
+                  </table>
+                  <div class="sl-empty" id="sl-empty" style="display:none">
+                    <i class="far fa-lightbulb"></i> 目前沒有符合條件的智慧單
+                  </div>
+                </div>
+              </div>
+            </div>
       </div><!-- /ov -->
 
 
@@ -10770,12 +10767,11 @@
     }
     // 「機器人」分頁的兩區（上：量化積木機器人卡片／下：智慧單條列）依資料夾連動顯示：
     // 全部＝兩區都顯示、量化積木＝只顯上區、智慧單＝只顯下區
+    // 智慧單已經是總覽自己的一個分頁，不再是「機器人」分頁裡的區塊；
+    // 資料夾切換只需要確保停在合適的分頁上（智慧單資料夾另有專屬頁，不走這裡）
     function _syncOvSections(filterKey) {
       const blocks = document.getElementById('ov-blocks');
-      const list = document.getElementById('ov-smartlist');
-      // #ov-blocks 是 display:contents 的透明包裝，還原時要明確寫回 contents（清成空字串會變成 block、破壞卡片版面）
-      if (blocks) blocks.style.display = (filterKey === 'fav') ? 'none' : 'contents';
-      if (list) list.style.display = (filterKey === 'running') ? 'none' : '';
+      if (blocks) blocks.style.display = 'contents';
     }
 
     function _updateSbEmpty() {
@@ -11376,7 +11372,8 @@
     function ovFilterBySelect(val) {
       // 智慧單條列的狀態篩選在資料層做（見 renderSmartList()），這裡連動重畫
       renderSmartList();
-      document.querySelectorAll('#ov-comm .o-table tbody tr').forEach(tr => {
+      // 群組標頭不是資料列，不參與篩選（否則整組的「智慧單／量化積木／手動」標題會被一起藏掉）
+      document.querySelectorAll('#ov-comm .o-table tbody tr:not(.oc-grp-hdr)').forEach(tr => {
         let show = true;
         if (val) {
           const cls = tr.querySelector('.s-tag')?.className || '';
@@ -11392,7 +11389,19 @@
         if (show && _ovSrcFilter) {
           show = !!tr.cells[tr.cells.length - 1]?.querySelector('.src-' + _ovSrcFilter);
         }
+        // 通過篩選 ≠ 看得見：群組收合時整組照樣藏起來，但筆數要算的是「通過篩選」的數量
+        tr.dataset.hit = show ? '1' : '';
+        if (show && _ocMode === 'group' && _ocGrpOpen[tr.dataset.src] === false) show = false;
         tr.style.display = show ? '' : 'none';
+      });
+      // 標頭跟著自己那組的存活狀況走：整組都被篩掉就一起收起來
+      document.querySelectorAll('#ov-comm .oc-grp-hdr').forEach(hdr => {
+        const key = hdr.dataset.src;
+        const n = [...document.querySelectorAll('#oc-tbody tr[data-src="' + key + '"]:not(.oc-grp-hdr):not(.sl-child)')]
+          .filter(tr => tr.dataset.hit).length;
+        hdr.style.display = n ? '' : 'none';
+        const cnt = document.getElementById('oc-cnt-' + key);
+        if (cnt) cnt.textContent = n + ' 筆';
       });
       // sync col header filter icon
       const colSel = document.getElementById('ov-col-status-sel');
@@ -12309,27 +12318,21 @@
       document.getElementById('ov-card').style.display = v === 'card' ? 'flex' : 'none';
       if (v === 'card') document.getElementById('ov-card').style.flexDirection = 'column';
       document.getElementById('ov-comm').style.display = v === 'all' ? 'block' : 'none';
+      document.getElementById('ov-smart').style.display = v === 'smart' ? 'block' : 'none';
       document.getElementById('vbtn-card').classList.toggle('active', v === 'card');
       document.getElementById('vbtn-all').classList.toggle('active', v === 'all');
+      document.getElementById('vbtn-smart').classList.toggle('active', v === 'smart');
       // 商品搜尋三個分頁都用得到；狀態篩選只有「當日委託」有意義（當日監控整張表都是監控中，
       // 機器人分頁的智慧單條列自己有狀態欄可看，但預設收合著，不需要在控制列擺一個狀態篩選）
       document.getElementById('ov-prod-search-wrap').style.display = '';
       const statusFilterEl = document.getElementById('ov-status-filter');
       const statusFilterWrap = statusFilterEl?.closest('.xsel-wrap') || statusFilterEl;
       if (statusFilterWrap) statusFilterWrap.style.display = '';
-      if (v === 'card') renderSmartList();
+      if (v === 'smart') renderSmartList();
       _updateHash();
     }
-    // 「機器人」分頁裡智慧單區塊的展開／收合
-    let _slBlockOpen = false;
-    function toggleSmartBlock(force) {
-      _slBlockOpen = (typeof force === 'boolean') ? force : !_slBlockOpen;
-      const body = document.getElementById('sl-body');
-      const caret = document.querySelector('#ov-smartlist .sl-block-caret');
-      if (body) body.style.display = _slBlockOpen ? '' : 'none';
-      if (caret) caret.classList.toggle('open', _slBlockOpen);
-      if (_slBlockOpen) renderSmartList();
-    }
+    // 智慧單改成總覽的獨立分頁後就沒有收合這回事了，保留空殼避免舊呼叫點出錯
+    function toggleSmartBlock() { ovSwitch('smart'); }
 
     /* ===================== 當日監控（總覽第三分頁）=====================
        跨訊號來源彙整「已布好、尚未觸發送出」的監控。目前只有智慧單有這個狀態
@@ -12361,14 +12364,64 @@
        量化積木／手動兩組是靜態示範列（寫在 HTML 裡）；智慧單那組由這裡渲染，
        因為它要有子母單下拉（OCO 停利停損、鋪單/拆單的各筆委託）。 */
     const _ocGrpOpen = { smart: true, block: true, manual: true };
+    // 當日委託的瀏覽方式：'group' 依訊號來源分組（預設）、'time' 全部混在一起純依委託時間排序
+    let _ocMode = 'group';
+    function ovCommMode(m) {
+      _ocMode = m;
+      document.getElementById('ocm-group').classList.toggle('active', m === 'group');
+      document.getElementById('ocm-time').classList.toggle('active', m === 'time');
+      _ocApplyMode();
+    }
+    // 三個群組原本各自是一個 tbody，現在同屬 #oc-tbody，所以可以直接重排列的順序。
+    // 依時間模式：藏掉群組標頭，把所有資料列依委託時間由新到舊排；
+    // 依來源模式：把標頭放回去，列依「智慧單→量化積木→手動」歸位。
+    function _ocApplyMode() {
+      const tb = document.getElementById('oc-tbody');
+      if (!tb) return;
+      const rows = [...tb.querySelectorAll('tr:not(.oc-grp-hdr)')];
+      const hdrs = [...tb.querySelectorAll('tr.oc-grp-hdr')];
+      const timeOf = function (tr) {
+        // 子單的時間欄可能是破折號，跟著母單走才不會被排到最後
+        const t = (tr.cells[3]?.textContent || '').trim();
+        return /^\d/.test(t) ? t : '';
+      };
+      const wrap = tb.closest('.all-orders-wrap');
+      if (wrap) wrap.classList.toggle('oc-time-mode', _ocMode === 'time');
+      if (_ocMode === 'time') {
+        const withKey = rows.map(function (tr, i) {
+          const isChild = tr.classList.contains('sl-child');
+          // 子單緊跟母單：用「母單時間 + 原順序」當排序鍵
+          const t = timeOf(tr) || (isChild ? (timeOf(rows[i - 1]) || '') : '');
+          return { tr: tr, t: t || '00:00:00', i: i, child: isChild };
+        });
+        withKey.sort(function (a, b) {
+          if (a.t !== b.t) return a.t < b.t ? 1 : -1;   // 由新到舊
+          return a.i - b.i;
+        });
+        withKey.forEach(function (x) { tb.appendChild(x.tr); });
+      } else {
+        // 依來源歸位：標頭 + 該來源的列，順序照 smart / block / manual
+        ['smart', 'block', 'manual'].forEach(function (key) {
+          const hdr = hdrs.find(function (h) { return h.dataset.src === key; });
+          if (hdr) tb.appendChild(hdr);
+          rows.filter(function (tr) { return _ocRowSrc(tr) === key; }).forEach(function (tr) { tb.appendChild(tr); });
+        });
+      }
+      _updateCommGroupCounts();
+      ovFilterBySelect(document.getElementById('ov-status-filter')?.value || '');
+    }
+    // 一列屬於哪個來源：三種來源的列都帶 data-src（靜態列在 HTML 裡就標好，
+    // 智慧單的列由 renderCommSmartGroup() 產生時標上）
+    function _ocRowSrc(tr) { return tr.dataset.src || 'manual'; }
     function toggleCommGroup(key) {
       _ocGrpOpen[key] = !_ocGrpOpen[key];
-      const tb = document.getElementById('oc-grp-' + key);
+      const tb = document.getElementById('oc-tbody');
       if (!tb) return;
-      tb.querySelectorAll('tr:not(.oc-grp-hdr)').forEach(function (tr) {
+      tb.querySelectorAll('tr[data-src="' + key + '"]:not(.oc-grp-hdr)').forEach(function (tr) {
         tr.style.display = _ocGrpOpen[key] ? '' : 'none';
       });
-      const caret = tb.querySelector('.oc-grp-caret');
+      const hdr = tb.querySelector('tr.oc-grp-hdr[data-src="' + key + '"]');
+      const caret = hdr && hdr.querySelector('.oc-grp-caret');
       if (caret) caret.classList.toggle('open', _ocGrpOpen[key]);
       if (_ocGrpOpen[key]) ovFilterBySelect(document.getElementById('ov-status-filter')?.value || '');
     }
@@ -12393,9 +12446,9 @@
       return rows;
     }
     function renderCommSmartGroup() {
-      const tb = document.getElementById('oc-grp-smart');
+      const tb = document.getElementById('oc-tbody');
       if (!tb) return;
-      const hdr = tb.querySelector('.oc-grp-hdr');
+      const hdr = tb.querySelector('tr.oc-grp-hdr[data-src="smart"]');
       const rows = _sentRowsFiltered({
         acct: (typeof _ovAcctSelected !== 'undefined' && _ovAcctSelected) || '',
         kw: document.getElementById('ov-prod-search')?.value || ''
@@ -12406,17 +12459,28 @@
         if (r.children.length && _slExpanded[r.id]) r.children.forEach(function (c) { html.push(_commChildRowHtml(c)); });
       });
       // 群組標頭要保留，只換掉它後面的資料列
-      tb.innerHTML = (hdr ? hdr.outerHTML : '') + html.join('');
-      _updateCommGroupCounts();
+      // 只換掉智慧單那組的資料列，量化積木/手動那些靜態列原地不動
+      tb.querySelectorAll('tr[data-src="smart"]:not(.oc-grp-hdr)').forEach(function (tr) { tr.remove(); });
+      if (hdr) {
+        const tmp = document.createElement('tbody');
+        tmp.innerHTML = html.join('');
+        const frag = document.createDocumentFragment();
+        while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+        hdr.after(frag);
+      }
+      // 重畫後要把目前的瀏覽方式套回去（依時間模式下這些列的位置會被重排）
+      if (typeof _ocApplyMode === 'function' && _ocMode === 'time') _ocApplyMode();
+      else _updateCommGroupCounts();
     }
     function _updateCommGroupCounts() {
+      const tb = document.getElementById('oc-tbody');
+      if (!tb) return;
       ['smart', 'block', 'manual'].forEach(function (k) {
-        const tb = document.getElementById('oc-grp-' + k);
         const el = document.getElementById('oc-cnt-' + k);
-        if (!tb || !el) return;
+        if (!el) return;
         // 只算母列（子單附屬於母單，不另計一筆），且排除被篩選隱藏的列
-        const n = [...tb.querySelectorAll('tr:not(.oc-grp-hdr):not(.sl-child)')]
-          .filter(function (tr) { return tr.style.display !== 'none'; }).length;
+        const n = [...tb.querySelectorAll('tr[data-src="' + k + '"]:not(.oc-grp-hdr):not(.sl-child)')]
+          .filter(function (tr) { return tr.dataset.hit === undefined ? tr.style.display !== 'none' : !!tr.dataset.hit; }).length;
         el.textContent = n + ' 筆';
       });
     }
@@ -12571,7 +12635,7 @@
       }
       let chkCell = '<td class="col-chk"></td>', actCell;
       if (isWatch) {
-        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="watch" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
+        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="watch"' + (paused ? ' data-paused="1"' : '') + ' data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
         actCell = '<td class="col-act" style="width:112px"><div class="act-slots">'
           + '<button class="ico-btn" onclick="ovOpenEditProdModal(&quot;' + r.key + '&quot;,' + r.idx + ')" title="編輯此智慧單"><i class="fas fa-pen"></i></button>'
           + '<button class="ico-btn" onclick="ovToggleWatchRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="' + (paused ? '恢復監控' : '暫停監控') + '"><i class="fas ' + (paused ? 'fa-play' : 'fa-pause') + '"></i></button>'
@@ -12585,7 +12649,9 @@
           + (cxl
             ? '<button class="ico-btn edit" onclick="slModSentRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="修改數量／價格"><i class="fas fa-pen"></i></button>'
             : '<button class="ico-btn edit" disabled title="只有「委託成功」或「部分成交」的委託可以修改數量／價格"><i class="fas fa-pen"></i></button>')
-          + '<span></span>'
+          + (cxl
+            ? '<button class="ico-btn" onclick="slPauseSentRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="暫停（未成交的委託會被刪除）"><i class="fas fa-pause"></i></button>'
+            : '<span></span>')
           + (cxl
             ? '<button class="ico-btn del" onclick="slDelSentRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="' + delTitle + '"><i class="fas fa-trash"></i></button>'
             : '<button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button>')
@@ -12702,7 +12768,7 @@
           : '<button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button>')
         + '</div></td>';
       const sideCls = r.dir === '作多' ? 'side-buy' : 'side-sell';
-      return '<tr data-account="' + r.acct + '">'
+      return '<tr data-src="smart" data-account="' + r.acct + '">'
         + '<td class="col-chk"><input type="checkbox" class="row-cb" onchange="onRowCbChange()"></td>' + act + expand
         + '<td>' + (r.time || '—') + '</td>'
         + '<td>' + (isFut ? '<span class="type-tag t-futures">期貨</span>' : '<span class="type-tag t-stock">整股</span>') + '</td>'
@@ -12723,7 +12789,7 @@
       const f = (c.fill === '' || c.fill === '—') ? '—' : c.fill;
       const tagCls = c.kind === 'oco' ? ('tpsl-tag ' + c.role) : 'sl-leg-tag';
       const sideCls = c.dir === '作多' ? 'side-buy' : 'side-sell';
-      return '<tr class="sl-child"><td class="col-chk"></td>'
+      return '<tr class="sl-child" data-src="smart"><td class="col-chk"></td>'
         + '<td class="col-act" style="width:112px"><div class="act-slots">'
         + '<button class="ico-btn edit" disabled title="子單請從母單修改" style="opacity:.4;cursor:not-allowed"><i class="fas fa-pen"></i></button>'
         + '<span></span>'
@@ -13004,8 +13070,6 @@
         if (lbl) lbl.textContent = SMART_CAT_LABEL[_slCat] || _slCat;
       }
       renderSmartCatList();
-      const cntEl = document.getElementById('sl-count');
-      if (cntEl) cntEl.textContent = rows.length + ' 張';
       clearOvWatchBatchSel();
     }
     function _slMainRowHtml(r, kids) {
@@ -13030,7 +13094,7 @@
       let chkCell = '<td class="col-chk"></td>', actCell = '<td class="col-act" style="width:112px"></td>';
       if (r.kind === 'watch') {
         const paused = r.status === 'paused';
-        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="watch" data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
+        chkCell = '<td class="col-chk"><input type="checkbox" class="watch-cb" data-kind="watch"' + (paused ? ' data-paused="1"' : '') + ' data-key="' + r.key + '" data-idx="' + r.idx + '" onchange="onOvWatchCbChange()"></td>';
         actCell = '<td class="col-act" style="width:112px"><div class="act-slots">'
           + '<button class="ico-btn" onclick="ovOpenEditProdModal(&quot;' + r.key + '&quot;,' + r.idx + ')" title="編輯此智慧單"><i class="fas fa-pen"></i></button>'
           + '<button class="ico-btn" onclick="ovToggleWatchRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="' + (paused ? '恢復監控' : '暫停監控') + '"><i class="fas ' + (paused ? 'fa-play' : 'fa-pause') + '"></i></button>'
@@ -13043,7 +13107,9 @@
           + (cxl
             ? '<button class="ico-btn edit" onclick="slModSentRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="修改數量／價格"><i class="fas fa-pen"></i></button>'
             : '<button class="ico-btn edit" disabled title="只有「委託成功」或「部分成交」的委託可以修改數量／價格"><i class="fas fa-pen"></i></button>')
-          + '<span></span>'
+          + (cxl
+            ? '<button class="ico-btn" onclick="slPauseSentRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="暫停（未成交的委託會被刪除）"><i class="fas fa-pause"></i></button>'
+            : '<span></span>')
           + (cxl
             ? '<button class="ico-btn del" onclick="slDelSentRow(&quot;' + r.key + '&quot;,' + r.idx + ')" title="' + delTitle + '"><i class="fas fa-trash"></i></button>'
             : '<button class="ico-btn del" disabled title="刪除"><i class="fas fa-trash"></i></button>')
@@ -13163,13 +13229,20 @@
       });
       // 可用動作＝所有被選列都支援的動作：
       //   全是監控中 → 批次暫停 ＋ 批次刪除
-      //   全是委託   → 批次修改 ＋ 批次刪除
-      //   兩者混選   → 只有批次刪除（監控的修改跟委託的修改是兩回事，暫停也不適用委託）
-      const hasWatch = picked.some(function (c) { return c.dataset.kind === 'watch'; });
+      //   全是委託   → 批次修改 ＋ 批次暫停 ＋ 批次刪除
+      //   兩者混選   → 批次暫停 ＋ 批次刪除（監控的修改跟委託的修改是兩回事，所以修改不給）
+      // 暫停對兩種列都成立，只是意思不同：監控中是停止洗價，委託是問要不要刪掉委託單。
+      const watchPicked = picked.filter(function (c) { return c.dataset.kind === 'watch'; });
+      const hasWatch = watchPicked.length > 0;
       const hasSent = picked.some(function (c) { return c.dataset.kind === 'sent'; });
+      // 暫停／啟動各自只在真的有對象時才出現：選到的監控列裡有「監控中」才給暫停、
+      // 有「已暫停」才給啟動；兩種都有就兩顆都給（各自只作用在對應的那些列）
+      const hasActive = watchPicked.some(function (c) { return c.dataset.paused !== '1'; });
+      const hasPaused = watchPicked.some(function (c) { return c.dataset.paused === '1'; });
       const show = function (id, on) { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
       show('wb-mod', hasSent && !hasWatch);
-      show('wb-pause', hasWatch && !hasSent);
+      show('wb-pause', hasActive || hasSent);
+      show('wb-resume', hasWatch && !hasSent && hasPaused);
       show('wb-del', true);
     }
     // 全選：要指定是哪一張表的 tbody（智慧單頁與機器人分頁的條列表是兩張不同的表，
@@ -13284,6 +13357,33 @@
       document.getElementById('mod-price-new').value = r[5];
       document.getElementById('mod-modal').classList.add('show');
     }
+    // 委託的「暫停」：委託已經送到券商了，要停下來就等於把未成交的委託刪掉，
+    // 跟監控中的暫停（只是停止洗價、隨時可恢復）不是同一回事，所以要跳說明確認
+    let _slPauseSeq = 0;
+    function slPauseSentRow(key, idx) {
+      const d = SMART_COMM[key];
+      const r = d && d.sent[idx];
+      if (!r) return;
+      let n = 1, k = idx + 1;
+      while (k < d.sent.length && (d.sent[k][9] || 'main') !== 'main') { n++; k++; }
+      const cbId = 'sps' + (++_slPauseSeq);
+      xConfirm(
+        '暫停智慧單',
+        '<div style="font-size:var(--f-base);margin-bottom:8px">\u300c' + _symDisplayName(r[1]) + '\u300d的委託已經送到券商了。</div>'
+        + '<label style="display:flex;align-items:center;gap:8px;font-size:var(--f-base);cursor:pointer">'
+        + '<input type="checkbox" id="' + cbId + '" class="row-cb" checked style="margin:0;flex-shrink:0">'
+        + '<span>刪除相關 <strong style="color:var(--accent)">' + n + '</strong> 筆委託單</span></label>'
+        + '<div class="hint" style="margin-top:8px">刪除後狀態會變成「已刪單」；不刪除的話這筆委託會繼續執行，狀態不變。</div>',
+        function () {
+          const cb = document.getElementById(cbId);
+          if (cb && !cb.checked) return;   // 不刪就什麼都不動
+          const cnt = _cancelSentAt(d, idx);
+          _renderAllSmartViews();
+          xAlert('已暫停', '已刪除 ' + cnt + ' 筆委託單。', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
+        },
+        { icon: '<i class="fas fa-triangle-exclamation" style="color:var(--warning)"></i>', confirmText: '確認', confirmCls: 'danger', noClose: true }
+      );
+    }
     // 刪除已送出的母單：一併刪掉它的子單（OCO 停利停損、或鋪單/拆單的各筆委託）
     function slDelSentRow(key, idx) {
       const d = SMART_COMM[key];
@@ -13306,12 +13406,84 @@
         }
       });
     }
+    // 刪委託單：不是把列拿掉，而是把狀態改成「已刪單」，母單的子單一起改，
+    // 這樣在當日委託那邊還看得到這筆的下場（跟券商的委託查詢一致）
+    function _cancelSentAt(d, idx) {
+      let n = 0;
+      for (let k = idx; k < d.sent.length; k++) {
+        if (k > idx && (d.sent[k][9] || 'main') === 'main') break;
+        d.sent[k][8] = 'cancel';
+        n++;
+      }
+      return n;
+    }
+    // 這批選取裡有幾筆委託單會被刪掉（含子單）
+    function _sentCancelCount(items) {
+      let n = 0;
+      items.forEach(function (it) {
+        const d = SMART_COMM[it.key];
+        if (!d || !d.sent[it.idx]) return;
+        n++;
+        for (let k = it.idx + 1; k < d.sent.length && (d.sent[k][9] || 'main') !== 'main'; k++) n++;
+      });
+      return n;
+    }
+    let _bpSeq = 0;
     function batchPauseOvWatch() {
       const items = _ovWatchSelectedItems();
       if (!items.length) return;
-      items.filter(function (it) { return it.kind === 'watch'; })
-        .forEach(function (it) { const d = SMART_COMM[it.key]; if (d && d.watch[it.idx]) d.watch[it.idx][7] = true; });
+      const watchItems = items.filter(function (it) { return it.kind === 'watch'; });
+      const sentItems = items.filter(function (it) { return it.kind === 'sent'; });
+      // 只有監控中的列 → 直接暫停，沒什麼好問的
+      if (!sentItems.length) { _doBatchPause(watchItems, [], false); return; }
+      // 有已送出的委託 → 委託已經在券商手上，要停就得刪委託單，讓使用者自己決定
+      const nOrder = _sentCancelCount(sentItems);
+      const cbId = 'bpc' + (++_bpSeq);
+      _xpopShow({
+        icon: '<i class="fas fa-triangle-exclamation" style="color:var(--warning)"></i>',
+        title: '批次暫停',
+        msg: (watchItems.length ? ('<div style="margin-bottom:8px">' + watchItems.length + ' 張監控中的智慧單會停止洗價，隨時可以再啟動。</div>') : '')
+          + '<label style="display:flex;align-items:center;gap:8px;font-size:var(--f-base);cursor:pointer">'
+          + '<input type="checkbox" id="' + cbId + '" class="row-cb" checked style="margin:0;flex-shrink:0">'
+          + '<span>一併刪除已送出的 <strong style="color:var(--accent)">' + nOrder + '</strong> 筆委託單</span></label>'
+          + '<div class="hint" style="margin-top:8px">委託已經送到券商，刪除後狀態會變成「已刪單」；不刪除的話這些委託會繼續執行，狀態不變。</div>',
+        type: 'confirm', confirmText: '確認', cancelText: '取消', confirmCls: 'danger', noClose: true,
+        onOk: function () {
+          const cb = document.getElementById(cbId);
+          _doBatchPause(watchItems, sentItems, !cb || cb.checked);
+        }
+      });
+    }
+    function _doBatchPause(watchItems, sentItems, cancelOrders) {
+      let nWatch = 0, nOrder = 0;
+      watchItems.forEach(function (it) {
+        const d = SMART_COMM[it.key];
+        const row = d && d.watch[it.idx];
+        if (row && !row[7]) { row[7] = 1; nWatch++; }
+      });
+      if (cancelOrders) {
+        sentItems.forEach(function (it) {
+          const d = SMART_COMM[it.key];
+          if (d && d.sent[it.idx]) nOrder += _cancelSentAt(d, it.idx);
+        });
+      }
       _renderAllSmartViews();
+      const msg = [nWatch ? ('已暫停 ' + nWatch + ' 張智慧單') : '', nOrder ? ('已刪除 ' + nOrder + ' 筆委託單') : '']
+        .filter(Boolean).join('，') || '沒有需要變更的項目';
+      xAlert('已暫停', msg + '。', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
+    }
+    // 批次啟動：把選取的已暫停智慧單恢復監控（已經在監控中的不動）
+    function batchResumeOvWatch() {
+      const items = _ovWatchSelectedItems().filter(function (it) { return it.kind === 'watch'; });
+      if (!items.length) return;
+      let n = 0;
+      items.forEach(function (it) {
+        const d = SMART_COMM[it.key];
+        const row = d && d.watch[it.idx];
+        if (row && row[7]) { row[7] = 0; n++; }
+      });
+      _renderAllSmartViews();
+      xAlert('已啟動', '已恢復監控 ' + n + ' 張智慧單。', '<i class="fas fa-circle-check" style="color:var(--success)"></i>');
     }
     function batchDelOvWatch() {
       const items = _ovWatchSelectedItems();
@@ -15548,6 +15720,7 @@
     <div class="batch-sep"></div>
     <button class="batch-mod-btn" id="wb-mod" onclick="showSmartBatchMod()"><i class="fas fa-pen"></i> 批次修改</button>
     <button class="batch-mod-btn" id="wb-pause" onclick="batchPauseOvWatch()"><i class="fas fa-pause"></i> 批次暫停</button>
+    <button class="batch-mod-btn" id="wb-resume" onclick="batchResumeOvWatch()"><i class="fas fa-play"></i> 批次啟動</button>
     <button class="batch-del-btn" id="wb-del" onclick="batchDelOvWatch()"><i class="fas fa-trash"></i> 批次刪除</button>
     <div class="batch-sep"></div>
     <button class="batch-cancel-btn" onclick="clearOvWatchBatchSel()">取消選取</button>
